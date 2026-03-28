@@ -761,15 +761,17 @@ function removePattern(i){if(!confirm('Remove this pattern?'))return;patterns.sp
 async function autoDetect(){if(!entries.length){toast('Add some entries first');return;}const btn=$('adbtn');btn.disabled=true;btn.textContent='Analyzing...';$('apout').textContent='';try{const r=await ai('Identify 4-7 recurring behavioral or emotional patterns from this life log.\n\nFor each:\nNAME: [2-5 word precise name]\nMECHANISM: [one sentence — how it operates]\nEVIDENCE: [cite specific entries]\n\nBe honest and precise. No therapy language.',`Log:\n${ctx(50)}\n\nIdentify patterns.`);$('apout').textContent=r;}catch(e){$('apout').textContent=e.message==='NO_KEY'?'⚙️ Add your API key in Settings.':'Error: '+e.message;}btn.disabled=false;btn.textContent='🧠 Auto-detect from entries';}
 
 // ── AI CORE ───────────────────────────────────────────────────────────────
+const API_URL='/.netlify/functions/anthropic';
+
 async function ai(sys,msg,retries=2){
   if(!apiKey)throw new Error('NO_KEY');
   let lastErr;
   for(let i=0;i<=retries;i++){
     try{
-      const r=await fetch('/.netlify/functions/anthropic',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:[{role:'user',content:msg}]})});
+      const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:[{role:'user',content:msg}]})});
       if(r.status===401)throw new Error('API key invalid or expired. Go to Settings → check your key.');
       if(r.status===429)throw new Error('Rate limited. Wait 30 seconds and try again.');
-      if(r.status>=500)throw new Error('Anthropic service unavailable. Try again in a moment.');
+      if(r.status>=500)throw new Error('Service unavailable. Try again in a moment.');
       if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error?.message||`API error ${r.status}`);}
       const d=await r.json();
       const text=d.content?.[0]?.text||'';
@@ -824,7 +826,7 @@ async function sendChat(){
   $('csend').disabled=true;addTyping();
   const sys=getSys(chatMode)+`\n\nLIFE LOG:\n${ctx(40)}`;
   try{
-    const r=await fetch('/.netlify/functions/anthropic',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:chatHist.slice(-14)})});
+    const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:chatHist.slice(-14)})});
     removeTyping();
     if(r.status===401){addMsg('ai','⚙️ API key invalid. Go to Settings → re-enter your key.');$('csend').disabled=false;return;}
     if(r.status===429){addMsg('ai','⏱ Rate limited. Wait 30 seconds and try again.');$('csend').disabled=false;return;}
