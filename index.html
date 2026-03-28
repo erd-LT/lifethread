@@ -211,6 +211,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
   <button class="nb" onclick="show('import',this)">📥</button>
   <div class="nr">
     <div id="keydot" class="key-dot bad" title="No API key" onclick="show('settings',null)"></div>
+    <div id="syncdot" style="width:8px;height:8px;border-radius:50%;background:#aaa;flex-shrink:0;cursor:default;display:none" title="Sync status"></div>
     <button class="ib" onclick="exportData()">⬇</button>
     <button class="ib" onclick="show('version',this)">v1.7</button>
     <button class="ib" onclick="show('settings',null)">⚙</button>
@@ -503,7 +504,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
   <div class="scroll"><div class="pad" style="max-width:560px">
     <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
       <div style="font-size:20px;font-weight:700">LifeThread</div>
-      <div style="font-size:12px;color:#6c8ebf;font-weight:600;background:#eef2f9;padding:2px 9px;border-radius:10px">v1.7.0</div>
+      <div style="font-size:12px;color:#6c8ebf;font-weight:600;background:#eef2f9;padding:2px 9px;border-radius:10px">v1.8.0</div>
     </div>
     <div style="font-size:12px;color:#aaa;margin-bottom:20px">March 28, 2026 · Claude Sonnet 4</div>
     <div class="sec">System Stats</div>
@@ -520,21 +521,20 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
     </div>
     <div class="sec">Changelog</div>
     <div class="vlog" style="margin-bottom:8px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v1.7.0</b><span style="font-size:11px;color:#6c8ebf;background:#eef2f9;padding:2px 7px;border-radius:8px">current</span><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 28, 2026</span></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v1.8.0</b><span style="font-size:11px;color:#6c8ebf;background:#eef2f9;padding:2px 7px;border-radius:8px">current</span><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 28, 2026</span></div>
       <ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px">
-        <li>🔮 Send to Mirror — instant Claude analysis on any entry</li>
-        <li>☀️ Daily Brief — AI morning summary on Home screen</li>
-        <li>🔍 Search tab — keyword search + AI semantic search across all entries</li>
-        <li>🧩 Pattern auto-flag on new entries</li>
-        <li>📥 Drop zone fixed — no more browser file hijacking</li>
-        <li>📂 Multi-format triage — text, JSON, images, audio sorted automatically</li>
-        <li>🖼 Image text extraction via Claude vision</li>
-        <li>🔧 ChatGPT JSON conversation parser</li>
-        <li>Global drag intercept prevents browser from opening dropped files</li>
+        <li>🔄 Bidirectional Notion sync — entries push automatically on save</li>
+        <li>📡 Real-time sync status dot in nav (yellow=syncing, green=ok, red=error)</li>
+        <li>🔁 Auto-retry queue — failed syncs retry every 30 seconds</li>
+        <li>📥 Pull from Notion on app open — phone always sees latest data</li>
+        <li>⬆️ Save & Sync pushes all local entries to Notion in one batch</li>
+        <li>⏱ Periodic sync every 2 minutes across all devices</li>
+        <li>👁 Show/hide API key fields</li>
+        <li>📋 Copy API key buttons — never need to regenerate keys again</li>
       </ul>
     </div>
-    <div class="vlog old" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.6.0</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Full triage import system</li><li>API key fixed via Netlify env variable</li><li>Entry modal with edit/copy/delete</li></ul></div>
-    <div class="vlog old" style="margin-bottom:18px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.0–1.5</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Initial build through hardening pass</li></ul></div>
+    <div class="vlog old" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.7.0</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 28, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Send to Mirror, Daily Brief, Search tab, Pattern auto-flag, Triage import</li></ul></div>
+    <div class="vlog old" style="margin-bottom:18px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.0–1.6</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Initial build through full hardening pass</li></ul></div>
     <div class="sec">Phase 2 Roadmap</div>
     <div style="background:#fafal8;border:1px solid #eee;border-radius:10px;padding:12px;margin-bottom:16px"><ul style="font-size:12px;color:#666;line-height:2.1;padding-left:14px"><li>Semantic vector search (Supabase)</li><li>Entity tracking — people, places, projects</li><li>Gmail & Calendar integration</li><li>Apple Watch biometrics integration</li><li>Audio transcription (Whisper API)</li><li>Real-time pattern detection on entry save</li><li>ChatGPT Custom GPT connector</li><li>Native iOS PWA with offline support</li></ul></div>
   </div></div>
@@ -616,7 +616,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 window.addEventListener('dragover',e=>{e.preventDefault();e.stopPropagation();});
 window.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();});
 
-const VER='1.7.0';
+const VER='1.8.0';
 const API_URL='/.netlify/functions/anthropic';
 const CATS=[
   {e:'📓',l:'Journal',v:'Journal'},{e:'🎯',l:'Goals',v:'Goals'},
@@ -682,7 +682,9 @@ window.addEventListener('load',()=>{
   renderHome();renderCats();renderEntries();renderPatterns();renderDash();initChat();
   const itxt=$('itxt');
   if(itxt)itxt.addEventListener('input',()=>{const l=itxt.value.length;$('charcount').textContent=l>0?l.toLocaleString()+' chars':'';});
-  if(nKey&&nDb)syncNotion();
+  if(nKey&&nDb){setSyncDot('syncing');pullFromNotion();}
+  // Periodic sync every 2 minutes
+  setInterval(()=>{if(nKey&&nDb){flushSyncQueue();pullFromNotion();}},120000);
   // Auto-generate daily brief
   if(apiKey&&entries.length)setTimeout(genBrief,2000);
 });
@@ -889,7 +891,28 @@ function toggleVisible(id,btn){const el=$(id);if(el.type==='password'){el.type='
 function copyField(id){const el=$(id);const val=el.value.trim();if(!val){toast('Nothing to copy — field is empty');return;}if(navigator.clipboard?.writeText){navigator.clipboard.writeText(val).then(()=>toast('✓ Copied to clipboard')).catch(()=>fallbackCopy(val));}else fallbackCopy(val);}
 function saveApiKey(){const k=$('akey').value.trim();if(k&&!k.startsWith('sk-ant-')){$('akst').innerHTML='<span class="err">⚠️ Should start with sk-ant-</span>';return;}apiKey=k;lsSet('lt_ak',apiKey);updateKeyDot();$('akst').innerHTML=apiKey?'<span class="ok">✓ Saved — AI enabled.</span>':'Cleared.';setTimeout(()=>$('akst').innerHTML='',5000);}
 async function testApiKey(){if(!apiKey){$('akst').innerHTML='<span class="err">No key to test.</span>';return;}$('akst').textContent='Testing...';try{await ai('Reply with exactly: OK','ping');$('akst').innerHTML='<span class="ok">✓ Connected!</span>';}catch(e){$('akst').innerHTML=`<span class="err">✗ ${e.message}</span>`;}}
-function saveNotion(){nKey=$('nkey').value.trim();nDb=$('ndb').value.trim();lsSet('lt_nk',nKey);lsSet('lt_nd',nDb);$('nst').textContent='Syncing...';syncNotion().then(()=>$('nst').textContent='✓ Connected!').catch(e=>$('nst').innerHTML=`<span class="err">⚠️ ${esc(e.message)}</span>`);}
+function saveNotion(){
+  nKey=$('nkey').value.trim();nDb=$('ndb').value.trim();
+  lsSet('lt_nk',nKey);lsSet('lt_nd',nDb);
+  $('nst').textContent='Connecting...';
+  setSyncDot('syncing');
+  pullFromNotion().then(()=>{
+    $('nst').innerHTML='<span class="ok">✓ Connected & synced!</span>';
+    // Push any local entries that aren't in Notion yet
+    const localOnly=entries.filter(e=>!e.notion_id&&e.source!=='notion');
+    if(localOnly.length){
+      $('nst').innerHTML=`<span class="ok">✓ Connected — pushing ${localOnly.length} local entries to Notion...</span>`;
+      (async()=>{
+        let pushed=0;
+        for(const entry of localOnly){
+          try{await saveNotionEntry(entry);pushed++;await sleep(300);}catch{}
+        }
+        $('nst').innerHTML=`<span class="ok">✓ Synced — ${pushed} entries pushed to Notion.</span>`;
+        setSyncDot('ok');
+      })();
+    }
+  }).catch(e=>$('nst').innerHTML=`<span class="err">⚠️ ${esc(e.message)}</span>`);
+}
 function saveProfile(){uName=$('uname').value.trim();uVals=$('uvals').value.trim();uFoc=$('ufoc').value.trim();uWant=$('uwant').value.trim();lsSet('lt_un',uName);lsSet('lt_uv',uVals);lsSet('lt_uf',uFoc);lsSet('lt_uw',uWant);$('pst').innerHTML='<span class="ok">✓ Saved.</span>';renderHome();setTimeout(()=>$('pst').innerHTML='',3000);}
 function clearData(){if(!confirm('Clear all local data?\n\nExport first to keep a backup.'))return;entries=[];goals=[];patterns=[];persist();renderHome();renderEntries();renderDash();renderPatterns();toast('Cleared');}
 
