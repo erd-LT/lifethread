@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="apple-mobile-web-app-title" content="LifeThread"/>
+<meta name="theme-color" content="#6c8ebf"/>
+<title>LifeThread</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f7f7f5;color:#1a1a1a}
+#app{display:flex;flex-direction:column;height:100vh;height:100dvh;max-width:900px;margin:0 auto;background:#fff}
+nav{display:flex;align-items:center;padding:0 10px;border-bottom:1px solid #eee;background:#fff;height:48px;gap:1px;flex-shrink:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+nav::-webkit-scrollbar{display:none}
+.logo{font-size:14px;font-weight:700;letter-spacing:-.5px;margin-right:6px;color:#1a1a1a;white-space:nowrap;flex-shrink:0}.logo span{color:#6c8ebf}
+.nb{padding:5px 9px;border:none;background:none;cursor:pointer;font-size:11px;font-weight:500;color:#999;border-radius:6px;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.nb.active{background:#eef2f9;color:#3a5a8c}
+.nr{margin-left:auto;display:flex;gap:4px;flex-shrink:0;align-items:center}
+.ib{padding:4px 8px;border:1px solid #e8e8e4;border-radius:6px;background:#fff;cursor:pointer;font-size:11px;color:#888;white-space:nowrap;flex-shrink:0}
+.key-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;cursor:pointer}
+.key-dot.ok{background:#3a8c5a}
+.key-dot.bad{background:#e05a5a;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.panel{display:none;flex:1;overflow:hidden;flex-direction:column;min-height:0}
+.panel.active{display:flex}
+.scroll{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+.pad{padding:16px}
+input,textarea,select{font-family:inherit;outline:none;-webkit-appearance:none}
+input,textarea{border:1px solid #e8e8e4;border-radius:8px;padding:9px 12px;background:#fafaf8;width:100%;font-size:16px;transition:border .15s}
+input:focus,textarea:focus{border-color:#6c8ebf;background:#fff}
+select{border:1px solid #e8e8e4;border-radius:8px;padding:8px 10px;background:#fafaf8;color:#555;font-size:14px;width:100%}
+label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.field{margin-bottom:12px}
+.btn{padding:9px 18px;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px}
+.bp{background:#6c8ebf;color:#fff}.bp:active{background:#4a6a9d}
+.bg{background:none;border:1px solid #e8e8e4;color:#555}.bg:active{border-color:#6c8ebf;color:#6c8ebf}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.st{font-size:11px;color:#6c8ebf;margin-top:6px;min-height:16px}
+.divider{height:1px;background:#f0f0ec;margin:14px 0}
+.sec{font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.ok{color:#3a8c5a}.err{color:#e05a5a}
+
+/* SETUP BANNER */
+.setup-banner{background:#fff3cd;border:1px solid #ffc107;border-radius:10px;padding:14px;margin:12px 16px 0;font-size:13px;color:#856404;line-height:1.6}
+.setup-banner strong{display:block;margin-bottom:4px}
+.setup-banner a{color:#6c8ebf;cursor:pointer;font-weight:600;text-decoration:underline}
+
+/* TOAST */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* HOME */
+.hgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 16px}
+.hstat{background:#fafaf8;border:1px solid #eee;border-radius:10px;padding:12px;text-align:center}
+.hstat .n{font-size:24px;font-weight:700;color:#3a5a8c}
+.hstat .l{font-size:11px;color:#aaa;margin-top:2px}
+.hlast{margin:0 16px 12px;background:#fff;border:1px solid #eee;border-radius:10px;padding:12px;cursor:pointer}
+.hlast:active{background:#f5f8ff}
+.hlast h3{font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+.hquick{display:flex;gap:8px;padding:0 16px 12px;align-items:center}
+.hquick input{flex:1;padding:10px 14px;border:1.5px solid #e0e8f5;border-radius:20px;background:#f7f9fd;font-size:16px}
+.hquick button{width:36px;height:36px;border-radius:50%;background:#6c8ebf;border:none;cursor:pointer;color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.jrow{display:flex;gap:7px;padding:0 16px 16px;flex-wrap:wrap}
+
+/* LOG */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:5px;margin-bottom:10px}
+.cb{padding:7px 5px;border:1.5px solid #e8e8e4;border-radius:8px;background:#fff;font-size:11px;cursor:pointer;text-align:center;color:#555;-webkit-user-select:none}
+.cb.sel{border-color:#6c8ebf;background:#eef2f9;color:#3a5a8c;font-weight:600}
+.tplbox{background:#f0f4fb;border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:12px;color:#3a5a8c;line-height:1.9;display:none}
+.eact{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.vbtn{padding:7px 12px;border:1.5px solid #e8e8e4;border-radius:8px;background:#fff;cursor:pointer;font-size:12px;color:#666}
+.vbtn.rec{border-color:#e05a5a;background:#fff5f5;color:#e05a5a;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.ecard{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;-webkit-user-select:none}
+.ecard:active{background:#f0f4fb}
+.etop{display:flex;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap}
+.tag{font-size:11px;font-weight:500;padding:2px 7px;border-radius:10px}
+.tc{background:#eef2f9;color:#3a5a8c}.tm{background:#f5f0ff;color:#6a3aad}.td{color:#bbb;font-size:11px}
+.ebody{font-size:13px;line-height:1.6;color:#333;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+.empty{text-align:center;color:#ccc;font-size:13px;padding:28px 0;line-height:1.8}
+.qbar{background:#fff;border-top:1px solid #eee;padding:10px 12px;display:flex;gap:8px;align-items:center;flex-shrink:0}
+.qin{flex:1;padding:8px 12px;border:1.5px solid #e0e8f5;border-radius:20px;font-size:16px;background:#f7f9fd}
+.qsend{width:34px;height:34px;border-radius:50%;background:#6c8ebf;border:none;cursor:pointer;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+.modal{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:900px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+.mhead{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 16px 8px;gap:10px}
+.mtitle{font-size:14px;font-weight:600;flex:1;line-height:1.4;word-break:break-word}
+.mclose{background:#f0f0ec;border:none;width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#888;flex-shrink:0}
+.mmeta{display:flex;gap:6px;flex-wrap:wrap;padding:0 16px 10px}
+.mbody{font-size:14px;line-height:1.8;color:#333;white-space:pre-wrap;overflow-y:auto;flex:1;padding:0 16px 12px;-webkit-overflow-scrolling:touch;word-break:break-word}
+.medit{width:100%;border:none;font-size:14px;line-height:1.8;background:#fff;display:none;overflow-y:auto;flex:1;padding:12px 16px;resize:none;min-height:120px}
+.medit:focus{outline:none}
+.mfoot{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid #eee;flex-shrink:0}
+
+/* PATTERNS */
+.pcard{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px 14px;margin-bottom:8px}
+
+/* DASH */
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.dc{background:#fff;border:1px solid #eee;border-radius:10px;padding:14px}
+.dc h3{font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.dc.full{grid-column:1/-1}
+.brow{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.blabel{font-size:11px;color:#555;width:85px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btrack{flex:1;height:6px;background:#f0f0ec;border-radius:3px;overflow:hidden}
+.bfill{height:100%;border-radius:3px;background:#6c8ebf;transition:width .5s}
+.bcnt{font-size:11px;color:#aaa;width:18px;text-align:right;flex-shrink:0}
+.mline{display:flex;gap:3px;flex-wrap:wrap}
+.mdot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.sbn{font-size:26px;font-weight:700;color:#3a5a8c;margin-bottom:2px}
+.sbl{font-size:11px;color:#aaa}
+.gi{display:flex;align-items:center;gap:7px;padding:7px 0;border-bottom:1px solid #f5f5f5}
+.gi:last-child{border:none}
+.gt{flex:1;font-size:13px;color:#333;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gpt{width:55px;height:5px;background:#eee;border-radius:3px;overflow:hidden;flex-shrink:0}
+.gpf{height:100%;background:#6c8ebf;border-radius:3px}
+.dbox{background:#f7f9fd;border-radius:8px;padding:12px;font-size:13px;line-height:1.8;color:#333;white-space:pre-wrap;word-break:break-word}
+
+/* CHAT */
+.cmsgs{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
+.msg{display:flex;gap:7px;max-width:100%}
+.msg.user{flex-direction:row-reverse}
+.bub{padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.7;max-width:82%;word-break:break-word}
+.msg.ai .bub{background:#fff;border:1px solid #eee;border-radius:4px 14px 14px 14px;color:#1a1a1a}
+.msg.user .bub{background:#6c8ebf;color:#fff;border-radius:14px 4px 14px 14px}
+.msg.sys .bub{background:#f0f4fb;color:#5a7aad;font-size:12px;border-radius:8px;border:none;max-width:100%;margin:0 auto;text-align:center;padding:6px 12px}
+.av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:2px;background:#eef2f9}
+.msg.user .av{background:#5a7aad;color:#fff}
+.tdots{display:flex;gap:4px;padding:4px 2px}
+.dot{width:6px;height:6px;border-radius:50%;background:#bbb;animation:bop 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.cmodes{display:flex;gap:5px;padding:7px 10px;overflow-x:auto;border-top:1px solid #eee;background:#fafaf8;flex-shrink:0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.cmodes::-webkit-scrollbar{display:none}
+.mc{padding:5px 11px;border:1.5px solid #e0e8f5;border-radius:16px;background:#fff;font-size:11px;cursor:pointer;white-space:nowrap;color:#5a7aad;font-weight:500;flex-shrink:0;-webkit-user-select:none}
+.mc.am{background:#eef2f9;border-color:#6c8ebf}
+.cbot{border-top:1px solid #eee;background:#fff;padding:10px 12px;display:flex;gap:8px;align-items:flex-end;flex-shrink:0}
+.cin{flex:1;padding:9px 13px;border:1.5px solid #e0e8f5;border-radius:20px;resize:none;max-height:90px;overflow-y:auto;line-height:1.5;background:#f7f9fd;font-size:16px}
+.cin:focus{border-color:#6c8ebf;background:#fff}
+.csend{width:36px;height:36px;border-radius:50%;background:#6c8ebf;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.csend:disabled{background:#b0bdd4}
+.csend svg{width:14px;height:14px;fill:#fff}
+
+/* CHECKIN */
+.cicard{background:#fff;border:1px solid #eee;border-radius:14px;padding:18px;max-width:540px;margin:0 auto}
+.ciq{font-size:15px;font-weight:500;line-height:1.5;margin-bottom:12px;color:#1a1a1a}
+.cinav{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.cipr{font-size:12px;color:#aaa}
+
+/* ARCHIVE */
+.aintro{background:#f7f9fd;border:1px solid #dde8f5;border-radius:10px;padding:14px;margin-bottom:14px;font-size:13px;color:#3a5a8c;line-height:1.7}
+.aout{background:#fff;border:1px solid #eee;border-radius:10px;padding:16px;font-size:13px;line-height:1.9;color:#222;white-space:pre-wrap;word-break:break-word}
+
+/* IMPORT */
+.drop-zone{border:2px dashed #d0d8e8;border-radius:10px;padding:18px;text-align:center;background:#fafbfd;cursor:pointer;margin-bottom:10px;-webkit-user-select:none;transition:all .2s}
+.drop-zone:active{border-color:#6c8ebf;background:#f0f4fb}
+.prog-bar{background:#eee;border-radius:6px;height:8px;overflow:hidden;margin-bottom:6px}
+.prog-fill{height:100%;background:#6c8ebf;border-radius:6px;transition:width .4s;width:0%}
+
+/* VERSION */
+.vtable{width:100%;font-size:13px;border-collapse:collapse}
+.vtable td{padding:9px 12px;border-bottom:1px solid #eee;vertical-align:top}
+.vtable tr:last-child td{border:none}
+.vlog{border-left:3px solid #6c8ebf;padding:10px 12px;background:#fafaf8;border-radius:0 8px 8px 0;margin-bottom:8px}
+.vlog.old{border-color:#ddd}
+
+/* SETTINGS */
+.ss{margin-bottom:22px}
+.ss h3{font-size:13px;font-weight:600;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid #eee}
+.key-setup{background:#f0f7ff;border:1px solid #c0d8f0;border-radius:10px;padding:14px;margin-bottom:14px;font-size:13px;line-height:1.7;color:#1a3a5c}
+.key-setup ol{padding-left:18px;margin-top:6px}
+.key-setup li{margin-bottom:4px}
+.key-setup a{color:#6c8ebf;font-weight:600}
+</style>
+</head>
+<body>
+<div id="app">
+<nav>
+  <div class="logo">Life<span>Thread</span></div>
+  <button class="nb active" onclick="show('home',this)">🏠</button>
+  <button class="nb" onclick="show('log',this)">📓 Log</button>
+  <button class="nb" onclick="show('chat',this)">💬 Chat</button>
+  <button class="nb" onclick="show('patterns',this)">🧩</button>
+  <button class="nb" onclick="show('dash',this)">📊</button>
+  <button class="nb" onclick="show('checkin',this)">☀️</button>
+  <button class="nb" onclick="show('archive',this)">🔍</button>
+  <button class="nb" onclick="show('import',this)">📥</button>
+  <div class="nr">
+    <div id="keydot" class="key-dot bad" title="No API key — tap Settings" onclick="show('settings',null)"></div>
+    <button class="ib" onclick="exportData()">⬇</button>
+    <button class="ib" onclick="show('version',this)">v1.6</button>
+    <button class="ib" onclick="show('settings',null)">⚙</button>
+  </div>
+</nav>
+<div id="toast"></div>
+
+<!-- ENTRY MODAL -->
+<div id="emodal" class="overlay" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mhead">
+      <div class="mtitle" id="mtitle"></div>
+      <button class="mclose" onclick="closeModal()">✕</button>
+    </div>
+    <div class="mmeta" id="mmeta"></div>
+    <div class="mbody" id="mbody"></div>
+    <textarea class="medit" id="medit"></textarea>
+    <div class="mfoot">
+      <button class="btn bp" style="font-size:12px;padding:7px 13px" id="etoggle" onclick="toggleEdit()">✏️ Edit</button>
+      <button class="btn bp" style="font-size:12px;padding:7px 13px;display:none" id="esave" onclick="saveEdit()">💾 Save</button>
+      <button class="btn bg" style="font-size:12px;padding:7px 13px" onclick="copyEntry()">📋 Copy</button>
+      <button class="btn bg" style="font-size:12px;padding:7px 13px;color:#e05a5a;border-color:#e05a5a;margin-left:auto" onclick="delEntry()">🗑</button>
+    </div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="home-panel" class="panel active">
+  <div class="scroll">
+    <div style="padding:18px 16px 12px;border-bottom:1px solid #f0f0ec">
+      <div style="font-size:20px;font-weight:700;letter-spacing:-.5px" id="hgreet"></div>
+      <div style="font-size:13px;color:#aaa;margin-top:2px" id="hdate"></div>
+    </div>
+    <div id="setupbanner" class="setup-banner" style="display:none">
+      <strong>⚡ First-time setup needed</strong>
+      To enable AI features (Chat, Import, Archive), add your free Anthropic API key in <a onclick="show('settings',null)">Settings →</a>
+    </div>
+    <div class="hgrid">
+      <div class="hstat"><div class="n" id="ht">0</div><div class="l">entries</div></div>
+      <div class="hstat"><div class="n" id="hs">0</div><div class="l">streak</div></div>
+      <div class="hstat"><div class="n" id="hp">0</div><div class="l">patterns</div></div>
+    </div>
+    <div class="hlast" onclick="openLastEntry()"><h3>Last Entry ↗</h3><div id="hlast"></div></div>
+    <div class="hquick">
+      <input id="hqin" placeholder="Quick capture..." onkeydown="if(event.key==='Enter')hqSave()"/>
+      <button onclick="hqSave()">+</button>
+    </div>
+    <div class="jrow">
+      <button class="btn bg" onclick="show('chat',null);setMode('mirror',null)">🔮 Mirror</button>
+      <button class="btn bg" onclick="show('checkin',null)">☀️ Check-in</button>
+      <button class="btn bg" onclick="show('archive',null)">🔍 Archive</button>
+      <button class="btn bg" onclick="show('patterns',null)">🧩 Patterns</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOG -->
+<div id="log-panel" class="panel">
+  <div class="scroll"><div class="pad">
+    <div class="sec">Category</div>
+    <div class="cgrid" id="cgrid"></div>
+    <div class="tplbox" id="tplbox"></div>
+    <textarea id="etxt" style="min-height:110px;margin-bottom:8px" placeholder="Write freely. No format required."></textarea>
+    <div class="eact">
+      <button class="vbtn" id="vbtn" onclick="toggleVoice()">🎤 Voice</button>
+      <select id="msel" style="max-width:155px;font-size:14px">
+        <option value="">Mood</option>
+        <option>✨ Expansive</option><option>😌 Calm</option><option>😐 Neutral</option>
+        <option>😔 Heavy</option><option>⚡ Energized</option><option>😰 Anxious</option>
+        <option>🙏 Grateful</option><option>😤 Frustrated</option><option>🔥 Passionate</option>
+        <option>😶 Numb</option><option>🌀 Restless</option>
+      </select>
+      <button class="btn bp" id="sbtn" onclick="saveEntry()" style="margin-left:auto;padding:9px 20px">Save</button>
+    </div>
+    <div class="divider"></div>
+    <div class="sec">Recent Entries</div>
+    <div id="elist"></div>
+  </div></div>
+  <div class="qbar">
+    <input class="qin" id="qin" placeholder="⚡ Quick capture" onkeydown="if(event.key==='Enter')quickSave()"/>
+    <button class="qsend" onclick="quickSave()">+</button>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="chat-panel" class="panel">
+  <div class="cmsgs" id="cmsgs"></div>
+  <div class="cmodes">
+    <button class="mc am" onclick="setMode('mirror',this)">🔮 Mirror</button>
+    <button class="mc" onclick="setMode('reflect',this)">🪞 Reflect</button>
+    <button class="mc" onclick="setMode('decide',this)">⚖️ Decide</button>
+    <button class="mc" onclick="setMode('future',this)">🚀 Future</button>
+    <button class="mc" onclick="setMode('review',this)">📋 Review</button>
+    <button class="mc" onclick="setMode('letter',this)">✉️ Letter</button>
+    <button class="mc" onclick="setMode('analyst',this)">📊 Analyst</button>
+    <button class="mc" onclick="setMode('open',this)">💬 Talk</button>
+  </div>
+  <div class="cbot">
+    <textarea class="cin" id="cin" rows="1" placeholder="Say anything."
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"
+      oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,90)+'px'"></textarea>
+    <button class="csend" id="csend" onclick="sendChat()">
+      <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- PATTERNS -->
+<div id="patterns-panel" class="panel">
+  <div class="scroll"><div class="pad">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="sec" style="margin:0">Named Patterns</div>
+      <button class="btn bp" style="font-size:12px;padding:6px 12px" onclick="addPattern()">+ Add</button>
+    </div>
+    <p style="font-size:13px;color:#888;line-height:1.6;margin-bottom:14px">Name the mechanisms you've identified in yourself. The AI references these by name in every interaction.</p>
+    <div id="plist"></div>
+    <div class="divider"></div>
+    <button class="btn bg" style="font-size:12px" id="adbtn" onclick="autoDetect()">🧠 Auto-detect from entries</button>
+    <div id="apout" style="margin-top:12px;font-size:13px;color:#444;line-height:1.8;white-space:pre-wrap"></div>
+  </div></div>
+</div>
+
+<!-- INSIGHTS -->
+<div id="dash-panel" class="panel">
+  <div class="scroll"><div class="pad">
+    <div class="dgrid">
+      <div class="dc"><h3>Entries</h3><div class="sbn" id="dt">0</div><div class="sbl">total</div></div>
+      <div class="dc"><h3>Streak</h3><div class="sbn" id="dstr">0</div><div class="sbl">days</div></div>
+      <div class="dc full"><h3>Category Balance</h3><div id="cbars"></div></div>
+      <div class="dc full"><h3>Mood Timeline</h3><div class="mline" id="mline"></div></div>
+      <div class="dc full">
+        <h3>Goals <button class="btn bg" style="font-size:11px;padding:3px 8px;float:right" onclick="addGoal()">+ Add</button></h3>
+        <div id="glist"></div>
+      </div>
+      <div class="dc full">
+        <h3>Weekly Digest <button class="btn bg" id="dgbtn" style="font-size:11px;padding:3px 8px;float:right" onclick="genDigest()">Generate</button></h3>
+        <div id="dout"><span style="color:#ccc;font-size:13px">Tap Generate to synthesize your week.</span></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- CHECKIN -->
+<div id="checkin-panel" class="panel">
+  <div class="scroll"><div class="pad">
+    <div class="sec" style="margin-bottom:12px">Daily Check-in</div>
+    <div class="cicard">
+      <div id="cistart">
+        <p style="font-size:14px;color:#555;line-height:1.7;margin-bottom:14px">Five minutes. Honest answers. Saved as today's journal entry.</p>
+        <button class="btn bp" onclick="startCI()">Begin Check-in</button>
+      </div>
+      <div id="ciflow" style="display:none">
+        <div class="ciq" id="ciq"></div>
+        <textarea id="cia" style="min-height:80px" placeholder="Your answer..."></textarea>
+        <div class="cinav">
+          <span class="cipr" id="cipr"></span>
+          <button class="btn bp" onclick="nextCI()">Next →</button>
+        </div>
+      </div>
+      <div id="cidone" style="display:none">
+        <p style="font-size:14px;font-weight:600;margin-bottom:8px" class="ok">✓ Done. Saved.</p>
+        <button class="btn bg" onclick="resetCI()">Start over</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ARCHIVE -->
+<div id="archive-panel" class="panel">
+  <div class="scroll"><div class="pad">
+    <div class="sec">Omni Archive</div>
+    <div class="aintro">Your longitudinal mirror. Reads across your full entry history and synthesizes behavioral threads, emotional patterns, contradictions, and the central through-line of your life.</div>
+    <div class="field"><label>Focus</label>
+      <select id="afocus">
+        <option value="">Full synthesis</option>
+        <option value="patterns">Behavioral patterns</option>
+        <option value="emotional">Emotional arc</option>
+        <option value="relationships">Relationships & people</option>
+        <option value="work">Work & identity</option>
+        <option value="health">Health & body</option>
+        <option value="finances">Financial patterns</option>
+        <option value="goals">Goals vs. reality</option>
+        <option value="contradictions">Contradictions</option>
+        <option value="thread">Central through-line</option>
+      </select>
+    </div>
+    <div class="field"><label>Time range</label>
+      <select id="arange">
+        <option value="all">All time</option>
+        <option value="90">Last 90 days</option>
+        <option value="30">Last 30 days</option>
+        <option value="7">Last 7 days</option>
+      </select>
+    </div>
+    <button class="btn bp" id="abtn" onclick="runArchive()">Run Synthesis</button>
+    <div class="divider"></div>
+    <div id="aout" class="aout" style="display:none"></div>
+  </div></div>
+</div>
+
+<!-- IMPORT -->
+<div id="import-panel" class="panel">
+  <div class="scroll"><div class="pad">
+    <div class="sec">Import Your Life Data</div>
+    <p style="font-size:13px;color:#888;margin-bottom:14px;line-height:1.6">
+      Paste any amount of text — ChatGPT exports, old journals, notes. Large texts are automatically split and processed in batches. No manual chunking needed.
+    </p>
+    <div class="drop-zone" onclick="$('fin').click()">
+      <div style="font-size:22px;margin-bottom:5px">📂</div>
+      <p style="font-size:13px;color:#555;font-weight:500">Upload a text file (.txt, .json, .md)</p>
+      <p style="font-size:12px;color:#aaa;margin-top:3px">For Word or PDF: open the file → Select All → Copy → paste below</p>
+    </div>
+    <input type="file" id="fin" accept=".txt,.json,.md,.text,.csv" style="display:none" onchange="handleFile(event)"/>
+    <div style="position:relative;margin-bottom:10px">
+      <textarea id="itxt" style="min-height:130px;width:100%" placeholder="Paste your text here — any length. Journal entries, ChatGPT conversations, notes, anything.&#10;&#10;The AI will automatically parse, date, and categorize each entry."></textarea>
+      <div id="charcount" style="position:absolute;bottom:8px;right:10px;font-size:11px;color:#bbb"></div>
+    </div>
+    <div class="field"><label>Default category if undetectable</label>
+      <select id="icat">
+        <option>Journal</option><option>Goals</option><option>Relationships</option>
+        <option>Health</option><option>Finances</option><option>Spirituality</option>
+        <option>Creative Work</option><option>Learning & Growth</option>
+        <option>Family</option><option>Dreams & Visions</option>
+        <option>Mental & Emotional State</option>
+      </select>
+    </div>
+    <button class="btn bp" id="ibtn" onclick="processImport()" style="width:100%;justify-content:center;padding:12px">
+      Import & Auto-categorize
+    </button>
+    <div id="iprog" style="display:none;margin-top:14px">
+      <div class="prog-bar"><div class="prog-fill" id="ipfill"></div></div>
+      <div id="iplabel" style="font-size:12px;color:#888;text-align:center;margin-top:4px"></div>
+    </div>
+    <div id="ist" style="margin-top:12px;font-size:13px;line-height:1.6"></div>
+    <div class="divider"></div>
+    <div style="font-size:12px;color:#aaa;line-height:1.8">
+      <strong style="color:#888;display:block;margin-bottom:4px">Tips for importing your ChatGPT export:</strong>
+      • Open the exported .txt or .json file<br>
+      • Select all text (Ctrl+A or Cmd+A)<br>
+      • Copy and paste into the box above<br>
+      • Hit Import — the app handles the rest
+    </div>
+  </div></div>
+</div>
+
+<!-- VERSION -->
+<div id="version-panel" class="panel">
+  <div class="scroll"><div class="pad" style="max-width:560px">
+    <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
+      <div style="font-size:20px;font-weight:700">LifeThread</div>
+      <div style="font-size:12px;color:#6c8ebf;font-weight:600;background:#eef2f9;padding:2px 9px;border-radius:10px">v1.6.0</div>
+    </div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:20px">March 27, 2026 · Claude Sonnet 4</div>
+    <div class="sec">System Stats</div>
+    <div style="border:1px solid #eee;border-radius:10px;overflow:hidden;margin-bottom:18px">
+      <table class="vtable">
+        <tr><td style="color:#888;width:130px">Entries</td><td id="ve" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888">Patterns</td><td id="vp" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888">Goals</td><td id="vg" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888">Log spans</td><td id="vsp" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888">API Key</td><td id="vak" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888">Notion</td><td id="vno" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888">Profile</td><td id="vpr" style="font-weight:600">—</td></tr>
+      </table>
+    </div>
+    <div class="sec">Changelog</div>
+    <div class="vlog" style="margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v1.6.0</b><span style="font-size:11px;color:#6c8ebf;background:#eef2f9;padding:2px 7px;border-radius:8px">current</span><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div>
+      <ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px">
+        <li>Import completely rebuilt — no size limit, auto-chunking, progress bar</li>
+        <li>API key status dot in nav bar (green = set, red blinking = missing)</li>
+        <li>First-time setup banner on Home</li>
+        <li>Word/PDF clear instructions (copy-paste method)</li>
+        <li>Character counter on import textarea</li>
+        <li>Chunk deduplication prevents duplicate entries</li>
+        <li>Rate limit auto-retry with 15s wait</li>
+        <li>localStorage fully isolated per domain — key persists correctly on Netlify</li>
+        <li>All AI errors surface specific actionable messages</li>
+      </ul>
+    </div>
+    <div class="vlog old" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.5.0</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Full defensive hardening pass</li><li>Toast system, debounce, retry logic, storage quota guard</li><li>iOS clipboard fallback</li></ul></div>
+    <div class="vlog old" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.4.0</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>API key field, entry modal, chat fixed</li></ul></div>
+    <div class="vlog old" style="margin-bottom:18px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.0–1.3</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Initial build through temporal engine</li></ul></div>
+    <div class="sec">Phase 2 Roadmap</div>
+    <div style="background:#fafaf8;border:1px solid #eee;border-radius:10px;padding:12px;margin-bottom:16px"><ul style="font-size:12px;color:#666;line-height:2.1;padding-left:14px"><li>Semantic search (vector DB)</li><li>Entity tracking — people, places, projects</li><li>Gmail & Calendar integration</li><li>Contradiction detection engine</li><li>Auto life chapter summaries</li><li>Standalone backend (Supabase)</li><li>Native iOS PWA with offline support</li></ul></div>
+  </div></div>
+</div>
+
+<!-- SETTINGS -->
+<div id="settings-panel" class="panel">
+  <div class="scroll"><div class="pad" style="max-width:520px">
+
+    <div class="ss">
+      <h3>⚡ Anthropic API Key</h3>
+      <div class="key-setup">
+        <strong>How to get your free API key:</strong>
+        <ol>
+          <li>Go to <a href="https://platform.anthropic.com" target="_blank">platform.anthropic.com</a></li>
+          <li>Sign up or log in</li>
+          <li>Click <strong>API Keys</strong> in the left menu</li>
+          <li>Click <strong>Create Key</strong> — copy the key</li>
+          <li>Paste it below and tap Save</li>
+        </ol>
+        <div style="margin-top:8px;font-size:12px;color:#5a8abf">The key is stored only on this device. It never leaves your browser.</div>
+      </div>
+      <div class="field"><label>API Key</label><input type="password" id="akey" placeholder="sk-ant-api03-..." autocomplete="off"/></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button class="btn bp" onclick="saveApiKey()">Save Key</button>
+        <button class="btn bg" onclick="testApiKey()" style="font-size:12px">Test Connection</button>
+      </div>
+      <div class="st" id="akst"></div>
+    </div>
+
+    <div class="ss">
+      <h3>Notion Integration (optional)</h3>
+      <p style="font-size:12px;color:#888;line-height:1.6;margin-bottom:10px">Syncs entries to Notion for cross-device access and unlimited storage.</p>
+      <div class="field"><label>Notion API Key</label><input type="password" id="nkey" placeholder="secret_..."/></div>
+      <div class="field"><label>Database ID</label><input type="text" id="ndb" placeholder="32-character ID from database URL"/></div>
+      <button class="btn bp" onclick="saveNotion()">Save & Sync</button>
+      <div class="st" id="nst"></div>
+    </div>
+
+    <div class="ss">
+      <h3>Your Profile</h3>
+      <div class="field"><label>Name</label><input type="text" id="uname" placeholder="What should LifeThread call you?"/></div>
+      <div class="field"><label>Core values</label><textarea id="uvals" style="height:60px" placeholder="e.g. I value honesty, growth, presence..."></textarea></div>
+      <div class="field"><label>Current focus or central tension</label><textarea id="ufoc" style="height:60px" placeholder="What are you navigating right now?"></textarea></div>
+      <div class="field"><label>What you want from this system</label><textarea id="uwant" style="height:60px" placeholder="e.g. Honest reflection, patterns named without softening..."></textarea></div>
+      <button class="btn bp" onclick="saveProfile()">Save Profile</button>
+      <div class="st" id="pst"></div>
+    </div>
+
+    <div class="ss">
+      <h3>Data</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn bg" onclick="exportData()">⬇ Export JSON</button>
+        <button class="btn bg" onclick="clearData()" style="color:#e05a5a;border-color:#e05a5a">Clear All Data</button>
+      </div>
+    </div>
+
+  </div></div>
+</div>
+</div>
+
+<script>
+'use strict';
+const VER='1.6.0';
+const CATS=[
+  {e:'📓',l:'Journal',v:'Journal'},{e:'🎯',l:'Goals',v:'Goals'},
+  {e:'👥',l:'People',v:'Relationships'},{e:'💪',l:'Health',v:'Health'},
+  {e:'💰',l:'Money',v:'Finances'},{e:'🙏',l:'Spirit',v:'Spirituality'},
+  {e:'🎨',l:'Creative',v:'Creative Work'},{e:'📚',l:'Learning',v:'Learning & Growth'},
+  {e:'👨‍👩‍👧',l:'Family',v:'Family'},{e:'🌙',l:'Dreams',v:'Dreams & Visions'},
+  {e:'🧠',l:'Mental',v:'Mental & Emotional State'},
+];
+const TPLS={
+  Health:'Sleep quality?\nEnergy level?\nMovement today?\nWhat is your body telling you?',
+  Goals:'Which goal?\nActual progress made?\nWhat got in the way?\nNext real step?',
+  Relationships:'Who?\nWhat happened — the facts?\nHow did you feel?\nWhat do you want from this?',
+  Finances:'Financial update?\nDecision made or avoided?\nHow does money feel right now?',
+  'Dreams & Visions':'What did you dream?\nEmotions present?\nSymbols or images?\nWhat might this point at?',
+  'Mental & Emotional State':'Actual emotional weather?\nWhat triggered it?\nWhat are you avoiding?\nWhat do you need?',
+  Spirituality:'What are you in contact with?\nAny insights or shifts?\nHow does your inner life feel?',
+};
+const MMAP={'✨ Expansive':'#f0c040','😌 Calm':'#6cbf8e','😐 Neutral':'#b0b0b0','😔 Heavy':'#7090b0','⚡ Energized':'#e08830','😰 Anxious':'#c07080','🙏 Grateful':'#a070c0','😤 Frustrated':'#d06050','🔥 Passionate':'#e05020','😶 Numb':'#909090','🌀 Restless':'#70a0c0'};
+const CIQS=['How are you actually feeling right now — physically, mentally, emotionally?','What was the most significant thing that happened since your last entry?','What are you avoiding? What are you not saying here?','What\'s one thing that\'s true right now that you haven\'t fully admitted to yourself?','What do you want to move toward — and what\'s actually stopping you?'];
+const AFOCUS={'':'Synthesize everything — behavioral threads, emotional arc, patterns across categories, contradictions, what has changed, what hasn\'t, and the central through-line.',patterns:'Map behavioral and emotional patterns: name each, describe the mechanism, cite evidence, note frequency.',emotional:'Trace the emotional arc. What moods dominate? What triggers what? What cycles repeat?',relationships:'Reconstruct the relational landscape. Who appears? How? What patterns emerge?',work:'Analyze work and identity patterns: investment, performance, ambivalence, avoidance.',health:'Track health, body, energy patterns. Correlate with emotional states.',finances:'Map financial decisions and patterns. Note emotional correlations.',goals:'Audit stated goals against actual logged behavior. Be honest.',contradictions:'Identify contradictions between stated values and logged behavior.',thread:'Name the single central through-line — the unresolved tension all patterns organize around.'};
+
+let entries=[],goals=[],patterns=[],chatHist=[],ciAs=[],ciQs=[],ciIdx=0;
+let selCat=null,chatMode='mirror',recording=false,recog=null;
+let nKey='',nDb='',uName='',uVals='',uFoc='',uWant='',apiKey='';
+let activeId=null,editing=false,busy=false;
+
+const $=id=>document.getElementById(id);
+const nowISO=()=>new Date().toISOString();
+const today=()=>new Date().toISOString().split('T')[0];
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+let toastT;
+function toast(msg,dur=2800){
+  const t=$('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),dur);
+}
+function guard(fn){return function(...a){if(busy)return;busy=true;setTimeout(()=>busy=false,1000);return fn.apply(this,a);};}
+
+// ── STORAGE ───────────────────────────────────────────────────────────────
+function lsGet(k){try{return localStorage.getItem(k);}catch{return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){if(e.name==='QuotaExceededError'){try{const s=JSON.parse(lsGet('lt_e')||'[]');lsSet('lt_e',JSON.stringify(s.slice(0,300)));localStorage.setItem(k,v);toast('⚠️ Storage nearly full. Oldest entries trimmed. Connect Notion for unlimited.');}catch{toast('⚠️ Storage full. Export your data, then clear.');}}}};
+const persist=()=>{lsSet('lt_e',JSON.stringify(entries.slice(0,500)));lsSet('lt_g',JSON.stringify(goals));lsSet('lt_p',JSON.stringify(patterns));};
+
+// ── TEMPORAL ──────────────────────────────────────────────────────────────
+const dow=d=>{try{return new Date(d+'T12:00:00').toLocaleDateString('en-US',{weekday:'long'});}catch{return '';}};
+const tod=()=>{const h=new Date().getHours();if(h<5)return'Late night';if(h<9)return'Early morning';if(h<12)return'Morning';if(h<14)return'Midday';if(h<17)return'Afternoon';if(h<20)return'Evening';return'Night';};
+const tmeta=(d,t,s)=>{try{const dt=new Date(d+'T12:00:00');return{date:d,time_of_day:t||null,day_of_week:dow(d),month:dt.toLocaleDateString('en-US',{month:'long'}),year:dt.getFullYear(),quarter:`Q${Math.ceil((dt.getMonth()+1)/3)} ${dt.getFullYear()}`,source:s||'manual',logged_at:nowISO()};}catch{return{date:d,source:s||'manual',logged_at:nowISO()};}};
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+window.addEventListener('load',()=>{
+  try{
+    apiKey=lsGet('lt_ak')||'';
+    nKey=lsGet('lt_nk')||''; nDb=lsGet('lt_nd')||'';
+    uName=lsGet('lt_un')||''; uVals=lsGet('lt_uv')||'';
+    uFoc=lsGet('lt_uf')||''; uWant=lsGet('lt_uw')||'';
+    entries=JSON.parse(lsGet('lt_e')||'[]');
+    goals=JSON.parse(lsGet('lt_g')||'[]');
+    patterns=JSON.parse(lsGet('lt_p')||'[]');
+  }catch(e){entries=[];goals=[];patterns=[];console.warn('Init error',e);}
+  [['akey',apiKey],['nkey',nKey],['ndb',nDb],['uname',uName],['uvals',uVals],['ufoc',uFoc],['uwant',uWant]].forEach(([id,v])=>{const el=$(id);if(el&&v)el.value=v;});
+  updateKeyDot();
+  renderHome();renderCats();renderEntries();renderPatterns();renderDash();initChat();
+  // Character counter for import
+  const itxt=$('itxt');
+  if(itxt)itxt.addEventListener('input',()=>{const l=itxt.value.length;$('charcount').textContent=l>0?l.toLocaleString()+' chars':'';});
+  if(nKey&&nDb)syncNotion();
+});
+
+function updateKeyDot(){
+  const dot=$('keydot');
+  if(apiKey){dot.className='key-dot ok';dot.title='API key set ✓';}
+  else{dot.className='key-dot bad';dot.title='No API key — tap to fix';}
+  $('setupbanner').style.display=apiKey?'none':'block';
+}
+
+// ── NAV ───────────────────────────────────────────────────────────────────
+function show(p,el){
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(x=>x.classList.remove('active'));
+  const panel=$(p+'-panel');if(!panel)return;
+  panel.classList.add('active');
+  if(el)el.classList.add('active');
+  if(p==='dash')renderDash();
+  if(p==='home')renderHome();
+  if(p==='version')renderVersion();
+}
+
+// ── HOME ──────────────────────────────────────────────────────────────────
+function renderHome(){
+  const h=new Date().getHours();
+  $('hgreet').textContent=(h<12?'Good morning':h<17?'Good afternoon':'Good evening')+(uName?', '+uName:'')+(uName?'.':'.');
+  $('hdate').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  $('ht').textContent=entries.length;$('hs').textContent=calcStreak();$('hp').textContent=patterns.length;
+  $('setupbanner').style.display=apiKey?'none':'block';
+  const el=$('hlast');
+  if(!entries.length){el.innerHTML='<span style="color:#ccc;font-size:13px">No entries yet. Start in Log or use Quick Capture below.</span>';return;}
+  const e=entries[0];
+  el.innerHTML=`<div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap"><span class="tag tc">${esc(e.category)}</span>${e.mood?`<span class="tag tm">${esc(e.mood)}</span>`:''}<span class="td">${esc(e.date)}</span></div><div style="font-size:13px;color:#444;line-height:1.6">${esc((e.content||'').slice(0,160))}${(e.content||'').length>160?'…':''}</div>`;
+}
+function openLastEntry(){if(entries.length)openEntry(entries[0].id);}
+const hqSave=guard(()=>{const v=$('hqin').value.trim();if(!v)return;addE({content:v,source:'quick'});$('hqin').value='';renderHome();toast('✓ Captured');});
+function calcStreak(){const ds=[...new Set(entries.map(e=>e.date))].sort().reverse();let s=0,d=new Date();for(const dt of ds){try{const ed=new Date(dt);const df=Math.floor((d-ed)/86400000);if(df<=s+1){s++;d=ed;}else break;}catch{}}return s;}
+
+// ── CATEGORIES ────────────────────────────────────────────────────────────
+function renderCats(){$('cgrid').innerHTML=CATS.map(c=>`<button class="cb${selCat===c.v?' sel':''}" onclick="pickCat('${c.v}')">${c.e} ${c.l}</button>`).join('');}
+function pickCat(v){selCat=selCat===v?null:v;renderCats();const tb=$('tplbox');if(selCat&&TPLS[selCat]){tb.style.display='block';tb.innerHTML=`<strong style="display:block;margin-bottom:4px;font-size:12px;color:#3a5a8c">Prompts</strong><span style="font-size:12px;color:#3a5a8c;line-height:1.9">${TPLS[selCat].split('\n').map(esc).join('<br>')}</span>`;}else tb.style.display='none';}
+
+// ── VOICE ─────────────────────────────────────────────────────────────────
+function toggleVoice(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('⚠️ Voice not supported. Try Chrome or Safari.');return;}if(recording){recog&&recog.stop();return;}try{recog=new SR();recog.continuous=true;recog.interimResults=true;recog.lang='en-US';recog.onstart=()=>{recording=true;const b=$('vbtn');b.classList.add('rec');b.textContent='🔴 Stop';};recog.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;$('etxt').value=t;};recog.onerror=e=>{toast('Voice error: '+e.error);recog.stop();};recog.onend=()=>{recording=false;const b=$('vbtn');b.classList.remove('rec');b.textContent='🎤 Voice';};recog.start();}catch(e){toast('Could not start voice: '+e.message);}}
+
+// ── ENTRIES ───────────────────────────────────────────────────────────────
+function addE(f){
+  const d=f.date||today();
+  const e={id:Date.now()+(Math.random()*999|0),date:d,category:'Journal',mood:'',...f,title:(f.content||'').slice(0,60).replace(/\n/g,' '),temporal:tmeta(d,f.time_of_day||tod(),f.source||'manual')};
+  entries.unshift(e);persist();
+  if(nKey&&nDb)saveNotionEntry(e).catch(()=>{});
+  return e;
+}
+const saveEntry=guard(async()=>{
+  const txt=$('etxt').value.trim();if(!txt)return;
+  const btn=$('sbtn');btn.disabled=true;btn.textContent='Saving...';
+  addE({category:selCat||'Journal',mood:$('msel').value,content:txt});
+  renderEntries();renderHome();
+  $('etxt').value='';$('msel').value='';selCat=null;renderCats();$('tplbox').style.display='none';
+  btn.disabled=false;btn.textContent='Save';toast('✓ Entry saved');
+});
+const quickSave=guard(()=>{const v=$('qin').value.trim();if(!v)return;addE({content:v,source:'quick'});renderEntries();renderHome();$('qin').value='';toast('✓ Captured');});
+
+function renderEntries(){
+  const el=$('elist');
+  if(!entries.length){el.innerHTML='<div class="empty">No entries yet.<br>Start writing above, or use Quick Capture below.</div>';return;}
+  const g={};
+  entries.slice(0,60).forEach(e=>{const k=(e.temporal?.month&&e.temporal?.year)?`${e.temporal.month} ${e.temporal.year}`:((e.date||'').slice(0,7)||'—');if(!g[k])g[k]=[];g[k].push(e);});
+  el.innerHTML=Object.entries(g).map(([mo,arr])=>`
+    <div style="margin-bottom:6px">
+      <div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin:0 0 6px;padding-bottom:4px;border-bottom:1px solid #f0f0ec">${esc(mo)}</div>
+      ${arr.map(e=>`<div class="ecard" onclick="openEntry(${e.id})">
+        <div class="etop"><span class="tag tc">${esc(e.category)}</span>${e.mood?`<span class="tag tm">${esc(e.mood)}</span>`:''}<span class="td">${e.temporal?.day_of_week?e.temporal.day_of_week.slice(0,3)+', ':''} ${esc(e.date)}${e.temporal?.time_of_day?' · '+e.temporal.time_of_day:''}</span></div>
+        <div class="ebody">${esc((e.content||'').slice(0,200))}${(e.content||'').length>200?'…':''}</div>
+      </div>`).join('')}
+    </div>`).join('');
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────
+function openEntry(id){
+  const e=entries.find(x=>x.id===id);if(!e)return;
+  activeId=id;editing=false;
+  $('mtitle').textContent=e.title||e.date||'Entry';
+  $('mmeta').innerHTML=`<span class="tag tc">${esc(e.category)}</span>${e.mood?`<span class="tag tm">${esc(e.mood)}</span>`:''}<span class="td">${e.temporal?.day_of_week?e.temporal.day_of_week+', ':''} ${esc(e.date)}${e.temporal?.time_of_day?' · '+e.temporal.time_of_day:''}</span>`;
+  $('mbody').textContent=e.content||'';
+  $('mbody').style.display='block';
+  $('medit').value=e.content||'';$('medit').style.display='none';
+  $('etoggle').textContent='✏️ Edit';$('esave').style.display='none';
+  $('emodal').style.display='flex';document.body.style.overflow='hidden';
+}
+function closeModal(){$('emodal').style.display='none';document.body.style.overflow='';activeId=null;editing=false;}
+function toggleEdit(){editing=!editing;$('mbody').style.display=editing?'none':'block';$('medit').style.display=editing?'block':'none';$('etoggle').textContent=editing?'✕ Cancel':'✏️ Edit';$('esave').style.display=editing?'inline-flex':'none';if(editing)$('medit').focus();}
+const saveEdit=guard(()=>{const e=entries.find(x=>x.id===activeId);if(!e)return;const t=$('medit').value.trim();if(!t){toast('Entry cannot be empty');return;}e.content=t;e.title=t.slice(0,60).replace(/\n/g,' ');persist();renderEntries();renderHome();$('mbody').textContent=t;toggleEdit();toast('✓ Entry updated');});
+function copyEntry(){const e=entries.find(x=>x.id===activeId);if(!e)return;const text=`[${e.date}][${e.category}]\n${e.content}`;if(navigator.clipboard?.writeText){navigator.clipboard.writeText(text).then(()=>toast('✓ Copied')).catch(()=>fallbackCopy(text));}else fallbackCopy(text);}
+function fallbackCopy(text){const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;opacity:0;top:0;left:0;width:1px;height:1px';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');toast('✓ Copied');}catch{toast('Long-press text in the entry to copy manually');}document.body.removeChild(ta);}
+const delEntry=guard(()=>{if(!confirm('Delete this entry permanently?'))return;entries=entries.filter(x=>x.id!==activeId);persist();renderEntries();renderHome();renderDash();closeModal();toast('Entry deleted');});
+
+// ── NOTION ────────────────────────────────────────────────────────────────
+async function nReq(path,method='GET',body=null){if(!nKey)throw new Error('No Notion key');const r=await fetch('https://api.notion.com/v1'+path,{method,headers:{'Authorization':'Bearer '+nKey,'Notion-Version':'2022-06-28','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||'Notion '+r.status);}return r.json();}
+async function saveNotionEntry(e){if(!nKey||!nDb)return;await nReq('/pages','POST',{parent:{database_id:nDb},properties:{Title:{title:[{text:{content:(e.title||'Entry').slice(0,100)}}]},Category:{select:{name:e.category||'Journal'}},Date:{date:{start:e.date}},...(e.mood?{Mood:{select:{name:e.mood}}}:{})},children:[{object:'block',type:'paragraph',paragraph:{rich_text:[{text:{content:(e.content||'').slice(0,2000)}}]}}]});}
+async function syncNotion(){try{const res=await nReq('/databases/'+nDb+'/query','POST',{sorts:[{property:'Date',direction:'descending'}],page_size:100});if(!res.results?.length)return;const remote=[];for(const p of res.results){const pr=p.properties;let c='';try{const bl=await nReq('/blocks/'+p.id+'/children');c=(bl.results||[]).map(b=>b.paragraph?.rich_text?.[0]?.plain_text||'').join('\n');}catch{}const d=pr.Date?.date?.start||today();remote.push({id:p.id,date:d,category:pr.Category?.select?.name||'Journal',mood:pr.Mood?.select?.name||'',content:c,title:pr.Title?.title?.[0]?.plain_text||'',temporal:tmeta(d,null,'notion')});}if(remote.length){entries=remote;persist();renderEntries();renderDash();renderHome();}}catch(e){console.warn('Notion sync:',e.message);}}
+
+// ── SETTINGS ──────────────────────────────────────────────────────────────
+function saveApiKey(){
+  const k=$('akey').value.trim();
+  if(k&&!k.startsWith('sk-ant-')){$('akst').innerHTML='<span class="err">⚠️ Should start with sk-ant- — check and re-paste.</span>';return;}
+  apiKey=k;lsSet('lt_ak',apiKey);
+  updateKeyDot();
+  $('akst').innerHTML=apiKey?'<span class="ok">✓ Key saved — AI features enabled.</span>':'Key cleared.';
+  setTimeout(()=>$('akst').innerHTML='',5000);
+}
+async function testApiKey(){
+  if(!apiKey){$('akst').innerHTML='<span class="err">No key to test. Save a key first.</span>';return;}
+  $('akst').textContent='Testing...';
+  try{await ai('Reply with exactly: OK','ping');$('akst').innerHTML='<span class="ok">✓ Connection successful — AI is working!</span>';}
+  catch(e){$('akst').innerHTML=`<span class="err">✗ ${e.message}</span>`;}
+}
+function saveNotion(){nKey=$('nkey').value.trim();nDb=$('ndb').value.trim();lsSet('lt_nk',nKey);lsSet('lt_nd',nDb);$('nst').textContent='✓ Saved. Syncing...';syncNotion().then(()=>$('nst').textContent='✓ Connected & synced!').catch(e=>$('nst').innerHTML=`<span class="err">⚠️ ${esc(e.message)}</span>`);}
+function saveProfile(){uName=$('uname').value.trim();uVals=$('uvals').value.trim();uFoc=$('ufoc').value.trim();uWant=$('uwant').value.trim();lsSet('lt_un',uName);lsSet('lt_uv',uVals);lsSet('lt_uf',uFoc);lsSet('lt_uw',uWant);$('pst').innerHTML='<span class="ok">✓ Saved.</span>';renderHome();setTimeout(()=>$('pst').innerHTML='',3000);}
+function clearData(){if(!confirm('Clear all local entries, goals, and patterns?\n\nTip: Export first so you have a backup.'))return;entries=[];goals=[];patterns=[];persist();renderHome();renderEntries();renderDash();renderPatterns();toast('All local data cleared');}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────────────
+function renderDash(){$('dt').textContent=entries.length;$('dstr').textContent=calcStreak();const c={};CATS.forEach(x=>c[x.v]=0);entries.forEach(e=>{if(c[e.category]!==undefined)c[e.category]++;else c['Journal']++;});const mx=Math.max(...Object.values(c),1);$('cbars').innerHTML=CATS.map(x=>`<div class="brow"><div class="blabel">${x.e} ${x.l}</div><div class="btrack"><div class="bfill" style="width:${(c[x.v]/mx)*100}%"></div></div><div class="bcnt">${c[x.v]}</div></div>`).join('');const me=entries.filter(e=>e.mood).slice(0,50).reverse();$('mline').innerHTML=me.length?me.map(e=>`<div class="mdot" style="background:${MMAP[e.mood]||'#ddd'}" title="${esc(e.date+': '+e.mood)}">${(e.mood||'').split(' ')[0]}</div>`).join('')+'<span style="font-size:11px;color:#aaa;margin-left:6px">← recent</span>':'<span style="color:#ccc;font-size:12px">No mood data yet</span>';renderGoals();}
+function renderGoals(){const el=$('glist');if(!goals.length){el.innerHTML='<div style="color:#ccc;font-size:13px;padding:6px 0">No goals yet.</div>';return;}el.innerHTML=goals.map((g,i)=>`<div class="gi"><div class="gt" title="${esc(g.text)}">${esc(g.text)}</div><div class="gpt"><div class="gpf" style="width:${g.pct||0}%"></div></div><span style="font-size:12px;color:#6c8ebf;font-weight:600;width:32px;flex-shrink:0;text-align:right">${g.pct||0}%</span><input type="range" min="0" max="100" value="${g.pct||0}" style="width:50px;flex-shrink:0" oninput="goals[${i}].pct=+this.value;persist();renderGoals()"/><button onclick="goals.splice(${i},1);persist();renderGoals()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:18px;line-height:1;flex-shrink:0">×</button></div>`).join('');}
+function addGoal(){const t=prompt('Enter a goal:');if(!t?.trim())return;goals.push({text:t.trim(),pct:0});persist();renderGoals();}
+async function genDigest(){const btn=$('dgbtn');btn.disabled=true;btn.textContent='...';$('dout').innerHTML='<span style="color:#aaa;font-size:13px">Generating...</span>';try{const r=await ai(`You are LifeThread. Write a precise, honest weekly digest for ${uName||'the user'}. Cover dominant themes, emotional patterns, goal progress or avoidance, one behavioral pattern worth naming, one forward-looking honest observation. Under 280 words. No cheerleading.`,`Life log:\n${ctx(20)}\n\nGenerate my weekly digest.`);$('dout').innerHTML=`<div class="dbox">${esc(r).replace(/\n/g,'<br>')}</div>`;}catch(e){$('dout').innerHTML=`<span class="err">${e.message==='NO_KEY'?'⚙️ Add your Anthropic API key in Settings.':esc(e.message)}</span>`;}btn.disabled=false;btn.textContent='Regenerate';}
+
+// ── CHECKIN ───────────────────────────────────────────────────────────────
+function startCI(){$('cistart').style.display='none';$('ciflow').style.display='block';ciQs=[...CIQS];ciAs=[];ciIdx=0;showCIQ();}
+function showCIQ(){$('ciq').textContent=ciQs[ciIdx];$('cia').value='';$('cipr').textContent=`${ciIdx+1} of ${ciQs.length}`;}
+const nextCI=guard(()=>{const a=$('cia').value.trim();if(!a){toast('Write something first');return;}ciAs.push({q:ciQs[ciIdx],a});ciIdx++;if(ciIdx<ciQs.length){showCIQ();return;}addE({category:'Journal',content:ciAs.map(x=>`Q: ${x.q}\nA: ${x.a}`).join('\n\n'),title:`Check-in — ${new Date().toLocaleDateString()}`,source:'checkin'});$('ciflow').style.display='none';$('cidone').style.display='block';renderEntries();renderHome();toast('✓ Check-in saved');});
+function resetCI(){$('cidone').style.display='none';$('cistart').style.display='block';}
+
+// ── ARCHIVE ───────────────────────────────────────────────────────────────
+async function runArchive(){
+  const btn=$('abtn');btn.disabled=true;btn.textContent='Running...';
+  const el=$('aout');el.style.display='block';el.textContent='Reading your history...';
+  const focus=$('afocus').value,range=$('arange').value;
+  let filt=entries;
+  if(range!=='all'){const cut=new Date(Date.now()-parseInt(range)*86400000).toISOString().split('T')[0];filt=entries.filter(e=>e.date>=cut);}
+  if(!filt.length){el.textContent='No entries in this time range yet.';btn.disabled=false;btn.textContent='Run Synthesis';return;}
+  const pctx=patterns.length?`\nNamed patterns: ${patterns.map(p=>p.name+': '+p.desc).join('; ')}`:'';
+  const log=filt.slice(0,80).map(e=>{const t=e.temporal;const tc=t?`[${t.day_of_week||''} ${e.date}${t.time_of_day?' '+t.time_of_day:''}${t.quarter?' · '+t.quarter:''}]`:`[${e.date}]`;return`${tc}[${e.category}]${e.mood?' ['+e.mood+']':''}\n${(e.content||'').slice(0,600)}`;}).join('\n\n---\n\n');
+  try{const r=await ai(`You are LifeThread — a forensic narrative archivist.\nUser: ${uName||'unnamed'}. Values: ${uVals}. Focus: ${uFoc}.${pctx}\n\nTASK: ${AFOCUS[focus]||AFOCUS['']}\n\nRULES: Second person. Name patterns precisely. Cite entries. Note recurrence. No softening. Dense and structured.`,`Log (${filt.length} entries):\n\n${log}\n\nRun synthesis.`);el.textContent=r;}
+  catch(e){el.textContent=e.message==='NO_KEY'?'⚙️ Add your API key in Settings.':'Error — '+e.message;}
+  btn.disabled=false;btn.textContent='Run Synthesis';
+}
+
+// ── PATTERNS ──────────────────────────────────────────────────────────────
+function renderPatterns(){const el=$('plist');if(!patterns.length){el.innerHTML='<div class="empty">No patterns named yet.<br>Add one above or use auto-detect below.</div>';return;}el.innerHTML=patterns.map((p,i)=>`<div class="pcard"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span style="font-size:14px;font-weight:600">${esc(p.name)}</span><span style="font-size:11px;color:#aaa;background:#f5f5f5;padding:2px 7px;border-radius:10px">×${p.count||0}</span></div><div style="font-size:13px;color:#555;line-height:1.6;margin-bottom:7px">${esc(p.desc)}</div>${p.last?`<div style="font-size:11px;color:#aaa;margin-bottom:7px">Last: ${esc(p.last)}</div>`:''}<div style="display:flex;gap:7px"><button class="btn bg" style="font-size:11px;padding:5px 9px" onclick="markPattern(${i})">Mark active</button><button class="btn bg" style="font-size:11px;padding:5px 9px;color:#e05a5a;border-color:#e05a5a" onclick="removePattern(${i})">Remove</button></div></div>`).join('');}
+function addPattern(){const n=prompt('Pattern name:');if(!n?.trim())return;const d=prompt('How does it operate in your life?');if(!d?.trim())return;patterns.push({name:n.trim(),desc:d.trim(),count:0,last:null});persist();renderPatterns();toast('Pattern added');}
+const markPattern=guard(i=>{patterns[i].count=(patterns[i].count||0)+1;patterns[i].last=today();addE({category:'Mental & Emotional State',content:`Pattern active: ${patterns[i].name}\n${patterns[i].desc}`,source:'manual'});persist();renderPatterns();renderEntries();toast('Pattern logged');});
+function removePattern(i){if(!confirm('Remove this pattern?'))return;patterns.splice(i,1);persist();renderPatterns();}
+async function autoDetect(){if(!entries.length){toast('Add some entries first');return;}const btn=$('adbtn');btn.disabled=true;btn.textContent='Analyzing...';$('apout').textContent='';try{const r=await ai('Identify 4-7 recurring behavioral or emotional patterns from this life log.\n\nFor each:\nNAME: [2-5 word precise name]\nMECHANISM: [one sentence — how it operates]\nEVIDENCE: [cite specific entries]\n\nBe honest and precise. No therapy language.',`Log:\n${ctx(50)}\n\nIdentify patterns.`);$('apout').textContent=r;}catch(e){$('apout').textContent=e.message==='NO_KEY'?'⚙️ Add your API key in Settings.':'Error: '+e.message;}btn.disabled=false;btn.textContent='🧠 Auto-detect from entries';}
+
+// ── AI CORE ───────────────────────────────────────────────────────────────
+async function ai(sys,msg,retries=2){
+  if(!apiKey)throw new Error('NO_KEY');
+  let lastErr;
+  for(let i=0;i<=retries;i++){
+    try{
+      const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:[{role:'user',content:msg}]})});
+      if(r.status===401)throw new Error('API key invalid or expired. Go to Settings → check your key.');
+      if(r.status===429)throw new Error('Rate limited. Wait 30 seconds and try again.');
+      if(r.status>=500)throw new Error('Anthropic service unavailable. Try again in a moment.');
+      if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error?.message||`API error ${r.status}`);}
+      const d=await r.json();
+      const text=d.content?.[0]?.text||'';
+      if(!text)throw new Error('Empty response. Try again.');
+      return text;
+    }catch(e){
+      lastErr=e;
+      if(e.message.includes('invalid')||e.message.includes('NO_KEY')||e.message.includes('Rate'))throw e;
+      if(i<retries)await sleep(1200*(i+1));
+    }
+  }
+  throw lastErr;
+}
+
+function safeJSON(text){
+  let t=text.replace(/^\uFEFF/,'').trim();
+  t=t.replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'').trim();
+  const a=t.indexOf('['),o=t.indexOf('{');
+  let s=-1;
+  if(a!==-1&&(o===-1||a<o))s=a;else if(o!==-1)s=o;
+  if(s>0)t=t.slice(s);
+  const ae=t.lastIndexOf(']'),oe=t.lastIndexOf('}');
+  const e=Math.max(ae,oe);
+  if(e!==-1)t=t.slice(0,e+1);
+  return JSON.parse(t);
+}
+
+// ── CHAT ──────────────────────────────────────────────────────────────────
+const MSYS={
+  base:`You are LifeThread — a rigorous personal intelligence system functioning as a living mirror.\n\nUSER: Name: __N__. Values: __V__. Focus: __F__. Wants from system: __W__.\nNamed patterns: __P__\n\nPRINCIPLES:\n- Speak directly. Do not soften what is true.\n- Name patterns precisely, by their actual names.\n- Connect across categories and time. Name connections explicitly.\n- Note recurrence: "This is the third time in your log that..."\n- Earn observations through evidence from actual entries.\n- The goal is clarity, not comfort.`,
+  reflect:'\n\nMODE: Guided Reflection. Ask one precise question at a time. No premature interpretation.',
+  decide:'\n\nMODE: Decision Support. Surface assumptions, map consequences, draw from values and history.',
+  future:'\n\nMODE: Future Self, one year out. Honest, specific, draws from actual patterns. Not motivational.',
+  review:'\n\nMODE: Weekly Review. What happened, what patterns were active, what shifted, what needs attention.',
+  letter:'\n\nMODE: Letter from future self (1 year). Specific, honest, compassionate but not soft.',
+  analyst:'\n\nMODE: Pure Pattern Analyst. Evidence-based patterns, correlations, contradictions. Precise.',
+  open:'You are LifeThread — a trusted companion. User: __N__. Be warm, present, real. No agenda.'
+};
+function getSys(mode){const pat=patterns.length?patterns.map(p=>p.name+': '+p.desc).join(' | '):'none';const base=MSYS.base.replace('__N__',uName||'[not set]').replace('__V__',uVals||'[not set]').replace('__F__',uFoc||'[not set]').replace('__W__',uWant||'[not set]').replace('__P__',pat);if(mode==='open')return MSYS.open.replace('__N__',uName||'friend');if(mode==='mirror')return base;return base+(MSYS[mode]||'');}
+function ctx(lim=40){const pr=`Name: ${uName}. Values: ${uVals}. Focus: ${uFoc}. Wants: ${uWant}.`;const pc=patterns.length?`\nPatterns: ${patterns.map(p=>p.name+': '+p.desc).join(' | ')}`:'';const sp=entries.length>=2?`\nLog spans: ${entries[entries.length-1]?.date} → ${entries[0]?.date} (${entries.length} total)`:'';const log=entries.slice(0,lim).map(e=>{const t=e.temporal;const tc=t?`[${t.day_of_week||''} ${e.date}${t.time_of_day?' '+t.time_of_day:''}]`:`[${e.date}]`;return`${tc}[${e.category}]${e.mood?' ['+e.mood+']':''}\n${(e.content||'').slice(0,500)}`;}).join('\n\n---\n\n');return pr+pc+sp+'\n\nLIFE LOG:\n'+log;}
+function initChat(){addMsg('ai',`Hello${uName?', '+uName:''}.\n\nI hold everything you've logged — across time, across categories, across the patterns you've named. I'm not here to make you feel better. I'm here to help you see clearly.\n\nWhat's on your mind?`);}
+function setMode(m,el){chatMode=m;document.querySelectorAll('.mc').forEach(x=>x.classList.remove('am'));if(el)el.classList.add('am');const L={mirror:'Mirror mode',reflect:'Guided Reflection',decide:'Decision Support',future:'Future Self — one year out',review:'Weekly Review',letter:'Writing your letter...',analyst:'Pattern Analyst',open:'Open conversation'};addMsg('sys',L[m]||m);if(m==='letter')setTimeout(genLetter,400);}
+async function genLetter(){addTyping();try{const r=await ai(getSys('letter')+`\n\nLIFE LOG:\n${ctx(40)}`,'Write my letter from my future self.');removeTyping();addMsg('ai',r);}catch(e){removeTyping();addMsg('ai',e.message==='NO_KEY'?'⚙️ Add your API key in Settings.':'Error generating letter.');}}
+function addMsg(role,text){const c=$('cmsgs');const d=document.createElement('div');d.className=`msg ${role}`;const safe=esc(text).replace(/\n/g,'<br>');d.innerHTML=role==='sys'?`<div class="bub">${safe}</div>`:`<div class="av">${role==='ai'?'🔮':'👤'}</div><div class="bub">${safe}</div>`;c.appendChild(d);requestAnimationFrame(()=>c.scrollTop=c.scrollHeight);return d;}
+function addTyping(){const c=$('cmsgs');const d=document.createElement('div');d.className='msg ai';d.id='typing';d.innerHTML=`<div class="av">🔮</div><div class="bub"><div class="tdots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function removeTyping(){const t=$('typing');if(t)t.remove();}
+async function sendChat(){
+  if(!apiKey){addMsg('ai','⚙️ No API key. Go to ⚙ Settings, add your key from platform.anthropic.com, tap Save Key.');return;}
+  const inp=$('cin');const msg=inp.value.trim();if(!msg)return;
+  inp.value='';inp.style.height='auto';
+  addMsg('user',msg);chatHist.push({role:'user',content:msg});
+  $('csend').disabled=true;addTyping();
+  const sys=getSys(chatMode)+`\n\nLIFE LOG:\n${ctx(40)}`;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:chatHist.slice(-14)})});
+    removeTyping();
+    if(r.status===401){addMsg('ai','⚙️ API key invalid. Go to Settings → re-enter your key.');$('csend').disabled=false;return;}
+    if(r.status===429){addMsg('ai','⏱ Rate limited. Wait 30 seconds and try again.');$('csend').disabled=false;return;}
+    if(!r.ok){const d=await r.json().catch(()=>({}));addMsg('ai',`Error ${r.status}: ${d.error?.message||'try again'}`);$('csend').disabled=false;return;}
+    const d=await r.json();
+    const rep=d.content?.[0]?.text;
+    if(!rep){addMsg('ai','Empty response. Please try again.');$('csend').disabled=false;return;}
+    addMsg('ai',rep);chatHist.push({role:'assistant',content:rep});
+  }catch(e){removeTyping();addMsg('ai',navigator.onLine?'Connection error. Try again.':'You appear to be offline.');}
+  $('csend').disabled=false;
+}
+
+// ── IMPORT ────────────────────────────────────────────────────────────────
+function handleFile(e){
+  const f=e.target.files[0];if(!f)return;
+  e.target.value='';
+  const ext=(f.name.split('.').pop()||'').toLowerCase();
+  if(['doc','docx','pdf'].includes(ext)){
+    $('ist').innerHTML='<span class="err">⚠️ Word and PDF files cannot be read directly.<br>Open the file → Select All (Ctrl+A/Cmd+A) → Copy → Paste into the box above.</span>';
+    return;
+  }
+  if(f.size>10*1024*1024){$('ist').innerHTML='<span class="err">⚠️ File over 10MB. Open it, copy sections, and paste.</span>';return;}
+  const r=new FileReader();
+  r.onload=ev=>{$('itxt').value=ev.target.result;$('charcount').textContent=ev.target.result.length.toLocaleString()+' chars';$('ist').innerHTML=`<span class="ok">✓ File loaded (${Math.round(f.size/1024)}KB). Tap Import to process.</span>`;};
+  r.onerror=()=>toast('Error reading file. Try copy-pasting the text instead.');
+  r.readAsText(f,'UTF-8');
+}
+
+function chunkText(text,max=7000){
+  if(text.length<=max)return[text];
+  const chunks=[];let rem=text;
+  while(rem.length>0){
+    if(rem.length<=max){chunks.push(rem);break;}
+    let cut=max;
+    const p=rem.lastIndexOf('\n\n',cut);if(p>max*0.4)cut=p;
+    else{const n=rem.lastIndexOf('\n',cut);if(n>max*0.4)cut=n;
+    else{const s=rem.lastIndexOf('. ',cut);if(s>max*0.4)cut=s+1;}}
+    const chunk=rem.slice(0,cut).trim();
+    if(chunk.length>30)chunks.push(chunk);
+    rem=rem.slice(cut).trim();
+  }
+  return chunks.filter(c=>c.length>30);
+}
+
+async function processImport(){
+  const raw=$('itxt').value.trim();
+  if(!raw){toast('Paste some text first');return;}
+  if(!apiKey){$('ist').innerHTML='<span class="err">⚙️ Add your Anthropic API key in Settings first — AI is needed to parse entries.</span>';return;}
+  const dc=$('icat').value;
+  const st=$('ist');
+  const btn=$('ibtn');btn.disabled=true;
+  const prog=$('iprog');prog.style.display='block';
+  const fill=$('ipfill');const label=$('iplabel');
+  const chunks=chunkText(raw,7000);
+  const allParsed=[];
+  const ISYS=`Parse the following text into individual journal/life log entries. Look for date markers, "Good morning" resets, timestamps, or contextual clues to date each entry.\n\nReturn ONLY a valid JSON array. Each item:\n{"date":"YYYY-MM-DD","time_of_day":"Morning|Afternoon|Evening|Night|Late night|null","category":"Journal|Goals|Relationships|Health|Finances|Spirituality|Creative Work|Learning & Growth|Family|Dreams & Visions|Mental & Emotional State","content":"full entry text","title":"5-8 word title","date_confidence":"exact|inferred|unknown"}\n\nDefault category: ${dc}. Today: ${today()}. Return ONLY the JSON array. No markdown. No explanation.`;
+
+  for(let i=0;i<chunks.length;i++){
+    const pct=Math.round((i/chunks.length)*100);
+    fill.style.width=pct+'%';
+    label.textContent=chunks.length>1?`Processing chunk ${i+1} of ${chunks.length}...`:'Processing...';
+    st.innerHTML=`<span style="color:#6c8ebf">${chunks.length>1?`Part ${i+1} of ${chunks.length}...`:'Parsing entries...'}</span>`;
+    try{
+      const raw_r=await ai(ISYS,chunks[i]);
+      try{const p=safeJSON(raw_r);if(Array.isArray(p))allParsed.push(...p);}
+      catch{console.warn('JSON parse failed chunk',i+1);}
+    }catch(e){
+      if(e.message==='NO_KEY'){st.innerHTML='<span class="err">⚙️ API key missing.</span>';prog.style.display='none';btn.disabled=false;return;}
+      if(e.message.includes('Rate')){label.textContent=`Rate limited — waiting 20s then retrying...`;await sleep(20000);i--;continue;}
+      console.warn('Chunk error:',e.message);
+    }
+    if(i<chunks.length-1)await sleep(700);
+  }
+
+  fill.style.width='100%';label.textContent='Saving entries...';
+
+  if(!allParsed.length){st.innerHTML='<span class="err">⚠️ Could not parse any entries. Try pasting a smaller, cleaner section of text.</span>';prog.style.display='none';btn.disabled=false;return;}
+
+  // Deduplicate
+  const seen=new Set();
+  const deduped=allParsed.filter(p=>{
+    if(!p?.content?.trim())return false;
+    const fp=p.content.trim().slice(0,100);
+    if(seen.has(fp))return false;
+    seen.add(fp);return true;
+  });
+
+  let count=0,ex=0,inf=0,unk=0;
+  for(const p of deduped.sort((a,b)=>(a.date||'').localeCompare(b.date||''))){
+    addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.trim().slice(0,60),source:'import',date_confidence:p.date_confidence||'unknown'});
+    count++;
+    if(p.date_confidence==='exact')ex++;
+    else if(p.date_confidence==='inferred')inf++;
+    else unk++;
+  }
+  entries.sort((a,b)=>b.date.localeCompare(a.date));
+  persist();renderEntries();renderDash();renderHome();
+  prog.style.display='none';
+  $('itxt').value='';$('charcount').textContent='';
+  st.innerHTML=`<span class="ok">✓ Imported ${count} entries — ${ex} exact dates, ${inf} inferred, ${unk} unknown.</span>`;
+  toast(`✓ ${count} entries imported`);
+  btn.disabled=false;
+}
+
+// ── VERSION ───────────────────────────────────────────────────────────────
+function renderVersion(){$('ve').textContent=entries.length||'0';$('vp').textContent=patterns.length||'0';$('vg').textContent=goals.length||'0';const s=[...entries].filter(e=>e.date).sort((a,b)=>a.date.localeCompare(b.date));$('vsp').textContent=s.length>=2?`${s[0].date} → ${s[s.length-1].date}`:s.length===1?s[0].date:'—';$('vak').innerHTML=apiKey?'<span class="ok">✓ Set and active</span>':'<span class="err">✗ Missing — go to Settings</span>';$('vno').textContent=nKey&&nDb?'✓ Connected':'Not connected';$('vpr').textContent=`${[uName,uVals,uFoc,uWant].filter(Boolean).length} / 4 fields`;}
+
+// ── EXPORT ────────────────────────────────────────────────────────────────
+function exportData(){try{const d={exported:nowISO(),version:VER,entries,goals,patterns,profile:{uName,uVals,uFoc,uWant}};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`lifethread-${today()}.json`;document.body.appendChild(a);a.click();document.body.removeChild(a);toast('✓ Backup downloaded');}catch(e){toast('Export failed: '+e.message);}}
+</script>
+</body>
+</html>
