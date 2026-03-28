@@ -766,7 +766,7 @@ async function ai(sys,msg,retries=2){
   let lastErr;
   for(let i=0;i<=retries;i++){
     try{
-      const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:[{role:'user',content:msg}]})});
+      const r=await fetch('/.netlify/functions/anthropic',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:[{role:'user',content:msg}]})});
       if(r.status===401)throw new Error('API key invalid or expired. Go to Settings → check your key.');
       if(r.status===429)throw new Error('Rate limited. Wait 30 seconds and try again.');
       if(r.status>=500)throw new Error('Anthropic service unavailable. Try again in a moment.');
@@ -824,7 +824,7 @@ async function sendChat(){
   $('csend').disabled=true;addTyping();
   const sys=getSys(chatMode)+`\n\nLIFE LOG:\n${ctx(40)}`;
   try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:chatHist.slice(-14)})});
+    const r=await fetch('/.netlify/functions/anthropic',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:chatHist.slice(-14)})});
     removeTyping();
     if(r.status===401){addMsg('ai','⚙️ API key invalid. Go to Settings → re-enter your key.');$('csend').disabled=false;return;}
     if(r.status===429){addMsg('ai','⏱ Rate limited. Wait 30 seconds and try again.');$('csend').disabled=false;return;}
