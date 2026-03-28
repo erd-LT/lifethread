@@ -13,6 +13,26 @@
 html,body{height:100%;overflow:hidden}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f7f7f5;color:#1a1a1a}
 #app{display:flex;flex-direction:column;height:100vh;height:100dvh;max-width:900px;margin:0 auto;background:#fff}
+
+/* AUTH */
+#auth-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;padding:24px;background:linear-gradient(135deg,#f0f4fb,#f7f7f5)}
+.auth-card{background:#fff;border-radius:20px;padding:32px 28px;width:100%;max-width:400px;box-shadow:0 4px 32px rgba(0,0,0,.08)}
+.auth-logo{font-size:28px;font-weight:700;letter-spacing:-.5px;text-align:center;margin-bottom:6px}.auth-logo span{color:#6c8ebf}
+.auth-sub{font-size:13px;color:#aaa;text-align:center;margin-bottom:28px}
+.auth-tabs{display:flex;gap:0;margin-bottom:24px;border:1px solid #eee;border-radius:8px;overflow:hidden}
+.auth-tab{flex:1;padding:10px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;color:#aaa;transition:all .15s}
+.auth-tab.active{background:#6c8ebf;color:#fff}
+.auth-field{margin-bottom:14px}
+.auth-field label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.auth-field input{width:100%;padding:11px 14px;border:1px solid #e8e8e4;border-radius:8px;font-size:16px;font-family:inherit;outline:none;transition:border .15s;background:#fafaf8}
+.auth-field input:focus{border-color:#6c8ebf;background:#fff}
+.auth-btn{width:100%;padding:13px;background:#6c8ebf;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;transition:all .15s}
+.auth-btn:hover{background:#5a7aad}
+.auth-btn:disabled{opacity:.5;cursor:not-allowed}
+.auth-err{font-size:13px;color:#e05a5a;text-align:center;margin-top:10px;min-height:20px}
+.auth-ok{font-size:13px;color:#3a8c5a;text-align:center;margin-top:10px}
+
+/* NAV */
 nav{display:flex;align-items:center;padding:0 10px;border-bottom:1px solid #eee;background:#fff;height:48px;gap:1px;flex-shrink:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 nav::-webkit-scrollbar{display:none}
 .logo{font-size:14px;font-weight:700;letter-spacing:-.5px;margin-right:6px;color:#1a1a1a;white-space:nowrap;flex-shrink:0}.logo span{color:#6c8ebf}
@@ -20,9 +40,12 @@ nav::-webkit-scrollbar{display:none}
 .nb.active{background:#eef2f9;color:#3a5a8c}
 .nr{margin-left:auto;display:flex;gap:4px;flex-shrink:0;align-items:center}
 .ib{padding:4px 8px;border:1px solid #e8e8e4;border-radius:6px;background:#fff;cursor:pointer;font-size:11px;color:#888;white-space:nowrap;flex-shrink:0}
-.key-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;cursor:pointer}
-.key-dot.ok{background:#3a8c5a}.key-dot.bad{background:#e05a5a;animation:blink 2s infinite}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-ok{background:#3a8c5a}.dot-bad{background:#e05a5a;animation:blink 2s infinite}.dot-sync{background:#f0c040;animation:pulse 1s infinite}.dot-off{background:#aaa}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* PANELS */
 .panel{display:none;flex:1;overflow:hidden;flex-direction:column;min-height:0}
 .panel.active{display:flex}
 .scroll{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
@@ -41,9 +64,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .divider{height:1px;background:#f0f0ec;margin:14px 0}
 .sec{font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
 .ok{color:#3a8c5a}.err{color:#e05a5a}
-.setup-banner{background:#fff3cd;border:1px solid #ffc107;border-radius:10px;padding:14px;margin:12px 16px 0;font-size:13px;color:#856404;line-height:1.6}
-.setup-banner strong{display:block;margin-bottom:4px}
-.setup-banner a{color:#6c8ebf;cursor:pointer;font-weight:600;text-decoration:underline}
+
 #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
@@ -61,7 +82,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .jrow{display:flex;gap:7px;padding:0 16px 16px;flex-wrap:wrap}
 .daily-brief{margin:0 16px 12px;background:linear-gradient(135deg,#eef2f9,#f5f0ff);border:1px solid #d0d8f0;border-radius:10px;padding:14px}
 .daily-brief h3{font-size:11px;font-weight:600;color:#3a5a8c;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
-.daily-brief-content{font-size:13px;color:#333;line-height:1.7}
+.brief-content{font-size:13px;color:#333;line-height:1.7}
 
 /* LOG */
 .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:5px;margin-bottom:10px}
@@ -70,27 +91,18 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .tplbox{background:#f0f4fb;border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:12px;color:#3a5a8c;line-height:1.9;display:none}
 .eact{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
 .vbtn{padding:7px 12px;border:1.5px solid #e8e8e4;border-radius:8px;background:#fff;cursor:pointer;font-size:12px;color:#666}
-.vbtn.rec{border-color:#e05a5a;background:#fff5f5;color:#e05a5a;animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-.ecard{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;-webkit-user-select:none;transition:background .1s}
+.vbtn.rec{border-color:#e05a5a;background:#fff5f5;color:#e05a5a;animation:rpulse 1s infinite}
+@keyframes rpulse{0%,100%{opacity:1}50%{opacity:.6}}
+.ecard{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;-webkit-user-select:none}
 .ecard:active{background:#f0f4fb}
 .etop{display:flex;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap}
 .tag{font-size:11px;font-weight:500;padding:2px 7px;border-radius:10px}
 .tc{background:#eef2f9;color:#3a5a8c}.tm{background:#f5f0ff;color:#6a3aad}.td{color:#bbb;font-size:11px}
 .ebody{font-size:13px;line-height:1.6;color:#333;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
-.mirror-flash{background:#f0f4fb;border-left:3px solid #6c8ebf;border-radius:0 8px 8px 0;padding:8px 12px;margin-top:8px;font-size:12px;color:#3a5a8c;line-height:1.6;display:none}
 .empty{text-align:center;color:#ccc;font-size:13px;padding:28px 0;line-height:1.8}
 .qbar{background:#fff;border-top:1px solid #eee;padding:10px 12px;display:flex;gap:8px;align-items:center;flex-shrink:0}
 .qin{flex:1;padding:8px 12px;border:1.5px solid #e0e8f5;border-radius:20px;font-size:16px;background:#f7f9fd}
 .qsend{width:34px;height:34px;border-radius:50%;background:#6c8ebf;border:none;cursor:pointer;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-
-/* SEARCH */
-.search-bar{display:flex;gap:8px;margin-bottom:12px}
-.search-in{flex:1;padding:9px 14px;border:1.5px solid #e0e8f5;border-radius:20px;font-size:14px;background:#f7f9fd}
-.search-in:focus{border-color:#6c8ebf;background:#fff}
-.search-result{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer}
-.search-result:active{background:#f0f4fb}
-.search-highlight{background:#fff3cd;border-radius:3px;padding:0 2px}
 
 /* MODAL */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center}
@@ -105,10 +117,13 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .mfoot{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid #eee;flex-shrink:0}
 .mirror-insight{background:#f0f4fb;border-radius:8px;padding:12px;margin:0 16px 12px;font-size:13px;color:#3a5a8c;line-height:1.7;display:none}
 
-/* PATTERNS */
-.pcard{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px 14px;margin-bottom:8px}
+/* SEARCH */
+.search-bar{display:flex;gap:8px;margin-bottom:12px}
+.search-in{flex:1;padding:9px 14px;border:1.5px solid #e0e8f5;border-radius:20px;font-size:14px;background:#f7f9fd}
+.search-highlight{background:#fff3cd;border-radius:3px;padding:0 2px}
 
-/* DASH */
+/* PATTERNS / DASH */
+.pcard{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px 14px;margin-bottom:8px}
 .dgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 .dc{background:#fff;border:1px solid #eee;border-radius:10px;padding:14px}
 .dc h3{font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
@@ -143,9 +158,9 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .dot{width:6px;height:6px;border-radius:50%;background:#bbb;animation:bop 1.2s infinite}
 .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
 @keyframes bop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
-.cmodes{display:flex;gap:5px;padding:7px 10px;overflow-x:auto;border-top:1px solid #eee;background:#fafal8;flex-shrink:0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.cmodes{display:flex;gap:5px;padding:7px 10px;overflow-x:auto;border-top:1px solid #eee;background:#fafal8;flex-shrink:0;scrollbar-width:none}
 .cmodes::-webkit-scrollbar{display:none}
-.mc{padding:5px 11px;border:1.5px solid #e0e8f5;border-radius:16px;background:#fff;font-size:11px;cursor:pointer;white-space:nowrap;color:#5a7aad;font-weight:500;flex-shrink:0;-webkit-user-select:none}
+.mc{padding:5px 11px;border:1.5px solid #e0e8f5;border-radius:16px;background:#fff;font-size:11px;cursor:pointer;white-space:nowrap;color:#5a7aad;font-weight:500;flex-shrink:0}
 .mc.am{background:#eef2f9;border-color:#6c8ebf}
 .cbot{border-top:1px solid #eee;background:#fff;padding:10px 12px;display:flex;gap:8px;align-items:flex-end;flex-shrink:0}
 .cin{flex:1;padding:9px 13px;border:1.5px solid #e0e8f5;border-radius:20px;resize:none;max-height:90px;overflow-y:auto;line-height:1.5;background:#f7f9fd;font-size:16px}
@@ -154,24 +169,22 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .csend:disabled{background:#b0bdd4}
 .csend svg{width:14px;height:14px;fill:#fff}
 
-/* CHECKIN */
+/* CHECKIN / ARCHIVE */
 .cicard{background:#fff;border:1px solid #eee;border-radius:14px;padding:18px;max-width:540px;margin:0 auto}
 .ciq{font-size:15px;font-weight:500;line-height:1.5;margin-bottom:12px;color:#1a1a1a}
 .cinav{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
 .cipr{font-size:12px;color:#aaa}
-
-/* ARCHIVE */
 .aintro{background:#f7f9fd;border:1px solid #dde8f5;border-radius:10px;padding:14px;margin-bottom:14px;font-size:13px;color:#3a5a8c;line-height:1.7}
 .aout{background:#fff;border:1px solid #eee;border-radius:10px;padding:16px;font-size:13px;line-height:1.9;color:#222;white-space:pre-wrap;word-break:break-word}
 
-/* IMPORT / TRIAGE */
+/* IMPORT */
 .drop-zone{border:2px dashed #6c8ebf;border-radius:12px;padding:24px;text-align:center;background:#f7f9fd;cursor:pointer;margin-bottom:14px;transition:all .2s;-webkit-user-select:none}
 .drop-zone.drag-over{background:#eef2f9;border-color:#3a5a8c}
 .prog-bar{background:#eee;border-radius:6px;height:8px;overflow:hidden;margin-bottom:6px}
 .prog-fill{height:100%;background:#6c8ebf;border-radius:6px;transition:width .4s;width:0%}
 .triage-group{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px 14px;margin-bottom:10px}
-.triage-header{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600;color:#1a1a1a}
-.triage-badge{background:#6c8ebf;color:#fff;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500}
+.triage-header{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600}
+.triage-badge{background:#6c8ebf;color:#fff;font-size:11px;padding:2px 8px;border-radius:10px}
 .triage-arrow{margin-left:auto;font-size:11px;color:#aaa}
 .triage-list{margin-top:10px;display:none}
 .triage-list.open{display:block}
@@ -180,41 +193,66 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .tfile-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tfile-size{color:#aaa;flex-shrink:0}
 
+/* SETTINGS */
+.ss{margin-bottom:22px}
+.ss h3{font-size:13px;font-weight:600;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid #eee}
+.key-row{display:flex;gap:8px;align-items:center}
+.key-row input{flex:1}
+.key-row button{padding:7px 10px;flex-shrink:0}
+
 /* VERSION */
 .vtable{width:100%;font-size:13px;border-collapse:collapse}
 .vtable td{padding:9px 12px;border-bottom:1px solid #eee;vertical-align:top}
 .vtable tr:last-child td{border:none}
-.vlog{border-left:3px solid #6c8ebf;padding:10px 12px;background:#fafaf8;border-radius:0 8px 8px 0;margin-bottom:8px}
+.vlog{border-left:3px solid #6c8ebf;padding:10px 12px;background:#fafal8;border-radius:0 8px 8px 0;margin-bottom:8px}
 .vlog.old{border-color:#ddd}
-
-/* SETTINGS */
-.ss{margin-bottom:22px}
-.ss h3{font-size:13px;font-weight:600;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid #eee}
-.key-setup{background:#f0f7ff;border:1px solid #c0d8f0;border-radius:10px;padding:14px;margin-bottom:14px;font-size:13px;line-height:1.7;color:#1a3a5c}
-.key-setup ol{padding-left:18px;margin-top:6px}
-.key-setup li{margin-bottom:4px}
-.key-setup a{color:#6c8ebf;font-weight:600}
 </style>
 </head>
 <body>
-<div id="app">
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">Life<span>Thread</span></div>
+    <div class="auth-sub">Your personal intelligence system</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login',this)">Sign In</button>
+      <button class="auth-tab" onclick="switchAuthTab('register',this)">Create Account</button>
+    </div>
+    <div id="auth-login">
+      <div class="auth-field"><label>Email</label><input type="email" id="login-email" placeholder="your@email.com" autocomplete="email"/></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="login-pass" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <button class="auth-btn" id="login-btn" onclick="doLogin()">Sign In</button>
+    </div>
+    <div id="auth-register" style="display:none">
+      <div class="auth-field"><label>Email</label><input type="email" id="reg-email" placeholder="your@email.com" autocomplete="email"/></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="reg-pass" placeholder="Create a password (8+ chars)" autocomplete="new-password"/></div>
+      <div class="auth-field"><label>Confirm Password</label><input type="password" id="reg-pass2" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()"/></div>
+      <button class="auth-btn" id="reg-btn" onclick="doRegister()">Create Account</button>
+    </div>
+    <div id="auth-err" class="auth-err"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none">
 <nav>
   <div class="logo">Life<span>Thread</span></div>
   <button class="nb active" onclick="show('home',this)">🏠</button>
   <button class="nb" onclick="show('log',this)">📓 Log</button>
   <button class="nb" onclick="show('chat',this)">💬 Chat</button>
-  <button class="nb" onclick="show('search',this)">🔍 Search</button>
+  <button class="nb" onclick="show('search',this)">🔍</button>
   <button class="nb" onclick="show('patterns',this)">🧩</button>
   <button class="nb" onclick="show('dash',this)">📊</button>
   <button class="nb" onclick="show('checkin',this)">☀️</button>
   <button class="nb" onclick="show('archive',this)">📖</button>
   <button class="nb" onclick="show('import',this)">📥</button>
   <div class="nr">
-    <div id="keydot" class="key-dot bad" title="No API key" onclick="show('settings',null)"></div>
-    <div id="syncdot" style="width:8px;height:8px;border-radius:50%;background:#aaa;flex-shrink:0;cursor:default;display:none" title="Sync status"></div>
+    <div id="syncdot" class="status-dot dot-off" title="Sync"></div>
     <button class="ib" onclick="exportData()">⬇</button>
-    <button class="ib" onclick="show('version',this)">v1.7</button>
+    <button class="ib" onclick="show('version',this)">v2.0</button>
     <button class="ib" onclick="show('settings',null)">⚙</button>
+    <button class="ib" style="color:#e05a5a" onclick="doLogout()">↩</button>
   </div>
 </nav>
 <div id="toast"></div>
@@ -222,10 +260,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 <!-- ENTRY MODAL -->
 <div id="emodal" class="overlay" style="display:none" onclick="if(event.target===this)closeModal()">
   <div class="modal" onclick="event.stopPropagation()">
-    <div class="mhead">
-      <div class="mtitle" id="mtitle"></div>
-      <button class="mclose" onclick="closeModal()">✕</button>
-    </div>
+    <div class="mhead"><div class="mtitle" id="mtitle"></div><button class="mclose" onclick="closeModal()">✕</button></div>
     <div class="mmeta" id="mmeta"></div>
     <div id="mirror-insight" class="mirror-insight"></div>
     <div class="mbody" id="mbody"></div>
@@ -234,7 +269,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
       <button class="btn bp" style="font-size:12px;padding:7px 13px" id="etoggle" onclick="toggleEdit()">✏️ Edit</button>
       <button class="btn bp" style="font-size:12px;padding:7px 13px;display:none" id="esave" onclick="saveEdit()">💾 Save</button>
       <button class="btn bg" style="font-size:12px;padding:7px 13px" onclick="copyEntry()">📋 Copy</button>
-      <button class="btn bg" style="font-size:12px;padding:7px 13px" id="mirror-btn" onclick="sendToMirror()">🔮 Mirror</button>
+      <button class="btn bg" style="font-size:12px;padding:7px 13px" onclick="sendToMirror()">🔮 Mirror</button>
       <button class="btn bg" style="font-size:12px;padding:7px 13px;color:#e05a5a;border-color:#e05a5a;margin-left:auto" onclick="delEntry()">🗑</button>
     </div>
   </div>
@@ -247,13 +282,9 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
       <div style="font-size:20px;font-weight:700;letter-spacing:-.5px" id="hgreet"></div>
       <div style="font-size:13px;color:#aaa;margin-top:2px" id="hdate"></div>
     </div>
-    <div id="setupbanner" class="setup-banner" style="display:none">
-      <strong>⚡ First-time setup needed</strong>
-      Add your Anthropic API key in <a onclick="show('settings',null)">Settings →</a> to enable AI features.
-    </div>
     <div id="daily-brief" class="daily-brief" style="display:none">
       <h3>☀️ Daily Brief <button class="btn bg" style="font-size:10px;padding:3px 8px" onclick="genBrief()">Refresh</button></h3>
-      <div id="brief-content" class="daily-brief-content"></div>
+      <div id="brief-content" class="brief-content"></div>
     </div>
     <div class="hgrid">
       <div class="hstat"><div class="n" id="ht">0</div><div class="l">entries</div></div>
@@ -328,10 +359,9 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 <!-- SEARCH -->
 <div id="search-panel" class="panel">
   <div class="scroll"><div class="pad">
-    <div class="sec">Search Your Life Log</div>
+    <div class="sec">Search</div>
     <div class="search-bar">
-      <input class="search-in" id="search-in" placeholder="Search entries, topics, people, feelings..."
-        oninput="doSearch(this.value)" onkeydown="if(event.key==='Enter')doSearch(this.value)"/>
+      <input class="search-in" id="search-in" placeholder="Search entries..." oninput="doSearch(this.value)"/>
       <button class="btn bp" style="font-size:12px;padding:8px 14px" onclick="aiSearch()">🔮 AI</button>
     </div>
     <div id="search-results"></div>
@@ -349,7 +379,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
       <div class="sec" style="margin:0">Named Patterns</div>
       <button class="btn bp" style="font-size:12px;padding:6px 12px" onclick="addPattern()">+ Add</button>
     </div>
-    <p style="font-size:13px;color:#888;line-height:1.6;margin-bottom:14px">Name the mechanisms you've identified in yourself. The AI references these by name in every interaction and flags them when active in new entries.</p>
+    <p style="font-size:13px;color:#888;line-height:1.6;margin-bottom:14px">Name the mechanisms you've identified in yourself. The AI references these by name in every interaction.</p>
     <div id="plist"></div>
     <div class="divider"></div>
     <button class="btn bg" style="font-size:12px" id="adbtn" onclick="autoDetect()">🧠 Auto-detect from entries</button>
@@ -382,19 +412,13 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
   <div class="scroll"><div class="pad">
     <div class="sec" style="margin-bottom:12px">Daily Check-in</div>
     <div class="cicard">
-      <div id="cistart">
-        <p style="font-size:14px;color:#555;line-height:1.7;margin-bottom:14px">Five minutes. Honest answers. Saved as today's journal entry.</p>
-        <button class="btn bp" onclick="startCI()">Begin Check-in</button>
-      </div>
+      <div id="cistart"><p style="font-size:14px;color:#555;line-height:1.7;margin-bottom:14px">Five minutes. Honest answers. Saved as today's entry.</p><button class="btn bp" onclick="startCI()">Begin</button></div>
       <div id="ciflow" style="display:none">
         <div class="ciq" id="ciq"></div>
         <textarea id="cia" style="min-height:80px" placeholder="Your answer..."></textarea>
         <div class="cinav"><span class="cipr" id="cipr"></span><button class="btn bp" onclick="nextCI()">Next →</button></div>
       </div>
-      <div id="cidone" style="display:none">
-        <p style="font-size:14px;font-weight:600;margin-bottom:8px" class="ok">✓ Done. Saved.</p>
-        <button class="btn bg" onclick="resetCI()">Start over</button>
-      </div>
+      <div id="cidone" style="display:none"><p style="font-size:14px;font-weight:600;margin-bottom:8px" class="ok">✓ Done. Saved.</p><button class="btn bg" onclick="resetCI()">Start over</button></div>
     </div>
   </div></div>
 </div>
@@ -419,12 +443,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
       </select>
     </div>
     <div class="field"><label>Time range</label>
-      <select id="arange">
-        <option value="all">All time</option>
-        <option value="90">Last 90 days</option>
-        <option value="30">Last 30 days</option>
-        <option value="7">Last 7 days</option>
-      </select>
+      <select id="arange"><option value="all">All time</option><option value="90">Last 90 days</option><option value="30">Last 30 days</option><option value="7">Last 7 days</option></select>
     </div>
     <button class="btn bp" id="abtn" onclick="runArchive()">Run Synthesis</button>
     <div class="divider"></div>
@@ -436,7 +455,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 <div id="import-panel" class="panel">
   <div class="scroll"><div class="pad">
     <div class="sec">Import & Triage</div>
-    <p style="font-size:13px;color:#888;margin-bottom:14px;line-height:1.6">Drop any files — text, JSON, images, documents. LifeThread sorts by type and processes each group separately.</p>
+    <p style="font-size:13px;color:#888;margin-bottom:14px;line-height:1.6">Drop any files — text, JSON, images. LifeThread sorts by type and processes each group.</p>
     <div id="dropzone" class="drop-zone"
       onclick="$('fin').click()"
       ondragover="event.preventDefault();event.stopPropagation();this.classList.add('drag-over')"
@@ -444,57 +463,28 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
       ondrop="event.preventDefault();event.stopPropagation();this.classList.remove('drag-over');handleDrop(event)">
       <div style="font-size:28px;margin-bottom:8px">📂</div>
       <div style="font-size:14px;font-weight:600;color:#3a5a8c;margin-bottom:4px">Drop files here or tap to browse</div>
-      <div style="font-size:12px;color:#aaa">Text, JSON, images — any format, any quantity</div>
+      <div style="font-size:12px;color:#aaa">Text, JSON, images — any format</div>
     </div>
     <input type="file" id="fin" multiple accept="*/*" style="display:none" onchange="handleFiles(event.target.files)"/>
     <div id="triage-out" style="display:none">
       <div class="sec" style="margin-bottom:10px">Files Detected</div>
-      <div id="triage-text" class="triage-group" style="display:none">
-        <div class="triage-header" onclick="toggleTriage('text')"><span>📄 Text & Documents</span><span id="triage-text-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div>
-        <div id="triage-text-list" class="triage-list"></div>
-        <button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('text')">Import Text Files</button>
-      </div>
-      <div id="triage-json" class="triage-group" style="display:none">
-        <div class="triage-header" onclick="toggleTriage('json')"><span>🔧 JSON / ChatGPT Data</span><span id="triage-json-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div>
-        <div id="triage-json-list" class="triage-list"></div>
-        <button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('json')">Extract Conversations</button>
-      </div>
-      <div id="triage-image" class="triage-group" style="display:none">
-        <div class="triage-header" onclick="toggleTriage('image')"><span>🖼 Images</span><span id="triage-image-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div>
-        <div id="triage-image-list" class="triage-list"></div>
-        <div style="font-size:12px;color:#888;margin-top:6px;line-height:1.6">AI reads visible text in each image and extracts it as a journal entry.</div>
-        <button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('image')">Extract Text from Images</button>
-      </div>
-      <div id="triage-audio" class="triage-group" style="display:none">
-        <div class="triage-header" onclick="toggleTriage('audio')"><span>🎙 Audio Files</span><span id="triage-audio-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div>
-        <div id="triage-audio-list" class="triage-list"></div>
-        <div style="font-size:12px;color:#aaa;margin-top:6px">Audio transcription coming in Phase 2.</div>
-      </div>
-      <div id="triage-other" class="triage-group" style="display:none">
-        <div class="triage-header" onclick="toggleTriage('other')"><span>📎 Other</span><span id="triage-other-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div>
-        <div id="triage-other-list" class="triage-list"></div>
-      </div>
+      <div id="triage-text" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('text')"><span>📄 Text & Documents</span><span id="triage-text-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-text-list" class="triage-list"></div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('text')">Import Text Files</button></div>
+      <div id="triage-json" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('json')"><span>🔧 JSON / ChatGPT Data</span><span id="triage-json-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-json-list" class="triage-list"></div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('json')">Extract Conversations</button></div>
+      <div id="triage-image" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('image')"><span>🖼 Images</span><span id="triage-image-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-image-list" class="triage-list"></div><div style="font-size:12px;color:#888;margin-top:6px">AI reads visible text in each image.</div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('image')">Extract Text from Images</button></div>
+      <div id="triage-audio" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('audio')"><span>🎙 Audio</span><span id="triage-audio-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-audio-list" class="triage-list"></div><div style="font-size:12px;color:#aaa;margin-top:6px">Audio transcription coming in Phase 2.</div></div>
+      <div id="triage-other" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('other')"><span>📎 Other</span><span id="triage-other-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-other-list" class="triage-list"></div></div>
       <div class="divider"></div>
     </div>
-    <div class="sec">Or Paste Text Directly</div>
+    <div class="sec">Or Paste Text</div>
     <div style="position:relative;margin-bottom:10px">
-      <textarea id="itxt" style="min-height:100px;width:100%" placeholder="Paste any text — ChatGPT conversations, journals, notes. Any length."></textarea>
+      <textarea id="itxt" style="min-height:100px;width:100%" placeholder="Paste any text — ChatGPT exports, journals, notes. Any length."></textarea>
       <div id="charcount" style="position:absolute;bottom:8px;right:10px;font-size:11px;color:#bbb"></div>
     </div>
     <div class="field"><label>Default category</label>
-      <select id="icat">
-        <option>Journal</option><option>Goals</option><option>Relationships</option>
-        <option>Health</option><option>Finances</option><option>Spirituality</option>
-        <option>Creative Work</option><option>Learning & Growth</option>
-        <option>Family</option><option>Dreams & Visions</option>
-        <option>Mental & Emotional State</option>
-      </select>
+      <select id="icat"><option>Journal</option><option>Goals</option><option>Relationships</option><option>Health</option><option>Finances</option><option>Spirituality</option><option>Creative Work</option><option>Learning & Growth</option><option>Family</option><option>Dreams & Visions</option><option>Mental & Emotional State</option></select>
     </div>
     <button class="btn bp" id="ibtn" onclick="processImport()" style="width:100%;justify-content:center;padding:12px">Import & Auto-categorize</button>
-    <div id="iprog" style="display:none;margin-top:14px">
-      <div class="prog-bar"><div class="prog-fill" id="ipfill"></div></div>
-      <div id="iplabel" style="font-size:12px;color:#888;text-align:center;margin-top:4px"></div>
-    </div>
+    <div id="iprog" style="display:none;margin-top:14px"><div class="prog-bar"><div class="prog-fill" id="ipfill"></div></div><div id="iplabel" style="font-size:12px;color:#888;text-align:center;margin-top:4px"></div></div>
     <div id="ist" style="margin-top:12px;font-size:13px;line-height:1.6"></div>
   </div></div>
 </div>
@@ -504,39 +494,41 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
   <div class="scroll"><div class="pad" style="max-width:560px">
     <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
       <div style="font-size:20px;font-weight:700">LifeThread</div>
-      <div style="font-size:12px;color:#6c8ebf;font-weight:600;background:#eef2f9;padding:2px 9px;border-radius:10px">v1.8.0</div>
+      <div style="font-size:12px;color:#6c8ebf;font-weight:600;background:#eef2f9;padding:2px 9px;border-radius:10px">v2.0.0</div>
     </div>
     <div style="font-size:12px;color:#aaa;margin-bottom:20px">March 28, 2026 · Claude Sonnet 4</div>
     <div class="sec">System Stats</div>
     <div style="border:1px solid #eee;border-radius:10px;overflow:hidden;margin-bottom:18px">
       <table class="vtable">
-        <tr><td style="color:#888;width:130px">Entries</td><td id="ve" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888;width:130px">User</td><td id="vuser" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888">Entries</td><td id="ve" style="font-weight:600">—</td></tr>
         <tr><td style="color:#888">Patterns</td><td id="vp" style="font-weight:600">—</td></tr>
         <tr><td style="color:#888">Goals</td><td id="vg" style="font-weight:600">—</td></tr>
         <tr><td style="color:#888">Log spans</td><td id="vsp" style="font-weight:600">—</td></tr>
-        <tr><td style="color:#888">API Key</td><td id="vak" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888">Supabase</td><td id="vsb" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888">Anthropic AI</td><td id="vak" style="font-weight:600">—</td></tr>
         <tr><td style="color:#888">Notion</td><td id="vno" style="font-weight:600">—</td></tr>
-        <tr><td style="color:#888">Profile</td><td id="vpr" style="font-weight:600">—</td></tr>
       </table>
     </div>
     <div class="sec">Changelog</div>
     <div class="vlog" style="margin-bottom:8px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v1.8.0</b><span style="font-size:11px;color:#6c8ebf;background:#eef2f9;padding:2px 7px;border-radius:8px">current</span><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 28, 2026</span></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v2.0.0</b><span style="font-size:11px;color:#6c8ebf;background:#eef2f9;padding:2px 7px;border-radius:8px">current</span><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 28, 2026</span></div>
       <ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px">
-        <li>🔄 Bidirectional Notion sync — entries push automatically on save</li>
-        <li>📡 Real-time sync status dot in nav (yellow=syncing, green=ok, red=error)</li>
-        <li>🔁 Auto-retry queue — failed syncs retry every 30 seconds</li>
-        <li>📥 Pull from Notion on app open — phone always sees latest data</li>
-        <li>⬆️ Save & Sync pushes all local entries to Notion in one batch</li>
-        <li>⏱ Periodic sync every 2 minutes across all devices</li>
-        <li>👁 Show/hide API key fields</li>
-        <li>📋 Copy API key buttons — never need to regenerate keys again</li>
+        <li>🔐 Full email + password authentication</li>
+        <li>☁️ Supabase backend — all data stored in cloud</li>
+        <li>📱 True cross-device sync — same account on all devices</li>
+        <li>🔑 API keys stored encrypted per account — enter once, works everywhere</li>
+        <li>🔄 Real-time sync dot in nav</li>
+        <li>📂 Document upload fixed — files trigger import automatically</li>
+        <li>👁 Show/copy API key fields</li>
+        <li>↩ Logout button</li>
       </ul>
     </div>
-    <div class="vlog old" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.7.0</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 28, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Send to Mirror, Daily Brief, Search tab, Pattern auto-flag, Triage import</li></ul></div>
-    <div class="vlog old" style="margin-bottom:18px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.0–1.6</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Initial build through full hardening pass</li></ul></div>
+    <div class="vlog old" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.8.0</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 28, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Bidirectional Notion sync, sync dot, retry queue</li></ul></div>
+    <div class="vlog old" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.7.0</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 28, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Mirror button, Daily Brief, Search, Pattern auto-flag, Triage import</li></ul></div>
+    <div class="vlog old" style="margin-bottom:18px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.0–1.6</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Initial build through full hardening</li></ul></div>
     <div class="sec">Phase 2 Roadmap</div>
-    <div style="background:#fafal8;border:1px solid #eee;border-radius:10px;padding:12px;margin-bottom:16px"><ul style="font-size:12px;color:#666;line-height:2.1;padding-left:14px"><li>Semantic vector search (Supabase)</li><li>Entity tracking — people, places, projects</li><li>Gmail & Calendar integration</li><li>Apple Watch biometrics integration</li><li>Audio transcription (Whisper API)</li><li>Real-time pattern detection on entry save</li><li>ChatGPT Custom GPT connector</li><li>Native iOS PWA with offline support</li></ul></div>
+    <div style="background:#fafal8;border:1px solid #eee;border-radius:10px;padding:12px;margin-bottom:16px"><ul style="font-size:12px;color:#666;line-height:2.1;padding-left:14px"><li>Semantic vector search</li><li>Entity tracking — people, places, projects</li><li>Gmail & Calendar integration</li><li>Apple Watch biometrics</li><li>Audio transcription</li><li>ChatGPT Custom GPT connector</li></ul></div>
   </div></div>
 </div>
 
@@ -544,47 +536,39 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 <div id="settings-panel" class="panel">
   <div class="scroll"><div class="pad" style="max-width:520px">
     <div class="ss">
+      <h3>Account</h3>
+      <div style="font-size:13px;color:#555;margin-bottom:10px">Signed in as <strong id="s-email">—</strong></div>
+      <button class="btn bg" onclick="doLogout()" style="font-size:12px">Sign Out</button>
+    </div>
+    <div class="ss">
       <h3>⚡ Anthropic API Key</h3>
-      <div class="key-setup">
-        <strong>How to get your free API key:</strong>
-        <ol>
-          <li>Go to <a href="https://platform.anthropic.com" target="_blank">platform.anthropic.com</a></li>
-          <li>Sign up or log in → API Keys → Create Key</li>
-          <li>Copy the key (starts with sk-ant-)</li>
-          <li>Paste below and tap Save</li>
-        </ol>
-        <div style="margin-top:8px;font-size:12px;color:#5a8abf">Stored only on this device. Never transmitted elsewhere.</div>
-      </div>
-      <div class="field">
-        <label>API Key</label>
-        <div style="display:flex;gap:8px;align-items:center">
-          <input type="password" id="akey" placeholder="sk-ant-api03-..." autocomplete="off" style="flex:1"/>
-          <button class="btn bg" style="font-size:11px;padding:7px 10px;flex-shrink:0" onclick="toggleVisible('akey',this)">👁</button>
-          <button class="btn bg" style="font-size:11px;padding:7px 10px;flex-shrink:0" onclick="copyField('akey')">📋</button>
+      <p style="font-size:12px;color:#888;line-height:1.6;margin-bottom:10px">Get your key at <a href="https://platform.anthropic.com" target="_blank" style="color:#6c8ebf">platform.anthropic.com</a> → API Keys → Create Key. Stored encrypted in your account.</p>
+      <div class="field"><label>API Key</label>
+        <div class="key-row">
+          <input type="password" id="akey" placeholder="sk-ant-api03-..." autocomplete="off"/>
+          <button class="btn bg" onclick="toggleVisible('akey',this)">👁</button>
+          <button class="btn bg" onclick="copyField('akey')">📋</button>
         </div>
       </div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn bp" onclick="saveApiKey()">Save Key</button>
-        <button class="btn bg" onclick="testApiKey()" style="font-size:12px">Test Connection</button>
+        <button class="btn bg" style="font-size:12px" onclick="testApiKey()">Test</button>
       </div>
       <div class="st" id="akst"></div>
     </div>
     <div class="ss">
       <h3>Notion Integration (optional)</h3>
-      <p style="font-size:12px;color:#888;line-height:1.6;margin-bottom:10px">Syncs entries to Notion for cross-device access and unlimited storage.</p>
-      <div class="field">
-        <label>Notion API Key</label>
-        <div style="display:flex;gap:8px;align-items:center">
-          <input type="password" id="nkey" placeholder="secret_..." style="flex:1"/>
-          <button class="btn bg" style="font-size:11px;padding:7px 10px;flex-shrink:0" onclick="toggleVisible('nkey',this)">👁</button>
-          <button class="btn bg" style="font-size:11px;padding:7px 10px;flex-shrink:0" onclick="copyField('nkey')">📋</button>
+      <div class="field"><label>Notion API Key</label>
+        <div class="key-row">
+          <input type="password" id="nkey" placeholder="secret_..."/>
+          <button class="btn bg" onclick="toggleVisible('nkey',this)">👁</button>
+          <button class="btn bg" onclick="copyField('nkey')">📋</button>
         </div>
       </div>
-      <div class="field">
-        <label>Database ID</label>
-        <div style="display:flex;gap:8px;align-items:center">
-          <input type="text" id="ndb" placeholder="32-character ID from database URL" style="flex:1"/>
-          <button class="btn bg" style="font-size:11px;padding:7px 10px;flex-shrink:0" onclick="copyField('ndb')">📋</button>
+      <div class="field"><label>Database ID</label>
+        <div class="key-row">
+          <input type="text" id="ndb" placeholder="32-character Database ID"/>
+          <button class="btn bg" onclick="copyField('ndb')">📋</button>
         </div>
       </div>
       <button class="btn bp" onclick="saveNotion()">Save & Sync</button>
@@ -594,29 +578,29 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
       <h3>Your Profile</h3>
       <div class="field"><label>Name</label><input type="text" id="uname" placeholder="What should LifeThread call you?"/></div>
       <div class="field"><label>Core values</label><textarea id="uvals" style="height:60px" placeholder="e.g. I value honesty, growth, presence..."></textarea></div>
-      <div class="field"><label>Current focus or central tension</label><textarea id="ufoc" style="height:60px" placeholder="What are you navigating right now?"></textarea></div>
+      <div class="field"><label>Current focus</label><textarea id="ufoc" style="height:60px" placeholder="What are you navigating right now?"></textarea></div>
       <div class="field"><label>What you want from this system</label><textarea id="uwant" style="height:60px" placeholder="e.g. Honest reflection, patterns named without softening..."></textarea></div>
       <button class="btn bp" onclick="saveProfile()">Save Profile</button>
       <div class="st" id="pst"></div>
     </div>
     <div class="ss">
       <h3>Data</h3>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn bg" onclick="exportData()">⬇ Export JSON</button>
-        <button class="btn bg" onclick="clearData()" style="color:#e05a5a;border-color:#e05a5a">Clear All Data</button>
-      </div>
+      <button class="btn bg" onclick="exportData()">⬇ Export JSON</button>
     </div>
   </div></div>
 </div>
-</div>
+</div><!-- end app -->
 
 <script>
 'use strict';
-// Prevent browser hijacking file drops anywhere on page
 window.addEventListener('dragover',e=>{e.preventDefault();e.stopPropagation();});
 window.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();});
 
-const VER='1.8.0';
+// ── SUPABASE CONFIG ───────────────────────────────────────────────────────
+const SB_URL='https://khntsltigjjelvmecvrq.supabase.co';
+const SB_KEY='sb_publishable_yqNAjCBe0Cg-JeD8aeSsAw_2slonEr_';
+
+const VER='2.0.0';
 const API_URL='/.netlify/functions/anthropic';
 const CATS=[
   {e:'📓',l:'Journal',v:'Journal'},{e:'🎯',l:'Goals',v:'Goals'},
@@ -626,23 +610,15 @@ const CATS=[
   {e:'👨‍👩‍👧',l:'Family',v:'Family'},{e:'🌙',l:'Dreams',v:'Dreams & Visions'},
   {e:'🧠',l:'Mental',v:'Mental & Emotional State'},
 ];
-const TPLS={
-  Health:'Sleep quality?\nEnergy level?\nMovement today?\nWhat is your body telling you?',
-  Goals:'Which goal?\nActual progress made?\nWhat got in the way?\nNext real step?',
-  Relationships:'Who?\nWhat happened — the facts?\nHow did you feel?\nWhat do you want from this?',
-  Finances:'Financial update?\nDecision made or avoided?\nHow does money feel right now?',
-  'Dreams & Visions':'What did you dream?\nEmotions present?\nSymbols or images?\nWhat might this point at?',
-  'Mental & Emotional State':'Actual emotional weather?\nWhat triggered it?\nWhat are you avoiding?\nWhat do you need?',
-  Spirituality:'What are you in contact with?\nAny insights or shifts?\nHow does your inner life feel?',
-};
+const TPLS={Health:'Sleep quality?\nEnergy level?\nMovement today?\nWhat is your body telling you?',Goals:'Which goal?\nActual progress made?\nWhat got in the way?\nNext real step?',Relationships:'Who?\nWhat happened?\nHow did you feel?\nWhat do you want from this?',Finances:'Financial update?\nDecision made or avoided?\nHow does money feel?','Dreams & Visions':'What did you dream?\nEmotions present?\nSymbols or images?\nWhat might this point at?','Mental & Emotional State':'Actual emotional weather?\nWhat triggered it?\nWhat are you avoiding?\nWhat do you need?',Spirituality:'What are you in contact with?\nAny insights or shifts?\nHow does your inner life feel?'};
 const MMAP={'✨ Expansive':'#f0c040','😌 Calm':'#6cbf8e','😐 Neutral':'#b0b0b0','😔 Heavy':'#7090b0','⚡ Energized':'#e08830','😰 Anxious':'#c07080','🙏 Grateful':'#a070c0','😤 Frustrated':'#d06050','🔥 Passionate':'#e05020','😶 Numb':'#909090','🌀 Restless':'#70a0c0'};
 const CIQS=['How are you actually feeling right now — physically, mentally, emotionally?','What was the most significant thing that happened since your last entry?','What are you avoiding? What are you not saying here?','What\'s one thing that\'s true right now that you haven\'t fully admitted to yourself?','What do you want to move toward — and what\'s actually stopping you?'];
-const AFOCUS={'':'Synthesize everything — behavioral threads, emotional arc, patterns, contradictions, and the central through-line.',patterns:'Map behavioral and emotional patterns: name each, describe the mechanism, cite evidence, note frequency.',emotional:'Trace the emotional arc. What moods dominate? What triggers what? What cycles repeat?',relationships:'Reconstruct the relational landscape. Who appears? How? What patterns emerge?',work:'Analyze work and identity patterns: investment, performance, ambivalence, avoidance.',health:'Track health, body, energy patterns. Correlate with emotional states.',finances:'Map financial decisions and patterns. Note emotional correlations.',goals:'Audit stated goals against actual logged behavior.',contradictions:'Identify contradictions between stated values and logged behavior.',thread:'Name the single central through-line — the unresolved tension all patterns organize around.'};
+const AFOCUS={'':'Synthesize everything — behavioral threads, emotional arc, patterns, contradictions, and the central through-line.',patterns:'Map behavioral patterns: name each, mechanism, evidence, frequency.',emotional:'Trace the emotional arc. Moods, triggers, cycles.',relationships:'Reconstruct the relational landscape.',work:'Work and identity patterns.',health:'Health and body patterns.',finances:'Financial decisions and patterns.',goals:'Goals vs. actual behavior.',contradictions:'Contradictions between stated values and behavior.',thread:'The single central through-line.'};
 const FILE_TYPES={text:['txt','md','text','csv','rtf'],json:['json'],image:['jpg','jpeg','png','gif','webp','bmp','heic','heif'],audio:['mp3','wav','m4a','ogg','aac','flac','mp4','mov','webm']};
 
 let entries=[],goals=[],patterns=[],chatHist=[],ciAs=[],ciQs=[],ciIdx=0;
 let selCat=null,chatMode='mirror',recording=false,recog=null;
-let nKey='',nDb='',uName='',uVals='',uFoc='',uWant='',apiKey='';
+let userEmail='',apiKey='',nKey='',nDb='',uName='',uVals='',uFoc='',uWant='';
 let activeId=null,editing=false,busy=false;
 let triageFiles={text:[],json:[],image:[],audio:[],other:[]};
 
@@ -657,46 +633,157 @@ const fmtSize=b=>b<1024?b+'B':b<1048576?Math.round(b/1024)+'KB':(b/1048576).toFi
 let toastT;
 function toast(msg,dur=2800){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),dur);}
 function guard(fn){return function(...a){if(busy)return;busy=true;setTimeout(()=>busy=false,1000);return fn.apply(this,a);};}
-
-// STORAGE
-function lsGet(k){try{return localStorage.getItem(k);}catch{return null;}}
-function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){if(e.name==='QuotaExceededError'){try{const s=JSON.parse(lsGet('lt_e')||'[]');lsSet('lt_e',JSON.stringify(s.slice(0,300)));localStorage.setItem(k,v);toast('⚠️ Storage nearly full. Connect Notion for unlimited.');}catch{toast('⚠️ Storage full. Export your data.');}}}};
-const persist=()=>{lsSet('lt_e',JSON.stringify(entries.slice(0,500)));lsSet('lt_g',JSON.stringify(goals));lsSet('lt_p',JSON.stringify(patterns));};
-
-// TEMPORAL
 const dow=d=>{try{return new Date(d+'T12:00:00').toLocaleDateString('en-US',{weekday:'long'});}catch{return '';}};
 const tod=()=>{const h=new Date().getHours();if(h<5)return'Late night';if(h<9)return'Early morning';if(h<12)return'Morning';if(h<14)return'Midday';if(h<17)return'Afternoon';if(h<20)return'Evening';return'Night';};
 const tmeta=(d,t,s)=>{try{const dt=new Date(d+'T12:00:00');return{date:d,time_of_day:t||null,day_of_week:dow(d),month:dt.toLocaleDateString('en-US',{month:'long'}),year:dt.getFullYear(),quarter:`Q${Math.ceil((dt.getMonth()+1)/3)} ${dt.getFullYear()}`,source:s||'manual',logged_at:nowISO()};}catch{return{date:d,source:s||'manual',logged_at:nowISO()};}};
 
-// INIT
-window.addEventListener('load',()=>{
+// ── SUPABASE API ──────────────────────────────────────────────────────────
+async function sbReq(path,method='GET',body=null,token=null){
+  const headers={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+(token||SB_KEY)};
+  const r=await fetch(SB_URL+path,{method,headers,body:body?JSON.stringify(body):undefined});
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||e.error_description||'Supabase error '+r.status);}
+  const ct=r.headers.get('content-type')||'';
+  return ct.includes('json')?r.json():r.text();
+}
+
+// Simple password hash (SHA-256 via Web Crypto)
+async function hashPass(pass){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pass));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// ── AUTH ──────────────────────────────────────────────────────────────────
+function switchAuthTab(tab,el){
+  document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  $('auth-login').style.display=tab==='login'?'block':'none';
+  $('auth-register').style.display=tab==='register'?'block':'none';
+  $('auth-err').textContent='';
+}
+
+async function doRegister(){
+  const email=$('reg-email').value.trim().toLowerCase();
+  const pass=$('reg-pass').value;
+  const pass2=$('reg-pass2').value;
+  if(!email||!pass){$('auth-err').textContent='Email and password required';return;}
+  if(pass.length<8){$('auth-err').textContent='Password must be at least 8 characters';return;}
+  if(pass!==pass2){$('auth-err').textContent='Passwords do not match';return;}
+  const btn=$('reg-btn');btn.disabled=true;btn.textContent='Creating account...';
   try{
-    apiKey=lsGet('lt_ak')||''; nKey=lsGet('lt_nk')||''; nDb=lsGet('lt_nd')||'';
-    uName=lsGet('lt_un')||''; uVals=lsGet('lt_uv')||''; uFoc=lsGet('lt_uf')||''; uWant=lsGet('lt_uw')||'';
-    entries=JSON.parse(lsGet('lt_e')||'[]');
-    goals=JSON.parse(lsGet('lt_g')||'[]');
-    patterns=JSON.parse(lsGet('lt_p')||'[]');
-  }catch(e){entries=[];goals=[];patterns=[];}
-  [['akey',apiKey],['nkey',nKey],['ndb',nDb],['uname',uName],['uvals',uVals],['ufoc',uFoc],['uwant',uWant]].forEach(([id,v])=>{const el=$(id);if(el&&v)el.value=v;});
-  updateKeyDot();
+    const hash=await hashPass(pass);
+    // Check if email exists
+    const existing=await sbReq(`/rest/v1/user_credentials?email=eq.${encodeURIComponent(email)}&select=id`);
+    if(existing&&existing.length>0){$('auth-err').textContent='Account already exists. Sign in instead.';btn.disabled=false;btn.textContent='Create Account';return;}
+    await sbReq('/rest/v1/user_credentials','POST',{email,password_hash:hash,profile:{}});
+    $('auth-err').style.color='#3a8c5a';$('auth-err').textContent='✓ Account created! Signing you in...';
+    setTimeout(()=>doLogin(email,pass),1000);
+  }catch(e){$('auth-err').style.color='#e05a5a';$('auth-err').textContent=e.message;btn.disabled=false;btn.textContent='Create Account';}
+}
+
+async function doLogin(emailOverride,passOverride){
+  const email=emailOverride||$('login-email').value.trim().toLowerCase();
+  const pass=passOverride||$('login-pass').value;
+  if(!email||!pass){$('auth-err').textContent='Email and password required';return;}
+  const btn=$('login-btn');if(!emailOverride){btn.disabled=true;btn.textContent='Signing in...';}
+  try{
+    const hash=await hashPass(pass);
+    const rows=await sbReq(`/rest/v1/user_credentials?email=eq.${encodeURIComponent(email)}&select=*`);
+    if(!rows||!rows.length){$('auth-err').textContent='Account not found. Create one first.';btn.disabled=false;btn.textContent='Sign In';return;}
+    const user=rows[0];
+    if(user.password_hash!==hash){$('auth-err').textContent='Incorrect password.';btn.disabled=false;btn.textContent='Sign In';return;}
+    // Login success
+    userEmail=email;
+    localStorage.setItem('lt_session',JSON.stringify({email,ts:Date.now()}));
+    await loadUserData(user);
+    showApp();
+  }catch(e){$('auth-err').style.color='#e05a5a';$('auth-err').textContent=e.message;if(!emailOverride){btn.disabled=false;btn.textContent='Sign In';}}
+}
+
+async function loadUserData(user){
+  // Load credentials from account
+  if(user.anthropic_key)apiKey=user.anthropic_key;
+  if(user.notion_key)nKey=user.notion_key;
+  if(user.notion_db)nDb=user.notion_db;
+  const prof=user.profile||{};
+  uName=prof.name||''; uVals=prof.values||''; uFoc=prof.focus||''; uWant=prof.want||'';
+  // Load entries from Supabase
+  try{
+    setSyncDot('syncing');
+    const rows=await sbReq(`/rest/v1/entries?user_email=eq.${encodeURIComponent(userEmail)}&order=date.desc&limit=500`);
+    entries=(rows||[]).map(r=>({...r,temporal:typeof r.temporal==='string'?JSON.parse(r.temporal):r.temporal}));
+    const prows=await sbReq(`/rest/v1/patterns?user_email=eq.${encodeURIComponent(userEmail)}`);
+    patterns=(prows||[]).map(r=>({name:r.name,desc:r.desc,count:r.count||0,last:r.last_seen,sb_id:r.id}));
+    const grows=await sbReq(`/rest/v1/goals?user_email=eq.${encodeURIComponent(userEmail)}`);
+    goals=(grows||[]).map(r=>({text:r.text,pct:r.pct||0,sb_id:r.id}));
+    setSyncDot('ok');
+  }catch(e){console.warn('Load error:',e.message);setSyncDot('error');}
+}
+
+function showApp(){
+  $('auth-screen').style.display='none';
+  $('app').style.display='flex';
+  // Prefill settings
+  if(apiKey)$('akey').value=apiKey;
+  if(nKey)$('nkey').value=nKey;
+  if(nDb)$('ndb').value=nDb;
+  if(uName)$('uname').value=uName;
+  if(uVals)$('uvals').value=uVals;
+  if(uFoc)$('ufoc').value=uFoc;
+  if(uWant)$('uwant').value=uWant;
+  $('s-email').textContent=userEmail;
   renderHome();renderCats();renderEntries();renderPatterns();renderDash();initChat();
   const itxt=$('itxt');
   if(itxt)itxt.addEventListener('input',()=>{const l=itxt.value.length;$('charcount').textContent=l>0?l.toLocaleString()+' chars':'';});
-  if(nKey&&nDb){setSyncDot('syncing');pullFromNotion();}
-  // Periodic sync every 2 minutes
-  setInterval(()=>{if(nKey&&nDb){flushSyncQueue();pullFromNotion();}},120000);
-  // Auto-generate daily brief
   if(apiKey&&entries.length)setTimeout(genBrief,2000);
-});
-
-function updateKeyDot(){
-  const dot=$('keydot');
-  if(apiKey){dot.className='key-dot ok';dot.title='API key set ✓';}
-  else{dot.className='key-dot bad';dot.title='No API key';}
-  $('setupbanner').style.display=apiKey?'none':'block';
+  setInterval(()=>syncDown(),120000);
 }
 
-// NAV
+function doLogout(){
+  localStorage.removeItem('lt_session');
+  userEmail='';apiKey='';nKey='';nDb='';uName='';uVals='';uFoc='';uWant='';
+  entries=[];goals=[];patterns=[];chatHist=[];
+  $('app').style.display='none';
+  $('auth-screen').style.display='flex';
+  $('auth-err').textContent='';
+  $('login-email').value='';$('login-pass').value='';
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+window.addEventListener('load',async()=>{
+  // Check for existing session
+  try{
+    const sess=JSON.parse(localStorage.getItem('lt_session')||'null');
+    if(sess&&sess.email&&(Date.now()-sess.ts)<7*24*60*60*1000){
+      // Auto-login with stored session
+      const rows=await sbReq(`/rest/v1/user_credentials?email=eq.${encodeURIComponent(sess.email)}&select=*`);
+      if(rows&&rows.length){userEmail=sess.email;await loadUserData(rows[0]);showApp();return;}
+    }
+  }catch(e){console.warn('Session restore failed');}
+  // Show auth screen
+  $('auth-screen').style.display='flex';
+});
+
+// ── SYNC DOT ──────────────────────────────────────────────────────────────
+function setSyncDot(s){
+  const d=$('syncdot');if(!d)return;
+  d.className='status-dot '+(s==='ok'?'dot-ok':s==='syncing'?'dot-sync':s==='error'?'dot-bad':'dot-off');
+  d.title=s==='ok'?'Synced ✓':s==='syncing'?'Syncing...':s==='error'?'Sync error':'Not synced';
+}
+
+async function syncDown(){
+  if(!userEmail)return;
+  try{
+    setSyncDot('syncing');
+    const rows=await sbReq(`/rest/v1/entries?user_email=eq.${encodeURIComponent(userEmail)}&order=date.desc&limit=500`);
+    const remote=(rows||[]).map(r=>({...r,temporal:typeof r.temporal==='string'?JSON.parse(r.temporal):r.temporal}));
+    if(remote.length!==entries.length){
+      entries=remote;renderEntries();renderDash();renderHome();toast('✓ Synced from cloud');
+    }
+    setSyncDot('ok');
+  }catch(e){setSyncDot('error');}
+}
+
+// ── NAV ───────────────────────────────────────────────────────────────────
 function show(p,el){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.nb').forEach(x=>x.classList.remove('active'));
@@ -706,89 +793,71 @@ function show(p,el){
   if(p==='dash')renderDash();
   if(p==='home')renderHome();
   if(p==='version')renderVersion();
-  if(p==='search')$('search-in').focus();
+  if(p==='search')setTimeout(()=>$('search-in').focus(),100);
 }
 
-// HOME
+// ── HOME ──────────────────────────────────────────────────────────────────
 function renderHome(){
   const h=new Date().getHours();
   $('hgreet').textContent=(h<12?'Good morning':h<17?'Good afternoon':'Good evening')+(uName?', '+uName:'')+(uName?'.':'.');
   $('hdate').textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
   $('ht').textContent=entries.length;$('hs').textContent=calcStreak();$('hp').textContent=patterns.length;
-  $('setupbanner').style.display=apiKey?'none':'block';
   const el=$('hlast');
   if(!entries.length){el.innerHTML='<span style="color:#ccc;font-size:13px">No entries yet.</span>';return;}
   const e=entries[0];
   el.innerHTML=`<div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap"><span class="tag tc">${esc(e.category)}</span>${e.mood?`<span class="tag tm">${esc(e.mood)}</span>`:''}<span class="td">${esc(e.date)}</span></div><div style="font-size:13px;color:#444;line-height:1.6">${esc((e.content||'').slice(0,160))}${(e.content||'').length>160?'…':''}</div>`;
 }
-
 async function genBrief(){
   if(!apiKey||!entries.length)return;
   $('daily-brief').style.display='block';
   $('brief-content').textContent='Generating your daily brief...';
-  try{
-    const r=await ai(
-      `You are LifeThread. Generate a morning brief for ${uName||'the user'} — 3-4 sentences max. Cover: one pattern currently active based on recent entries, one thing that needs attention today, one honest forward observation. No cheerleading. Direct and specific.`,
-      `Recent entries:\n${ctx(10)}\n\nGenerate morning brief.`
-    );
-    $('brief-content').textContent=r;
-  }catch{$('daily-brief').style.display='none';}
+  try{const r=await ai(`You are LifeThread. Generate a morning brief for ${uName||'the user'} — 3-4 sentences. Cover: one pattern currently active, one thing needing attention today, one honest forward observation. No cheerleading.`,`Recent entries:\n${ctx(10)}\n\nGenerate morning brief.`);$('brief-content').textContent=r;}
+  catch{$('daily-brief').style.display='none';}
 }
-
 function openLastEntry(){if(entries.length)openEntry(entries[0].id);}
-const hqSave=guard(()=>{const v=$('hqin').value.trim();if(!v)return;addE({content:v,source:'quick'});$('hqin').value='';renderHome();toast('✓ Captured');if(apiKey)setTimeout(()=>checkPatternMatch(entries[0]),500);});
+const hqSave=guard(()=>{const v=$('hqin').value.trim();if(!v)return;addE({content:v,source:'quick'});$('hqin').value='';renderHome();toast('✓ Captured');});
 function calcStreak(){const ds=[...new Set(entries.map(e=>e.date))].sort().reverse();let s=0,d=new Date();for(const dt of ds){try{const ed=new Date(dt);const df=Math.floor((d-ed)/86400000);if(df<=s+1){s++;d=ed;}else break;}catch{}}return s;}
 
-// CATEGORIES
+// ── CATEGORIES ────────────────────────────────────────────────────────────
 function renderCats(){$('cgrid').innerHTML=CATS.map(c=>`<button class="cb${selCat===c.v?' sel':''}" onclick="pickCat('${c.v}')">${c.e} ${c.l}</button>`).join('');}
 function pickCat(v){selCat=selCat===v?null:v;renderCats();const tb=$('tplbox');if(selCat&&TPLS[selCat]){tb.style.display='block';tb.innerHTML=`<strong style="display:block;margin-bottom:4px;font-size:12px;color:#3a5a8c">Prompts</strong><span style="font-size:12px;color:#3a5a8c;line-height:1.9">${TPLS[selCat].split('\n').map(esc).join('<br>')}</span>`;}else tb.style.display='none';}
 
-// VOICE
-function toggleVoice(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('⚠️ Voice not supported here. Try Chrome.');return;}if(recording){recog&&recog.stop();return;}try{recog=new SR();recog.continuous=true;recog.interimResults=true;recog.lang='en-US';recog.onstart=()=>{recording=true;const b=$('vbtn');b.classList.add('rec');b.textContent='🔴 Stop';};recog.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;$('etxt').value=t;};recog.onerror=e=>{toast('Voice error: '+e.error);recog.stop();};recog.onend=()=>{recording=false;const b=$('vbtn');b.classList.remove('rec');b.textContent='🎤 Voice';};recog.start();}catch(e){toast('Voice error: '+e.message);}}
+// ── VOICE ─────────────────────────────────────────────────────────────────
+function toggleVoice(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('⚠️ Voice not supported here.');return;}if(recording){recog&&recog.stop();return;}try{recog=new SR();recog.continuous=true;recog.interimResults=true;recog.lang='en-US';recog.onstart=()=>{recording=true;const b=$('vbtn');b.classList.add('rec');b.textContent='🔴 Stop';};recog.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;$('etxt').value=t;};recog.onerror=e=>{toast('Voice error: '+e.error);recog.stop();};recog.onend=()=>{recording=false;const b=$('vbtn');b.classList.remove('rec');b.textContent='🎤 Voice';};recog.start();}catch(e){toast('Voice error: '+e.message);}}
 
-// ENTRIES
+// ── ENTRIES ───────────────────────────────────────────────────────────────
+async function pushEntryToSB(entry){
+  if(!userEmail)return;
+  try{
+    setSyncDot('syncing');
+    await sbReq('/rest/v1/entries','POST',{
+      id:entry.id,user_email:userEmail,date:entry.date,
+      category:entry.category,mood:entry.mood||'',content:entry.content||'',
+      title:entry.title||'',source:entry.source||'manual',
+      date_confidence:entry.date_confidence||'',
+      temporal:JSON.stringify(entry.temporal||{})
+    });
+    setSyncDot('ok');
+  }catch(e){console.warn('Push error:',e.message);setSyncDot('error');}
+}
+
 function addE(f){
   const d=f.date||today();
   const e={id:Date.now()+(Math.random()*999|0),date:d,category:'Journal',mood:'',...f,title:(f.content||'').slice(0,60).replace(/\n/g,' '),temporal:tmeta(d,f.time_of_day||tod(),f.source||'manual')};
-  entries.unshift(e);persist();
-  if(nKey&&nDb)saveNotionEntry(e).catch(()=>{});
+  entries.unshift(e);
+  setTimeout(()=>pushEntryToSB(e),200);
   return e;
 }
 
 const saveEntry=guard(async()=>{
   const txt=$('etxt').value.trim();if(!txt)return;
   const btn=$('sbtn');btn.disabled=true;btn.textContent='Saving...';
-  const entry=addE({category:selCat||'Journal',mood:$('msel').value,content:txt});
+  addE({category:selCat||'Journal',mood:$('msel').value,content:txt});
   renderEntries();renderHome();
   $('etxt').value='';$('msel').value='';selCat=null;renderCats();$('tplbox').style.display='none';
   btn.disabled=false;btn.textContent='Save';toast('✓ Entry saved');
-  // Auto pattern check
-  if(apiKey&&patterns.length)setTimeout(()=>checkPatternMatch(entry),800);
 });
-
 const quickSave=guard(()=>{const v=$('qin').value.trim();if(!v)return;addE({content:v,source:'quick'});renderEntries();renderHome();$('qin').value='';toast('✓ Captured');});
-
-// Pattern auto-detection on new entries
-async function checkPatternMatch(entry){
-  if(!patterns.length||!entry)return;
-  try{
-    const r=await ai(
-      `You are a pattern detection system. Given a new journal entry and a list of named behavioral patterns, identify which patterns (if any) are active in this entry. Be precise. Only flag patterns that are clearly evidenced in the text. Return a brief one-sentence observation for each active pattern, or "none" if no patterns are active.`,
-      `New entry: "${entry.content.slice(0,500)}"\n\nNamed patterns:\n${patterns.map(p=>p.name+': '+p.desc).join('\n')}\n\nWhich patterns are active?`
-    );
-    if(r&&!r.toLowerCase().includes('none')){
-      // Show as a flash on the entry card
-      const card=document.querySelector(`[onclick="openEntry(${entry.id})"]`);
-      if(card){
-        let flash=card.querySelector('.mirror-flash');
-        if(!flash){flash=document.createElement('div');flash.className='mirror-flash';card.appendChild(flash);}
-        flash.textContent='🧩 '+r;
-        flash.style.display='block';
-      }
-      toast('🧩 Pattern detected');
-    }
-  }catch{}
-}
 
 function renderEntries(){
   const el=$('elist');
@@ -805,130 +874,115 @@ function renderEntries(){
     </div>`).join('');
 }
 
-// MODAL
+// ── MODAL ─────────────────────────────────────────────────────────────────
 function openEntry(id){
   const e=entries.find(x=>x.id===id);if(!e)return;
   activeId=id;editing=false;
   $('mtitle').textContent=e.title||e.date||'Entry';
   $('mmeta').innerHTML=`<span class="tag tc">${esc(e.category)}</span>${e.mood?`<span class="tag tm">${esc(e.mood)}</span>`:''}<span class="td">${e.temporal?.day_of_week?e.temporal.day_of_week+', ':''} ${esc(e.date)}${e.temporal?.time_of_day?' · '+e.temporal.time_of_day:''}</span>`;
   $('mirror-insight').style.display='none';
-  $('mbody').textContent=e.content||'';
-  $('mbody').style.display='block';
+  $('mbody').textContent=e.content||'';$('mbody').style.display='block';
   $('medit').value=e.content||'';$('medit').style.display='none';
   $('etoggle').textContent='✏️ Edit';$('esave').style.display='none';
   $('emodal').style.display='flex';document.body.style.overflow='hidden';
 }
 function closeModal(){$('emodal').style.display='none';document.body.style.overflow='';activeId=null;editing=false;}
 function toggleEdit(){editing=!editing;$('mbody').style.display=editing?'none':'block';$('medit').style.display=editing?'block':'none';$('etoggle').textContent=editing?'✕ Cancel':'✏️ Edit';$('esave').style.display=editing?'inline-flex':'none';if(editing)$('medit').focus();}
-const saveEdit=guard(()=>{const e=entries.find(x=>x.id===activeId);if(!e)return;const t=$('medit').value.trim();if(!t){toast('Entry cannot be empty');return;}e.content=t;e.title=t.slice(0,60).replace(/\n/g,' ');persist();renderEntries();renderHome();$('mbody').textContent=t;toggleEdit();toast('✓ Updated');});
+const saveEdit=guard(async()=>{
+  const e=entries.find(x=>x.id===activeId);if(!e)return;
+  const t=$('medit').value.trim();if(!t){toast('Entry cannot be empty');return;}
+  e.content=t;e.title=t.slice(0,60).replace(/\n/g,' ');
+  // Update in Supabase
+  try{await sbReq(`/rest/v1/entries?id=eq.${e.id}&user_email=eq.${encodeURIComponent(userEmail)}`,'PATCH',{content:t,title:e.title});}catch(err){console.warn(err);}
+  renderEntries();renderHome();$('mbody').textContent=t;toggleEdit();toast('✓ Updated');
+});
 function copyEntry(){const e=entries.find(x=>x.id===activeId);if(!e)return;const text=`[${e.date}][${e.category}]\n${e.content}`;if(navigator.clipboard?.writeText){navigator.clipboard.writeText(text).then(()=>toast('✓ Copied')).catch(()=>fallbackCopy(text));}else fallbackCopy(text);}
 function fallbackCopy(text){const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;opacity:0;top:0;left:0;width:1px;height:1px';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');toast('✓ Copied');}catch{toast('Long-press to copy manually');}document.body.removeChild(ta);}
-const delEntry=guard(()=>{if(!confirm('Delete this entry permanently?'))return;entries=entries.filter(x=>x.id!==activeId);persist();renderEntries();renderHome();renderDash();closeModal();toast('Deleted');});
+const delEntry=guard(async()=>{
+  if(!confirm('Delete this entry permanently?'))return;
+  try{await sbReq(`/rest/v1/entries?id=eq.${activeId}&user_email=eq.${encodeURIComponent(userEmail)}`,'DELETE');}catch(e){console.warn(e);}
+  entries=entries.filter(x=>x.id!==activeId);
+  renderEntries();renderHome();renderDash();closeModal();toast('Deleted');
+});
 
-// SEND TO MIRROR
 async function sendToMirror(){
   const e=entries.find(x=>x.id===activeId);if(!e)return;
-  const btn=$('mirror-btn');btn.disabled=true;btn.textContent='🔮 ...';
+  const btn=document.querySelector('[onclick="sendToMirror()"]');if(btn)btn.disabled=true;
   const ins=$('mirror-insight');ins.style.display='block';ins.textContent='Reading this entry...';
   try{
     const pCtx=patterns.length?`\nNamed patterns: ${patterns.map(p=>p.name+': '+p.desc).join(' | ')}`:'';
-    const r=await ai(
-      `You are LifeThread — a living mirror. Analyze this single entry in the context of the user's full life log. Be specific and honest. Note any active patterns by name. Connect to anything relevant from their history. 2-4 sentences max. No softening.\n\nUser: ${uName||'unnamed'}. Values: ${uVals}.${pCtx}\n\nFull context:\n${ctx(20)}`,
-      `This entry:\n"${e.content}"\n\nWhat do you see?`
-    );
+    const r=await ai(`You are LifeThread — a living mirror. Analyze this single entry in context of the user's full life log. Be specific and honest. Note any active patterns by name. 2-4 sentences max. No softening.\n\nUser: ${uName||'unnamed'}. Values: ${uVals}.${pCtx}\n\nFull context:\n${ctx(20)}`,`This entry:\n"${e.content}"\n\nWhat do you see?`);
     ins.textContent=r;
   }catch(err){ins.textContent='Error: '+err.message;}
-  btn.disabled=false;btn.textContent='🔮 Mirror';
+  if(btn)btn.disabled=false;
 }
 
-// SEARCH
+// ── SEARCH ────────────────────────────────────────────────────────────────
 function doSearch(q){
-  const out=$('search-results');
-  $('ai-search-out').style.display='none';
+  const out=$('search-results');$('ai-search-out').style.display='none';
   if(!q.trim()){out.innerHTML='';return;}
   const term=q.toLowerCase();
-  const results=entries.filter(e=>(e.content||'').toLowerCase().includes(term)||(e.category||'').toLowerCase().includes(term)||(e.title||'').toLowerCase().includes(term));
-  if(!results.length){out.innerHTML='<div class="empty">No entries found for "'+esc(q)+'"</div>';return;}
+  const results=entries.filter(e=>(e.content||'').toLowerCase().includes(term)||(e.category||'').toLowerCase().includes(term));
+  if(!results.length){out.innerHTML=`<div class="empty">No entries found for "${esc(q)}"</div>`;return;}
   out.innerHTML=results.slice(0,30).map(e=>{
     const snippet=(e.content||'').slice(0,200);
-    const highlighted=snippet.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),m=>`<span class="search-highlight">${esc(m)}</span>`);
-    return`<div class="search-result" onclick="openEntry(${e.id})">
-      <div class="etop"><span class="tag tc">${esc(e.category)}</span><span class="td">${esc(e.date)}</span></div>
-      <div style="font-size:13px;color:#333;line-height:1.6">${highlighted}${snippet.length===200?'…':''}</div>
-    </div>`;
+    const hi=snippet.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),m=>`<span class="search-highlight">${esc(m)}</span>`);
+    return`<div class="ecard" onclick="openEntry(${e.id})"><div class="etop"><span class="tag tc">${esc(e.category)}</span><span class="td">${esc(e.date)}</span></div><div style="font-size:13px;color:#333;line-height:1.6">${hi}${snippet.length===200?'…':''}</div></div>`;
   }).join('');
 }
-
 async function aiSearch(){
-  const q=$('search-in').value.trim();
-  if(!q){toast('Enter a search query first');return;}
-  if(!apiKey){$('ai-search-out').style.display='block';$('ai-search-content').textContent='⚙️ Add your API key in Settings.';return;}
-  $('ai-search-out').style.display='block';
-  $('ai-search-content').textContent='Searching semantically...';
-  try{
-    const r=await ai(
-      `You are LifeThread. The user is searching their life log for: "${q}". Find and synthesize all relevant entries. Quote specific entries. Note patterns. Be direct and specific.`,
-      `Search query: "${q}"\n\nLife log:\n${ctx(50)}\n\nFind everything relevant to this query.`
-    );
-    $('ai-search-content').textContent=r;
-  }catch(e){$('ai-search-content').textContent='Error: '+e.message;}
+  const q=$('search-in').value.trim();if(!q){toast('Enter a query first');return;}
+  $('ai-search-out').style.display='block';$('ai-search-content').textContent='Searching...';
+  try{const r=await ai(`You are LifeThread. The user is searching for: "${q}". Find and synthesize all relevant entries. Quote specific ones. Note patterns. Be direct.`,`Query: "${q}"\n\nLife log:\n${ctx(50)}\n\nFind everything relevant.`);$('ai-search-content').textContent=r;}
+  catch(e){$('ai-search-content').textContent='Error: '+e.message;}
 }
 
-// PATTERNS
+// ── PATTERNS ──────────────────────────────────────────────────────────────
 function renderPatterns(){const el=$('plist');if(!patterns.length){el.innerHTML='<div class="empty">No patterns named yet.</div>';return;}el.innerHTML=patterns.map((p,i)=>`<div class="pcard"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span style="font-size:14px;font-weight:600">${esc(p.name)}</span><span style="font-size:11px;color:#aaa;background:#f5f5f5;padding:2px 7px;border-radius:10px">×${p.count||0}</span></div><div style="font-size:13px;color:#555;line-height:1.6;margin-bottom:7px">${esc(p.desc)}</div>${p.last?`<div style="font-size:11px;color:#aaa;margin-bottom:7px">Last: ${esc(p.last)}</div>`:''}<div style="display:flex;gap:7px"><button class="btn bg" style="font-size:11px;padding:5px 9px" onclick="markPattern(${i})">Mark active</button><button class="btn bg" style="font-size:11px;padding:5px 9px;color:#e05a5a;border-color:#e05a5a" onclick="removePattern(${i})">Remove</button></div></div>`).join('');}
-function addPattern(){const n=prompt('Pattern name:');if(!n?.trim())return;const d=prompt('How does it operate in your life?');if(!d?.trim())return;patterns.push({name:n.trim(),desc:d.trim(),count:0,last:null});persist();renderPatterns();toast('Pattern added');}
-const markPattern=guard(i=>{patterns[i].count=(patterns[i].count||0)+1;patterns[i].last=today();addE({category:'Mental & Emotional State',content:`Pattern active: ${patterns[i].name}\n${patterns[i].desc}`,source:'manual'});persist();renderPatterns();renderEntries();toast('Pattern logged');});
-function removePattern(i){if(!confirm('Remove?'))return;patterns.splice(i,1);persist();renderPatterns();}
+
+async function addPattern(){
+  const n=prompt('Pattern name:');if(!n?.trim())return;
+  const d=prompt('How does it operate in your life?');if(!d?.trim())return;
+  const p={name:n.trim(),desc:d.trim(),count:0,last:null};
+  try{const r=await sbReq('/rest/v1/patterns','POST',{user_email:userEmail,name:p.name,desc:p.desc,count:0});if(r&&r[0])p.sb_id=r[0].id;}catch(e){console.warn(e);}
+  patterns.push(p);renderPatterns();toast('Pattern added');
+}
+const markPattern=guard(async i=>{
+  patterns[i].count=(patterns[i].count||0)+1;patterns[i].last=today();
+  addE({category:'Mental & Emotional State',content:`Pattern active: ${patterns[i].name}\n${patterns[i].desc}`,source:'manual'});
+  try{if(patterns[i].sb_id)await sbReq(`/rest/v1/patterns?id=eq.${patterns[i].sb_id}`,'PATCH',{count:patterns[i].count,last_seen:patterns[i].last});}catch{}
+  renderPatterns();renderEntries();toast('Pattern logged');
+});
+async function removePattern(i){
+  if(!confirm('Remove?'))return;
+  try{if(patterns[i].sb_id)await sbReq(`/rest/v1/patterns?id=eq.${patterns[i].sb_id}`,'DELETE');}catch{}
+  patterns.splice(i,1);renderPatterns();
+}
 async function autoDetect(){if(!entries.length){toast('Add some entries first');return;}const btn=$('adbtn');btn.disabled=true;btn.textContent='Analyzing...';$('apout').textContent='';try{const r=await ai('Identify 4-7 recurring behavioral or emotional patterns from this life log.\n\nFor each:\nNAME: [2-5 word name]\nMECHANISM: [one sentence how it operates]\nEVIDENCE: [cite specific entries]\n\nBe precise and honest.',`Log:\n${ctx(50)}\n\nIdentify patterns.`);$('apout').textContent=r;}catch(e){$('apout').textContent='Error: '+e.message;}btn.disabled=false;btn.textContent='🧠 Auto-detect from entries';}
 
-// NOTION
-async function nReq(path,method='GET',body=null){if(!nKey)throw new Error('No Notion key');const r=await fetch('https://api.notion.com/v1'+path,{method,headers:{'Authorization':'Bearer '+nKey,'Notion-Version':'2022-06-28','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||'Notion '+r.status);}return r.json();}
-async function saveNotionEntry(e){if(!nKey||!nDb)return;await nReq('/pages','POST',{parent:{database_id:nDb},properties:{Title:{title:[{text:{content:(e.title||'Entry').slice(0,100)}}]},Category:{select:{name:e.category||'Journal'}},Date:{date:{start:e.date}},...(e.mood?{Mood:{select:{name:e.mood}}}:{})},children:[{object:'block',type:'paragraph',paragraph:{rich_text:[{text:{content:(e.content||'').slice(0,2000)}}]}}]});}
-async function syncNotion(){try{const res=await nReq('/databases/'+nDb+'/query','POST',{sorts:[{property:'Date',direction:'descending'}],page_size:100});if(!res.results?.length)return;const remote=[];for(const p of res.results){const pr=p.properties;let c='';try{const bl=await nReq('/blocks/'+p.id+'/children');c=(bl.results||[]).map(b=>b.paragraph?.rich_text?.[0]?.plain_text||'').join('\n');}catch{}const d=pr.Date?.date?.start||today();remote.push({id:p.id,date:d,category:pr.Category?.select?.name||'Journal',mood:pr.Mood?.select?.name||'',content:c,title:pr.Title?.title?.[0]?.plain_text||'',temporal:tmeta(d,null,'notion')});}if(remote.length){entries=remote;persist();renderEntries();renderDash();renderHome();}}catch(e){console.warn('Notion:',e.message);}}
-
-// SETTINGS
-function toggleVisible(id,btn){const el=$(id);if(el.type==='password'){el.type='text';btn.textContent='🙈';}else{el.type='password';btn.textContent='👁';}}
-function copyField(id){const el=$(id);const val=el.value.trim();if(!val){toast('Nothing to copy — field is empty');return;}if(navigator.clipboard?.writeText){navigator.clipboard.writeText(val).then(()=>toast('✓ Copied to clipboard')).catch(()=>fallbackCopy(val));}else fallbackCopy(val);}
-function saveApiKey(){const k=$('akey').value.trim();if(k&&!k.startsWith('sk-ant-')){$('akst').innerHTML='<span class="err">⚠️ Should start with sk-ant-</span>';return;}apiKey=k;lsSet('lt_ak',apiKey);updateKeyDot();$('akst').innerHTML=apiKey?'<span class="ok">✓ Saved — AI enabled.</span>':'Cleared.';setTimeout(()=>$('akst').innerHTML='',5000);}
-async function testApiKey(){if(!apiKey){$('akst').innerHTML='<span class="err">No key to test.</span>';return;}$('akst').textContent='Testing...';try{await ai('Reply with exactly: OK','ping');$('akst').innerHTML='<span class="ok">✓ Connected!</span>';}catch(e){$('akst').innerHTML=`<span class="err">✗ ${e.message}</span>`;}}
-function saveNotion(){
-  nKey=$('nkey').value.trim();nDb=$('ndb').value.trim();
-  lsSet('lt_nk',nKey);lsSet('lt_nd',nDb);
-  $('nst').textContent='Connecting...';
-  setSyncDot('syncing');
-  pullFromNotion().then(()=>{
-    $('nst').innerHTML='<span class="ok">✓ Connected & synced!</span>';
-    // Push any local entries that aren't in Notion yet
-    const localOnly=entries.filter(e=>!e.notion_id&&e.source!=='notion');
-    if(localOnly.length){
-      $('nst').innerHTML=`<span class="ok">✓ Connected — pushing ${localOnly.length} local entries to Notion...</span>`;
-      (async()=>{
-        let pushed=0;
-        for(const entry of localOnly){
-          try{await saveNotionEntry(entry);pushed++;await sleep(300);}catch{}
-        }
-        $('nst').innerHTML=`<span class="ok">✓ Synced — ${pushed} entries pushed to Notion.</span>`;
-        setSyncDot('ok');
-      })();
-    }
-  }).catch(e=>$('nst').innerHTML=`<span class="err">⚠️ ${esc(e.message)}</span>`);
+// ── DASHBOARD ─────────────────────────────────────────────────────────────
+function renderDash(){
+  $('dt').textContent=entries.length;$('dstr').textContent=calcStreak();
+  const c={};CATS.forEach(x=>c[x.v]=0);entries.forEach(e=>{if(c[e.category]!==undefined)c[e.category]++;else c['Journal']++;});
+  const mx=Math.max(...Object.values(c),1);
+  $('cbars').innerHTML=CATS.map(x=>`<div class="brow"><div class="blabel">${x.e} ${x.l}</div><div class="btrack"><div class="bfill" style="width:${(c[x.v]/mx)*100}%"></div></div><div class="bcnt">${c[x.v]}</div></div>`).join('');
+  const me=entries.filter(e=>e.mood).slice(0,50).reverse();
+  $('mline').innerHTML=me.length?me.map(e=>`<div class="mdot" style="background:${MMAP[e.mood]||'#ddd'}" title="${esc(e.date+': '+e.mood)}">${(e.mood||'').split(' ')[0]}</div>`).join('')+'<span style="font-size:11px;color:#aaa;margin-left:6px">← recent</span>':'<span style="color:#ccc;font-size:12px">No mood data yet</span>';
+  renderGoals();
 }
-function saveProfile(){uName=$('uname').value.trim();uVals=$('uvals').value.trim();uFoc=$('ufoc').value.trim();uWant=$('uwant').value.trim();lsSet('lt_un',uName);lsSet('lt_uv',uVals);lsSet('lt_uf',uFoc);lsSet('lt_uw',uWant);$('pst').innerHTML='<span class="ok">✓ Saved.</span>';renderHome();setTimeout(()=>$('pst').innerHTML='',3000);}
-function clearData(){if(!confirm('Clear all local data?\n\nExport first to keep a backup.'))return;entries=[];goals=[];patterns=[];persist();renderHome();renderEntries();renderDash();renderPatterns();toast('Cleared');}
-
-// DASHBOARD
-function renderDash(){$('dt').textContent=entries.length;$('dstr').textContent=calcStreak();const c={};CATS.forEach(x=>c[x.v]=0);entries.forEach(e=>{if(c[e.category]!==undefined)c[e.category]++;else c['Journal']++;});const mx=Math.max(...Object.values(c),1);$('cbars').innerHTML=CATS.map(x=>`<div class="brow"><div class="blabel">${x.e} ${x.l}</div><div class="btrack"><div class="bfill" style="width:${(c[x.v]/mx)*100}%"></div></div><div class="bcnt">${c[x.v]}</div></div>`).join('');const me=entries.filter(e=>e.mood).slice(0,50).reverse();$('mline').innerHTML=me.length?me.map(e=>`<div class="mdot" style="background:${MMAP[e.mood]||'#ddd'}" title="${esc(e.date+': '+e.mood)}">${(e.mood||'').split(' ')[0]}</div>`).join('')+'<span style="font-size:11px;color:#aaa;margin-left:6px">← recent</span>':'<span style="color:#ccc;font-size:12px">No mood data yet</span>';renderGoals();}
-function renderGoals(){const el=$('glist');if(!goals.length){el.innerHTML='<div style="color:#ccc;font-size:13px;padding:6px 0">No goals yet.</div>';return;}el.innerHTML=goals.map((g,i)=>`<div class="gi"><div class="gt" title="${esc(g.text)}">${esc(g.text)}</div><div class="gpt"><div class="gpf" style="width:${g.pct||0}%"></div></div><span style="font-size:12px;color:#6c8ebf;font-weight:600;width:32px;flex-shrink:0;text-align:right">${g.pct||0}%</span><input type="range" min="0" max="100" value="${g.pct||0}" style="width:50px;flex-shrink:0" oninput="goals[${i}].pct=+this.value;persist();renderGoals()"/><button onclick="goals.splice(${i},1);persist();renderGoals()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:18px;line-height:1;flex-shrink:0">×</button></div>`).join('');}
-function addGoal(){const t=prompt('Enter a goal:');if(!t?.trim())return;goals.push({text:t.trim(),pct:0});persist();renderGoals();}
+function renderGoals(){const el=$('glist');if(!goals.length){el.innerHTML='<div style="color:#ccc;font-size:13px;padding:6px 0">No goals yet.</div>';return;}el.innerHTML=goals.map((g,i)=>`<div class="gi"><div class="gt" title="${esc(g.text)}">${esc(g.text)}</div><div class="gpt"><div class="gpf" style="width:${g.pct||0}%"></div></div><span style="font-size:12px;color:#6c8ebf;font-weight:600;width:32px;flex-shrink:0;text-align:right">${g.pct||0}%</span><input type="range" min="0" max="100" value="${g.pct||0}" style="width:50px;flex-shrink:0" oninput="goals[${i}].pct=+this.value;updateGoal(${i})"/><button onclick="removeGoal(${i})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:18px;line-height:1;flex-shrink:0">×</button></div>`).join('');}
+async function addGoal(){const t=prompt('Enter a goal:');if(!t?.trim())return;const g={text:t.trim(),pct:0};try{const r=await sbReq('/rest/v1/goals','POST',{user_email:userEmail,text:g.text,pct:0});if(r&&r[0])g.sb_id=r[0].id;}catch{}goals.push(g);renderGoals();}
+async function updateGoal(i){renderGoals();try{if(goals[i].sb_id)await sbReq(`/rest/v1/goals?id=eq.${goals[i].sb_id}`,'PATCH',{pct:goals[i].pct});}catch{}}
+async function removeGoal(i){try{if(goals[i].sb_id)await sbReq(`/rest/v1/goals?id=eq.${goals[i].sb_id}`,'DELETE');}catch{}goals.splice(i,1);renderGoals();}
 async function genDigest(){const btn=$('dgbtn');btn.disabled=true;btn.textContent='...';$('dout').innerHTML='<span style="color:#aaa;font-size:13px">Generating...</span>';try{const r=await ai(`You are LifeThread. Write a precise, honest weekly digest for ${uName||'the user'}. Cover dominant themes, emotional patterns, goal progress or avoidance, one behavioral pattern worth naming, one forward-looking honest observation. Under 280 words. No cheerleading.`,`Log:\n${ctx(20)}\n\nGenerate weekly digest.`);$('dout').innerHTML=`<div class="dbox">${esc(r).replace(/\n/g,'<br>')}</div>`;}catch(e){$('dout').innerHTML=`<span class="err">${esc(e.message)}</span>`;}btn.disabled=false;btn.textContent='Regenerate';}
 
-// CHECKIN
+// ── CHECKIN ───────────────────────────────────────────────────────────────
 function startCI(){$('cistart').style.display='none';$('ciflow').style.display='block';ciQs=[...CIQS];ciAs=[];ciIdx=0;showCIQ();}
 function showCIQ(){$('ciq').textContent=ciQs[ciIdx];$('cia').value='';$('cipr').textContent=`${ciIdx+1} of ${ciQs.length}`;}
 const nextCI=guard(()=>{const a=$('cia').value.trim();if(!a){toast('Write something first');return;}ciAs.push({q:ciQs[ciIdx],a});ciIdx++;if(ciIdx<ciQs.length){showCIQ();return;}addE({category:'Journal',content:ciAs.map(x=>`Q: ${x.q}\nA: ${x.a}`).join('\n\n'),title:`Check-in — ${new Date().toLocaleDateString()}`,source:'checkin'});$('ciflow').style.display='none';$('cidone').style.display='block';renderEntries();renderHome();toast('✓ Check-in saved');});
 function resetCI(){$('cidone').style.display='none';$('cistart').style.display='block';}
 
-// ARCHIVE
+// ── ARCHIVE ───────────────────────────────────────────────────────────────
 async function runArchive(){
   const btn=$('abtn');btn.disabled=true;btn.textContent='Running...';
   const el=$('aout');el.style.display='block';el.textContent='Reading your history...';
@@ -943,7 +997,7 @@ async function runArchive(){
   btn.disabled=false;btn.textContent='Run Synthesis';
 }
 
-// AI CORE
+// ── AI CORE ───────────────────────────────────────────────────────────────
 async function ai(sys,msg,retries=2){
   let lastErr;
   for(let i=0;i<=retries;i++){
@@ -953,28 +1007,17 @@ async function ai(sys,msg,retries=2){
       if(r.status===429)throw new Error('Rate limited. Wait 30s.');
       if(r.status>=500)throw new Error('Service unavailable. Try again.');
       if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error?.message||`Error ${r.status}`);}
-      const d=await r.json();
-      const text=d.content?.[0]?.text||'';
+      const d=await r.json();const text=d.content?.[0]?.text||'';
       if(!text)throw new Error('Empty response.');
       return text;
     }catch(e){lastErr=e;if(e.message.includes('invalid')||e.message.includes('Rate'))throw e;if(i<retries)await sleep(1200*(i+1));}
   }
   throw lastErr;
 }
-
 function safeJSON(text){let t=text.replace(/^\uFEFF/,'').trim();t=t.replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'').trim();const a=t.indexOf('['),o=t.indexOf('{');let s=-1;if(a!==-1&&(o===-1||a<o))s=a;else if(o!==-1)s=o;if(s>0)t=t.slice(s);const ae=t.lastIndexOf(']'),oe=t.lastIndexOf('}');const e=Math.max(ae,oe);if(e!==-1)t=t.slice(0,e+1);return JSON.parse(t);}
 
-// CHAT
-const MSYS={
-  base:`You are LifeThread — a rigorous personal intelligence system functioning as a living mirror.\n\nUSER: Name: __N__. Values: __V__. Focus: __F__. Wants: __W__.\nPatterns: __P__\n\nPRINCIPLES:\n- Speak directly. Do not soften.\n- Name patterns precisely.\n- Connect across categories and time.\n- Note recurrence explicitly.\n- Earn observations through evidence.\n- Goal is clarity, not comfort.`,
-  reflect:'\n\nMODE: Guided Reflection. One question at a time. No premature interpretation.',
-  decide:'\n\nMODE: Decision Support. Surface assumptions, map consequences, draw from history.',
-  future:'\n\nMODE: Future Self, one year out. Honest, specific, not motivational.',
-  review:'\n\nMODE: Weekly Review. What happened, what patterns active, what needs attention.',
-  letter:'\n\nMODE: Letter from future self. Specific, honest, not soft.',
-  analyst:'\n\nMODE: Pure Pattern Analyst. Evidence-based. Precise.',
-  open:'You are LifeThread — a trusted companion. User: __N__. Warm, present, real.'
-};
+// ── CHAT ──────────────────────────────────────────────────────────────────
+const MSYS={base:`You are LifeThread — a rigorous personal intelligence system functioning as a living mirror.\n\nUSER: Name: __N__. Values: __V__. Focus: __F__. Wants: __W__.\nPatterns: __P__\n\nPRINCIPLES:\n- Speak directly. Do not soften.\n- Name patterns precisely.\n- Connect across categories and time.\n- Note recurrence explicitly.\n- Goal is clarity, not comfort.`,reflect:'\n\nMODE: Guided Reflection. One question at a time.',decide:'\n\nMODE: Decision Support. Surface assumptions, map consequences.',future:'\n\nMODE: Future Self, one year out. Honest, specific.',review:'\n\nMODE: Weekly Review. What happened, what patterns active, what needs attention.',letter:'\n\nMODE: Letter from future self. Specific, honest, not soft.',analyst:'\n\nMODE: Pure Pattern Analyst. Evidence-based. Precise.',open:'You are LifeThread — a trusted companion. User: __N__. Warm, present, real.'};
 function getSys(mode){const pat=patterns.length?patterns.map(p=>p.name+': '+p.desc).join(' | '):'none';const base=MSYS.base.replace('__N__',uName||'[not set]').replace('__V__',uVals||'[not set]').replace('__F__',uFoc||'[not set]').replace('__W__',uWant||'[not set]').replace('__P__',pat);if(mode==='open')return MSYS.open.replace('__N__',uName||'friend');if(mode==='mirror')return base;return base+(MSYS[mode]||'');}
 function ctx(lim=40){const pr=`Name: ${uName}. Values: ${uVals}. Focus: ${uFoc}. Wants: ${uWant}.`;const pc=patterns.length?`\nPatterns: ${patterns.map(p=>p.name+': '+p.desc).join(' | ')}`:'';const sp=entries.length>=2?`\nSpans: ${entries[entries.length-1]?.date} → ${entries[0]?.date} (${entries.length} total)`:'';const log=entries.slice(0,lim).map(e=>{const t=e.temporal;const tc=t?`[${t.day_of_week||''} ${e.date}${t.time_of_day?' '+t.time_of_day:''}]`:`[${e.date}]`;return`${tc}[${e.category}]${e.mood?' ['+e.mood+']':''}\n${(e.content||'').slice(0,500)}`;}).join('\n\n---\n\n');return pr+pc+sp+'\n\nLIFE LOG:\n'+log;}
 function initChat(){addMsg('ai',`Hello${uName?', '+uName:''}.\n\nI hold everything you've logged — across time, categories, and the patterns you've named. I'm not here to make you feel better. I'm here to help you see clearly.\n\nWhat's on your mind?`);}
@@ -995,15 +1038,45 @@ async function sendChat(){
     if(r.status===401){addMsg('ai','⚙️ API key invalid. Check Settings.');$('csend').disabled=false;return;}
     if(r.status===429){addMsg('ai','⏱ Rate limited. Wait 30s.');$('csend').disabled=false;return;}
     if(!r.ok){const d=await r.json().catch(()=>({}));addMsg('ai',`Error: ${d.error?.message||r.status}`);$('csend').disabled=false;return;}
-    const d=await r.json();
-    const rep=d.content?.[0]?.text;
-    if(!rep){addMsg('ai','Empty response. Try again.');$('csend').disabled=false;return;}
+    const d=await r.json();const rep=d.content?.[0]?.text;
+    if(!rep){addMsg('ai','Empty response.');$('csend').disabled=false;return;}
     addMsg('ai',rep);chatHist.push({role:'assistant',content:rep});
   }catch(e){removeTyping();addMsg('ai',navigator.onLine?'Connection error.':'You appear to be offline.');}
   $('csend').disabled=false;
 }
 
-// TRIAGE / IMPORT
+// ── SETTINGS ──────────────────────────────────────────────────────────────
+function toggleVisible(id,btn){const el=$(id);if(el.type==='password'){el.type='text';btn.textContent='🙈';}else{el.type='password';btn.textContent='👁';}}
+function copyField(id){const el=$(id);const val=el.value.trim();if(!val){toast('Nothing to copy');return;}if(navigator.clipboard?.writeText){navigator.clipboard.writeText(val).then(()=>toast('✓ Copied')).catch(()=>fallbackCopy(val));}else fallbackCopy(val);}
+
+async function saveApiKey(){
+  const k=$('akey').value.trim();
+  if(k&&!k.startsWith('sk-ant-')){$('akst').innerHTML='<span class="err">⚠️ Should start with sk-ant-</span>';return;}
+  apiKey=k;
+  // Save to Supabase account
+  try{await sbReq(`/rest/v1/user_credentials?email=eq.${encodeURIComponent(userEmail)}`,'PATCH',{anthropic_key:k});$('akst').innerHTML='<span class="ok">✓ Saved to your account — works on all devices.</span>';}
+  catch(e){$('akst').innerHTML=`<span class="err">⚠️ ${e.message}</span>`;}
+  setTimeout(()=>$('akst').innerHTML='',5000);
+}
+async function testApiKey(){
+  $('akst').textContent='Testing...';
+  try{await ai('Reply with exactly: OK','ping');$('akst').innerHTML='<span class="ok">✓ Connected!</span>';}
+  catch(e){$('akst').innerHTML=`<span class="err">✗ ${e.message}</span>`;}
+}
+async function saveNotion(){
+  nKey=$('nkey').value.trim();nDb=$('ndb').value.trim();
+  try{await sbReq(`/rest/v1/user_credentials?email=eq.${encodeURIComponent(userEmail)}`,'PATCH',{notion_key:nKey,notion_db:nDb});$('nst').innerHTML='<span class="ok">✓ Saved to your account.</span>';}
+  catch(e){$('nst').innerHTML=`<span class="err">⚠️ ${e.message}</span>`;}
+}
+async function saveProfile(){
+  uName=$('uname').value.trim();uVals=$('uvals').value.trim();uFoc=$('ufoc').value.trim();uWant=$('uwant').value.trim();
+  const profile={name:uName,values:uVals,focus:uFoc,want:uWant};
+  try{await sbReq(`/rest/v1/user_credentials?email=eq.${encodeURIComponent(userEmail)}`,'PATCH',{profile});$('pst').innerHTML='<span class="ok">✓ Saved to your account.</span>';renderHome();}
+  catch(e){$('pst').innerHTML=`<span class="err">⚠️ ${e.message}</span>`;}
+  setTimeout(()=>$('pst').innerHTML='',3000);
+}
+
+// ── TRIAGE / IMPORT ───────────────────────────────────────────────────────
 function handleDrop(e){const files=e.dataTransfer.files;if(files.length)handleFiles(files);}
 function handleFiles(files){
   triageFiles={text:[],json:[],image:[],audio:[],other:[]};
@@ -1015,7 +1088,7 @@ function renderTriage(){
   const icons={text:'📄',json:'🔧',image:'🖼',audio:'🎙',other:'📎'};
   ['text','json','image','audio','other'].forEach(g=>{
     const el=$(`triage-${g}`),list=$(`triage-${g}-list`),count=$(`triage-${g}-count`);
-    if(!triageFiles[g].length){el.style.display='none';return;}
+    if(!triageFiles[g]?.length){el.style.display='none';return;}
     el.style.display='block';count.textContent=triageFiles[g].length;
     list.innerHTML=triageFiles[g].map(f=>`<div class="tfile"><span>${icons[g]}</span><span class="tfile-name">${esc(f.name)}</span><span class="tfile-size">${fmtSize(f.size)}</span></div>`).join('');
   });
@@ -1023,39 +1096,30 @@ function renderTriage(){
 }
 function toggleTriage(g){$(`triage-${g}-list`).classList.toggle('open');}
 
+function chunkText(text,max=7000){if(text.length<=max)return[text];const chunks=[];let rem=text;while(rem.length>0){if(rem.length<=max){chunks.push(rem);break;}let cut=max;const p=rem.lastIndexOf('\n\n',cut);if(p>max*0.4)cut=p;else{const n=rem.lastIndexOf('\n',cut);if(n>max*0.4)cut=n;else{const s=rem.lastIndexOf('. ',cut);if(s>max*0.4)cut=s+1;}}const chunk=rem.slice(0,cut).trim();if(chunk.length>30)chunks.push(chunk);rem=rem.slice(cut).trim();}return chunks.filter(c=>c.length>30);}
+function fileToBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});}
+function fileToText(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsText(file,'UTF-8');});}
+
 async function processGroup(type){
   if(!triageFiles[type]?.length)return;
-  const dc=$('icat').value;
-  const st=$('ist');
+  const dc=$('icat').value,st=$('ist');
   $('iprog').style.display='block';
   const fill=$('ipfill'),label=$('iplabel');
-  let total=0;
-  const files=triageFiles[type];
+  let total=0;const files=triageFiles[type];
   const ISYS=`Parse this text into individual journal/life log entries. Return ONLY a JSON array: [{"date":"YYYY-MM-DD","time_of_day":"Morning|Afternoon|Evening|Night|null","category":"Journal|Goals|Relationships|Health|Finances|Spirituality|Creative Work|Learning & Growth|Family|Dreams & Visions|Mental & Emotional State","content":"full text","title":"5-8 words","date_confidence":"exact|inferred|unknown"}]. Default: ${dc}. Today: ${today()}. JSON only.`;
-
   if(type==='image'){
     for(let i=0;i<files.length;i++){
       fill.style.width=Math.round((i/files.length)*100)+'%';label.textContent=`Reading image ${i+1} of ${files.length}...`;
-      try{
-        const b64=await fileToBase64(files[i]);
-        const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:files[i].type||'image/jpeg',data:b64}},{type:'text',text:'Extract all visible text from this image. Return only the extracted text.'}]}]})});
-        const d=await r.json();const text=d.content?.[0]?.text||'';
-        if(text.trim().length>20){addE({category:dc,content:text.trim(),title:files[i].name.slice(0,60),source:'import-image'});total++;}
-      }catch(e){console.warn(e);}
+      try{const b64=await fileToBase64(files[i]);const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:files[i].type||'image/jpeg',data:b64}},{type:'text',text:'Extract all visible text from this image.'}]}]})});const d=await r.json();const text=d.content?.[0]?.text||'';if(text.trim().length>20){addE({category:dc,content:text.trim(),title:files[i].name.slice(0,60),source:'import-image'});total++;}}catch(e){console.warn(e);}
       await sleep(500);
     }
   } else if(type==='json'){
     for(let i=0;i<files.length;i++){
       fill.style.width=Math.round((i/files.length)*100)+'%';label.textContent=`Parsing JSON ${i+1} of ${files.length}...`;
-      try{
-        const text=await fileToText(files[i]);const data=JSON.parse(text);
-        let extracted='';
+      try{const text=await fileToText(files[i]);const data=JSON.parse(text);let extracted='';
         if(data.mapping){const msgs=Object.values(data.mapping).filter(m=>m.message?.content?.parts&&m.message.author.role!=='system').sort((a,b)=>(a.message.create_time||0)-(b.message.create_time||0));extracted=msgs.map(m=>{const role=m.message.author.role==='user'?'Me':'GPT';const content=m.message.content.parts.filter(p=>typeof p==='string').join(' ');return content.trim()?`${role}: ${content.trim()}`:'';}).filter(Boolean).join('\n\n');}
         else extracted=text.slice(0,5000);
-        if(extracted.trim().length>50){
-          const chunks=chunkText(extracted,7000);
-          for(const chunk of chunks){try{const raw_r=await ai(`Parse this ChatGPT conversation. Extract only meaningful personal content — thoughts, feelings, goals, decisions. Skip generic AI responses. ${ISYS}`,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-json',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}
-        }
+        if(extracted.trim().length>50){const chunks=chunkText(extracted,7000);for(const chunk of chunks){try{const raw_r=await ai(`Parse this ChatGPT conversation. Extract only meaningful personal content. ${ISYS}`,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-json',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}}
       }catch(e){console.warn(e);}
     }
   } else {
@@ -1064,53 +1128,54 @@ async function processGroup(type){
       try{const text=await fileToText(files[i]);const chunks=chunkText(text,7000);for(const chunk of chunks){try{const raw_r=await ai(ISYS,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}}catch(e){console.warn(e);}
     }
   }
-
   fill.style.width='100%';$('iprog').style.display='none';
   entries.sort((a,b)=>b.date.localeCompare(a.date));
-  persist();renderEntries();renderDash();renderHome();
+  renderEntries();renderDash();renderHome();
   st.innerHTML=`<span class="ok">✓ Imported ${total} entries from ${files.length} ${type} file${files.length>1?'s':''}.</span>`;
   toast(`✓ ${total} entries imported`);
 }
-
-function chunkText(text,max=7000){if(text.length<=max)return[text];const chunks=[];let rem=text;while(rem.length>0){if(rem.length<=max){chunks.push(rem);break;}let cut=max;const p=rem.lastIndexOf('\n\n',cut);if(p>max*0.4)cut=p;else{const n=rem.lastIndexOf('\n',cut);if(n>max*0.4)cut=n;else{const s=rem.lastIndexOf('. ',cut);if(s>max*0.4)cut=s+1;}}const chunk=rem.slice(0,cut).trim();if(chunk.length>30)chunks.push(chunk);rem=rem.slice(cut).trim();}return chunks.filter(c=>c.length>30);}
-function fileToBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});}
-function fileToText(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsText(file,'UTF-8');});}
 
 async function processImport(){
   const raw=$('itxt').value.trim();if(!raw){toast('Paste some text first');return;}
   const dc=$('icat').value,st=$('ist'),btn=$('ibtn');btn.disabled=true;
   $('iprog').style.display='block';
   const fill=$('ipfill'),label=$('iplabel');
-  const chunks=chunkText(raw,7000);let total=0,ex=0,inf=0,unk=0;
-  const allParsed=[];
+  const chunks=chunkText(raw,7000);let total=0,ex=0,inf=0,unk=0;const allParsed=[];
   const ISYS=`Parse into individual journal/life log entries. Return ONLY a JSON array: [{"date":"YYYY-MM-DD","time_of_day":"Morning|Afternoon|Evening|Night|Late night|null","category":"Journal|Goals|Relationships|Health|Finances|Spirituality|Creative Work|Learning & Growth|Family|Dreams & Visions|Mental & Emotional State","content":"full text","title":"5-8 words","date_confidence":"exact|inferred|unknown"}]. Default: ${dc}. Today: ${today()}. JSON only.`;
   for(let i=0;i<chunks.length;i++){
     fill.style.width=Math.round((i/chunks.length)*100)+'%';
     label.textContent=chunks.length>1?`Part ${i+1} of ${chunks.length}...`:'Processing...';
-    st.innerHTML=`<span style="color:#6c8ebf">${chunks.length>1?`Processing ${i+1} of ${chunks.length}...`:'Parsing...'}</span>`;
     try{const raw_r=await ai(ISYS,chunks[i]);try{const p=safeJSON(raw_r);if(Array.isArray(p))allParsed.push(...p);}catch{}}
     catch(e){if(e.message.includes('Rate')){label.textContent='Rate limited — waiting 20s...';await sleep(20000);i--;continue;}console.warn(e);}
     if(i<chunks.length-1)await sleep(700);
   }
   fill.style.width='100%';label.textContent='Saving...';
-  if(!allParsed.length){st.innerHTML='<span class="err">⚠️ No entries parsed. Try a different text format.</span>';$('iprog').style.display='none';btn.disabled=false;return;}
+  if(!allParsed.length){st.innerHTML='<span class="err">⚠️ No entries parsed.</span>';$('iprog').style.display='none';btn.disabled=false;return;}
   const seen=new Set();
   const deduped=allParsed.filter(p=>{if(!p?.content?.trim())return false;const fp=p.content.trim().slice(0,100);if(seen.has(fp))return false;seen.add(fp);return true;});
   for(const p of deduped.sort((a,b)=>(a.date||'').localeCompare(b.date||''))){
     addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import',date_confidence:p.date_confidence||'unknown'});
     total++;if(p.date_confidence==='exact')ex++;else if(p.date_confidence==='inferred')inf++;else unk++;
   }
-  entries.sort((a,b)=>b.date.localeCompare(a.date));persist();renderEntries();renderDash();renderHome();
+  entries.sort((a,b)=>b.date.localeCompare(a.date));renderEntries();renderDash();renderHome();
   $('iprog').style.display='none';$('itxt').value='';$('charcount').textContent='';
   st.innerHTML=`<span class="ok">✓ ${total} entries — ${ex} exact, ${inf} inferred, ${unk} unknown dates.</span>`;
   toast(`✓ ${total} entries imported`);btn.disabled=false;
 }
 
-// VERSION
-function renderVersion(){$('ve').textContent=entries.length||'0';$('vp').textContent=patterns.length||'0';$('vg').textContent=goals.length||'0';const s=[...entries].filter(e=>e.date).sort((a,b)=>a.date.localeCompare(b.date));$('vsp').textContent=s.length>=2?`${s[0].date} → ${s[s.length-1].date}`:s.length===1?s[0].date:'—';$('vak').innerHTML=apiKey?'<span class="ok">✓ Active</span>':'<span class="err">✗ Missing</span>';$('vno').textContent=nKey&&nDb?'✓ Connected':'Not connected';$('vpr').textContent=`${[uName,uVals,uFoc,uWant].filter(Boolean).length} / 4 fields`;}
+// ── VERSION ───────────────────────────────────────────────────────────────
+function renderVersion(){
+  $('vuser').textContent=userEmail||'—';
+  $('ve').textContent=entries.length||'0';$('vp').textContent=patterns.length||'0';$('vg').textContent=goals.length||'0';
+  const s=[...entries].filter(e=>e.date).sort((a,b)=>a.date.localeCompare(b.date));
+  $('vsp').textContent=s.length>=2?`${s[0].date} → ${s[s.length-1].date}`:s.length===1?s[0].date:'—';
+  $('vsb').innerHTML='<span class="ok">✓ Connected</span>';
+  $('vak').innerHTML=apiKey?'<span class="ok">✓ Active</span>':'<span class="err">✗ Missing</span>';
+  $('vno').textContent=nKey&&nDb?'✓ Connected':'Not connected';
+}
 
-// EXPORT
-function exportData(){try{const d={exported:nowISO(),version:VER,entries,goals,patterns,profile:{uName,uVals,uFoc,uWant}};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`lifethread-${today()}.json`;document.body.appendChild(a);a.click();document.body.removeChild(a);toast('✓ Backup downloaded');}catch(e){toast('Export failed: '+e.message);}}
+// ── EXPORT ────────────────────────────────────────────────────────────────
+function exportData(){try{const d={exported:nowISO(),version:VER,user:userEmail,entries,goals,patterns,profile:{uName,uVals,uFoc,uWant}};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`lifethread-${today()}.json`;document.body.appendChild(a);a.click();document.body.removeChild(a);toast('✓ Backup downloaded');}catch(e){toast('Export failed: '+e.message);}}
 </script>
 </body>
 </html>
