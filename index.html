@@ -21,8 +21,7 @@ nav::-webkit-scrollbar{display:none}
 .nr{margin-left:auto;display:flex;gap:4px;flex-shrink:0;align-items:center}
 .ib{padding:4px 8px;border:1px solid #e8e8e4;border-radius:6px;background:#fff;cursor:pointer;font-size:11px;color:#888;white-space:nowrap;flex-shrink:0}
 .key-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;cursor:pointer}
-.key-dot.ok{background:#3a8c5a}
-.key-dot.bad{background:#e05a5a;animation:blink 2s infinite}
+.key-dot.ok{background:#3a8c5a}.key-dot.bad{background:#e05a5a;animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 .panel{display:none;flex:1;overflow:hidden;flex-direction:column;min-height:0}
 .panel.active{display:flex}
@@ -42,13 +41,9 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .divider{height:1px;background:#f0f0ec;margin:14px 0}
 .sec{font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
 .ok{color:#3a8c5a}.err{color:#e05a5a}
-
-/* SETUP BANNER */
 .setup-banner{background:#fff3cd;border:1px solid #ffc107;border-radius:10px;padding:14px;margin:12px 16px 0;font-size:13px;color:#856404;line-height:1.6}
 .setup-banner strong{display:block;margin-bottom:4px}
 .setup-banner a{color:#6c8ebf;cursor:pointer;font-weight:600;text-decoration:underline}
-
-/* TOAST */
 #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
@@ -64,6 +59,9 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .hquick input{flex:1;padding:10px 14px;border:1.5px solid #e0e8f5;border-radius:20px;background:#f7f9fd;font-size:16px}
 .hquick button{width:36px;height:36px;border-radius:50%;background:#6c8ebf;border:none;cursor:pointer;color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .jrow{display:flex;gap:7px;padding:0 16px 16px;flex-wrap:wrap}
+.daily-brief{margin:0 16px 12px;background:linear-gradient(135deg,#eef2f9,#f5f0ff);border:1px solid #d0d8f0;border-radius:10px;padding:14px}
+.daily-brief h3{font-size:11px;font-weight:600;color:#3a5a8c;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.daily-brief-content{font-size:13px;color:#333;line-height:1.7}
 
 /* LOG */
 .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:5px;margin-bottom:10px}
@@ -74,16 +72,25 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .vbtn{padding:7px 12px;border:1.5px solid #e8e8e4;border-radius:8px;background:#fff;cursor:pointer;font-size:12px;color:#666}
 .vbtn.rec{border-color:#e05a5a;background:#fff5f5;color:#e05a5a;animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
-.ecard{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;-webkit-user-select:none}
+.ecard{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer;-webkit-user-select:none;transition:background .1s}
 .ecard:active{background:#f0f4fb}
 .etop{display:flex;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap}
 .tag{font-size:11px;font-weight:500;padding:2px 7px;border-radius:10px}
 .tc{background:#eef2f9;color:#3a5a8c}.tm{background:#f5f0ff;color:#6a3aad}.td{color:#bbb;font-size:11px}
 .ebody{font-size:13px;line-height:1.6;color:#333;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical}
+.mirror-flash{background:#f0f4fb;border-left:3px solid #6c8ebf;border-radius:0 8px 8px 0;padding:8px 12px;margin-top:8px;font-size:12px;color:#3a5a8c;line-height:1.6;display:none}
 .empty{text-align:center;color:#ccc;font-size:13px;padding:28px 0;line-height:1.8}
 .qbar{background:#fff;border-top:1px solid #eee;padding:10px 12px;display:flex;gap:8px;align-items:center;flex-shrink:0}
 .qin{flex:1;padding:8px 12px;border:1.5px solid #e0e8f5;border-radius:20px;font-size:16px;background:#f7f9fd}
 .qsend{width:34px;height:34px;border-radius:50%;background:#6c8ebf;border:none;cursor:pointer;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* SEARCH */
+.search-bar{display:flex;gap:8px;margin-bottom:12px}
+.search-in{flex:1;padding:9px 14px;border:1.5px solid #e0e8f5;border-radius:20px;font-size:14px;background:#f7f9fd}
+.search-in:focus{border-color:#6c8ebf;background:#fff}
+.search-result{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px 14px;margin-bottom:8px;cursor:pointer}
+.search-result:active{background:#f0f4fb}
+.search-highlight{background:#fff3cd;border-radius:3px;padding:0 2px}
 
 /* MODAL */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:flex-end;justify-content:center}
@@ -96,6 +103,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .medit{width:100%;border:none;font-size:14px;line-height:1.8;background:#fff;display:none;overflow-y:auto;flex:1;padding:12px 16px;resize:none;min-height:120px}
 .medit:focus{outline:none}
 .mfoot{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid #eee;flex-shrink:0}
+.mirror-insight{background:#f0f4fb;border-radius:8px;padding:12px;margin:0 16px 12px;font-size:13px;color:#3a5a8c;line-height:1.7;display:none}
 
 /* PATTERNS */
 .pcard{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px 14px;margin-bottom:8px}
@@ -135,7 +143,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .dot{width:6px;height:6px;border-radius:50%;background:#bbb;animation:bop 1.2s infinite}
 .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
 @keyframes bop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
-.cmodes{display:flex;gap:5px;padding:7px 10px;overflow-x:auto;border-top:1px solid #eee;background:#fafaf8;flex-shrink:0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.cmodes{display:flex;gap:5px;padding:7px 10px;overflow-x:auto;border-top:1px solid #eee;background:#fafal8;flex-shrink:0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .cmodes::-webkit-scrollbar{display:none}
 .mc{padding:5px 11px;border:1.5px solid #e0e8f5;border-radius:16px;background:#fff;font-size:11px;cursor:pointer;white-space:nowrap;color:#5a7aad;font-weight:500;flex-shrink:0;-webkit-user-select:none}
 .mc.am{background:#eef2f9;border-color:#6c8ebf}
@@ -156,11 +164,21 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .aintro{background:#f7f9fd;border:1px solid #dde8f5;border-radius:10px;padding:14px;margin-bottom:14px;font-size:13px;color:#3a5a8c;line-height:1.7}
 .aout{background:#fff;border:1px solid #eee;border-radius:10px;padding:16px;font-size:13px;line-height:1.9;color:#222;white-space:pre-wrap;word-break:break-word}
 
-/* IMPORT */
-.drop-zone{border:2px dashed #d0d8e8;border-radius:10px;padding:18px;text-align:center;background:#fafbfd;cursor:pointer;margin-bottom:10px;-webkit-user-select:none;transition:all .2s}
-.drop-zone:active{border-color:#6c8ebf;background:#f0f4fb}
+/* IMPORT / TRIAGE */
+.drop-zone{border:2px dashed #6c8ebf;border-radius:12px;padding:24px;text-align:center;background:#f7f9fd;cursor:pointer;margin-bottom:14px;transition:all .2s;-webkit-user-select:none}
+.drop-zone.drag-over{background:#eef2f9;border-color:#3a5a8c}
 .prog-bar{background:#eee;border-radius:6px;height:8px;overflow:hidden;margin-bottom:6px}
 .prog-fill{height:100%;background:#6c8ebf;border-radius:6px;transition:width .4s;width:0%}
+.triage-group{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.triage-header{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600;color:#1a1a1a}
+.triage-badge{background:#6c8ebf;color:#fff;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500}
+.triage-arrow{margin-left:auto;font-size:11px;color:#aaa}
+.triage-list{margin-top:10px;display:none}
+.triage-list.open{display:block}
+.tfile{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f5f5f5;font-size:12px;color:#555}
+.tfile:last-child{border:none}
+.tfile-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tfile-size{color:#aaa;flex-shrink:0}
 
 /* VERSION */
 .vtable{width:100%;font-size:13px;border-collapse:collapse}
@@ -185,15 +203,16 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
   <button class="nb active" onclick="show('home',this)">🏠</button>
   <button class="nb" onclick="show('log',this)">📓 Log</button>
   <button class="nb" onclick="show('chat',this)">💬 Chat</button>
+  <button class="nb" onclick="show('search',this)">🔍 Search</button>
   <button class="nb" onclick="show('patterns',this)">🧩</button>
   <button class="nb" onclick="show('dash',this)">📊</button>
   <button class="nb" onclick="show('checkin',this)">☀️</button>
-  <button class="nb" onclick="show('archive',this)">🔍</button>
+  <button class="nb" onclick="show('archive',this)">📖</button>
   <button class="nb" onclick="show('import',this)">📥</button>
   <div class="nr">
-    <div id="keydot" class="key-dot bad" title="No API key — tap Settings" onclick="show('settings',null)"></div>
+    <div id="keydot" class="key-dot bad" title="No API key" onclick="show('settings',null)"></div>
     <button class="ib" onclick="exportData()">⬇</button>
-    <button class="ib" onclick="show('version',this)">v1.6</button>
+    <button class="ib" onclick="show('version',this)">v1.7</button>
     <button class="ib" onclick="show('settings',null)">⚙</button>
   </div>
 </nav>
@@ -207,12 +226,14 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
       <button class="mclose" onclick="closeModal()">✕</button>
     </div>
     <div class="mmeta" id="mmeta"></div>
+    <div id="mirror-insight" class="mirror-insight"></div>
     <div class="mbody" id="mbody"></div>
     <textarea class="medit" id="medit"></textarea>
     <div class="mfoot">
       <button class="btn bp" style="font-size:12px;padding:7px 13px" id="etoggle" onclick="toggleEdit()">✏️ Edit</button>
       <button class="btn bp" style="font-size:12px;padding:7px 13px;display:none" id="esave" onclick="saveEdit()">💾 Save</button>
       <button class="btn bg" style="font-size:12px;padding:7px 13px" onclick="copyEntry()">📋 Copy</button>
+      <button class="btn bg" style="font-size:12px;padding:7px 13px" id="mirror-btn" onclick="sendToMirror()">🔮 Mirror</button>
       <button class="btn bg" style="font-size:12px;padding:7px 13px;color:#e05a5a;border-color:#e05a5a;margin-left:auto" onclick="delEntry()">🗑</button>
     </div>
   </div>
@@ -227,7 +248,11 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
     </div>
     <div id="setupbanner" class="setup-banner" style="display:none">
       <strong>⚡ First-time setup needed</strong>
-      To enable AI features (Chat, Import, Archive), add your free Anthropic API key in <a onclick="show('settings',null)">Settings →</a>
+      Add your Anthropic API key in <a onclick="show('settings',null)">Settings →</a> to enable AI features.
+    </div>
+    <div id="daily-brief" class="daily-brief" style="display:none">
+      <h3>☀️ Daily Brief <button class="btn bg" style="font-size:10px;padding:3px 8px" onclick="genBrief()">Refresh</button></h3>
+      <div id="brief-content" class="daily-brief-content"></div>
     </div>
     <div class="hgrid">
       <div class="hstat"><div class="n" id="ht">0</div><div class="l">entries</div></div>
@@ -242,8 +267,8 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
     <div class="jrow">
       <button class="btn bg" onclick="show('chat',null);setMode('mirror',null)">🔮 Mirror</button>
       <button class="btn bg" onclick="show('checkin',null)">☀️ Check-in</button>
-      <button class="btn bg" onclick="show('archive',null)">🔍 Archive</button>
-      <button class="btn bg" onclick="show('patterns',null)">🧩 Patterns</button>
+      <button class="btn bg" onclick="show('archive',null)">📖 Archive</button>
+      <button class="btn bg" onclick="show('search',null)">🔍 Search</button>
     </div>
   </div>
 </div>
@@ -254,7 +279,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
     <div class="sec">Category</div>
     <div class="cgrid" id="cgrid"></div>
     <div class="tplbox" id="tplbox"></div>
-    <textarea id="etxt" style="min-height:110px;margin-bottom:8px" placeholder="Write freely. No format required."></textarea>
+    <textarea id="etxt" style="min-height:110px;margin-bottom:8px" placeholder="Write freely."></textarea>
     <div class="eact">
       <button class="vbtn" id="vbtn" onclick="toggleVoice()">🎤 Voice</button>
       <select id="msel" style="max-width:155px;font-size:14px">
@@ -299,6 +324,23 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
   </div>
 </div>
 
+<!-- SEARCH -->
+<div id="search-panel" class="panel">
+  <div class="scroll"><div class="pad">
+    <div class="sec">Search Your Life Log</div>
+    <div class="search-bar">
+      <input class="search-in" id="search-in" placeholder="Search entries, topics, people, feelings..."
+        oninput="doSearch(this.value)" onkeydown="if(event.key==='Enter')doSearch(this.value)"/>
+      <button class="btn bp" style="font-size:12px;padding:8px 14px" onclick="aiSearch()">🔮 AI</button>
+    </div>
+    <div id="search-results"></div>
+    <div id="ai-search-out" style="display:none;margin-top:14px">
+      <div class="sec">AI Analysis</div>
+      <div id="ai-search-content" class="dbox"></div>
+    </div>
+  </div></div>
+</div>
+
 <!-- PATTERNS -->
 <div id="patterns-panel" class="panel">
   <div class="scroll"><div class="pad">
@@ -306,7 +348,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
       <div class="sec" style="margin:0">Named Patterns</div>
       <button class="btn bp" style="font-size:12px;padding:6px 12px" onclick="addPattern()">+ Add</button>
     </div>
-    <p style="font-size:13px;color:#888;line-height:1.6;margin-bottom:14px">Name the mechanisms you've identified in yourself. The AI references these by name in every interaction.</p>
+    <p style="font-size:13px;color:#888;line-height:1.6;margin-bottom:14px">Name the mechanisms you've identified in yourself. The AI references these by name in every interaction and flags them when active in new entries.</p>
     <div id="plist"></div>
     <div class="divider"></div>
     <button class="btn bg" style="font-size:12px" id="adbtn" onclick="autoDetect()">🧠 Auto-detect from entries</button>
@@ -346,10 +388,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
       <div id="ciflow" style="display:none">
         <div class="ciq" id="ciq"></div>
         <textarea id="cia" style="min-height:80px" placeholder="Your answer..."></textarea>
-        <div class="cinav">
-          <span class="cipr" id="cipr"></span>
-          <button class="btn bp" onclick="nextCI()">Next →</button>
-        </div>
+        <div class="cinav"><span class="cipr" id="cipr"></span><button class="btn bp" onclick="nextCI()">Next →</button></div>
       </div>
       <div id="cidone" style="display:none">
         <p style="font-size:14px;font-weight:600;margin-bottom:8px" class="ok">✓ Done. Saved.</p>
@@ -395,21 +434,53 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 <!-- IMPORT -->
 <div id="import-panel" class="panel">
   <div class="scroll"><div class="pad">
-    <div class="sec">Import Your Life Data</div>
-    <p style="font-size:13px;color:#888;margin-bottom:14px;line-height:1.6">
-      Paste any amount of text — ChatGPT exports, old journals, notes. Large texts are automatically split and processed in batches. No manual chunking needed.
-    </p>
-    <div class="drop-zone" onclick="$('fin').click()">
-      <div style="font-size:22px;margin-bottom:5px">📂</div>
-      <p style="font-size:13px;color:#555;font-weight:500">Upload a text file (.txt, .json, .md)</p>
-      <p style="font-size:12px;color:#aaa;margin-top:3px">For Word or PDF: open the file → Select All → Copy → paste below</p>
+    <div class="sec">Import & Triage</div>
+    <p style="font-size:13px;color:#888;margin-bottom:14px;line-height:1.6">Drop any files — text, JSON, images, documents. LifeThread sorts by type and processes each group separately.</p>
+    <div id="dropzone" class="drop-zone"
+      onclick="$('fin').click()"
+      ondragover="event.preventDefault();event.stopPropagation();this.classList.add('drag-over')"
+      ondragleave="event.preventDefault();event.stopPropagation();this.classList.remove('drag-over')"
+      ondrop="event.preventDefault();event.stopPropagation();this.classList.remove('drag-over');handleDrop(event)">
+      <div style="font-size:28px;margin-bottom:8px">📂</div>
+      <div style="font-size:14px;font-weight:600;color:#3a5a8c;margin-bottom:4px">Drop files here or tap to browse</div>
+      <div style="font-size:12px;color:#aaa">Text, JSON, images — any format, any quantity</div>
     </div>
-    <input type="file" id="fin" accept=".txt,.json,.md,.text,.csv" style="display:none" onchange="handleFile(event)"/>
+    <input type="file" id="fin" multiple accept="*/*" style="display:none" onchange="handleFiles(event.target.files)"/>
+    <div id="triage-out" style="display:none">
+      <div class="sec" style="margin-bottom:10px">Files Detected</div>
+      <div id="triage-text" class="triage-group" style="display:none">
+        <div class="triage-header" onclick="toggleTriage('text')"><span>📄 Text & Documents</span><span id="triage-text-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div>
+        <div id="triage-text-list" class="triage-list"></div>
+        <button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('text')">Import Text Files</button>
+      </div>
+      <div id="triage-json" class="triage-group" style="display:none">
+        <div class="triage-header" onclick="toggleTriage('json')"><span>🔧 JSON / ChatGPT Data</span><span id="triage-json-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div>
+        <div id="triage-json-list" class="triage-list"></div>
+        <button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('json')">Extract Conversations</button>
+      </div>
+      <div id="triage-image" class="triage-group" style="display:none">
+        <div class="triage-header" onclick="toggleTriage('image')"><span>🖼 Images</span><span id="triage-image-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div>
+        <div id="triage-image-list" class="triage-list"></div>
+        <div style="font-size:12px;color:#888;margin-top:6px;line-height:1.6">AI reads visible text in each image and extracts it as a journal entry.</div>
+        <button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('image')">Extract Text from Images</button>
+      </div>
+      <div id="triage-audio" class="triage-group" style="display:none">
+        <div class="triage-header" onclick="toggleTriage('audio')"><span>🎙 Audio Files</span><span id="triage-audio-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div>
+        <div id="triage-audio-list" class="triage-list"></div>
+        <div style="font-size:12px;color:#aaa;margin-top:6px">Audio transcription coming in Phase 2.</div>
+      </div>
+      <div id="triage-other" class="triage-group" style="display:none">
+        <div class="triage-header" onclick="toggleTriage('other')"><span>📎 Other</span><span id="triage-other-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div>
+        <div id="triage-other-list" class="triage-list"></div>
+      </div>
+      <div class="divider"></div>
+    </div>
+    <div class="sec">Or Paste Text Directly</div>
     <div style="position:relative;margin-bottom:10px">
-      <textarea id="itxt" style="min-height:130px;width:100%" placeholder="Paste your text here — any length. Journal entries, ChatGPT conversations, notes, anything.&#10;&#10;The AI will automatically parse, date, and categorize each entry."></textarea>
+      <textarea id="itxt" style="min-height:100px;width:100%" placeholder="Paste any text — ChatGPT conversations, journals, notes. Any length."></textarea>
       <div id="charcount" style="position:absolute;bottom:8px;right:10px;font-size:11px;color:#bbb"></div>
     </div>
-    <div class="field"><label>Default category if undetectable</label>
+    <div class="field"><label>Default category</label>
       <select id="icat">
         <option>Journal</option><option>Goals</option><option>Relationships</option>
         <option>Health</option><option>Finances</option><option>Spirituality</option>
@@ -418,22 +489,12 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
         <option>Mental & Emotional State</option>
       </select>
     </div>
-    <button class="btn bp" id="ibtn" onclick="processImport()" style="width:100%;justify-content:center;padding:12px">
-      Import & Auto-categorize
-    </button>
+    <button class="btn bp" id="ibtn" onclick="processImport()" style="width:100%;justify-content:center;padding:12px">Import & Auto-categorize</button>
     <div id="iprog" style="display:none;margin-top:14px">
       <div class="prog-bar"><div class="prog-fill" id="ipfill"></div></div>
       <div id="iplabel" style="font-size:12px;color:#888;text-align:center;margin-top:4px"></div>
     </div>
     <div id="ist" style="margin-top:12px;font-size:13px;line-height:1.6"></div>
-    <div class="divider"></div>
-    <div style="font-size:12px;color:#aaa;line-height:1.8">
-      <strong style="color:#888;display:block;margin-bottom:4px">Tips for importing your ChatGPT export:</strong>
-      • Open the exported .txt or .json file<br>
-      • Select all text (Ctrl+A or Cmd+A)<br>
-      • Copy and paste into the box above<br>
-      • Hit Import — the app handles the rest
-    </div>
   </div></div>
 </div>
 
@@ -442,9 +503,9 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
   <div class="scroll"><div class="pad" style="max-width:560px">
     <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
       <div style="font-size:20px;font-weight:700">LifeThread</div>
-      <div style="font-size:12px;color:#6c8ebf;font-weight:600;background:#eef2f9;padding:2px 9px;border-radius:10px">v1.6.0</div>
+      <div style="font-size:12px;color:#6c8ebf;font-weight:600;background:#eef2f9;padding:2px 9px;border-radius:10px">v1.7.0</div>
     </div>
-    <div style="font-size:12px;color:#aaa;margin-bottom:20px">March 27, 2026 · Claude Sonnet 4</div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:20px">March 28, 2026 · Claude Sonnet 4</div>
     <div class="sec">System Stats</div>
     <div style="border:1px solid #eee;border-radius:10px;overflow:hidden;margin-bottom:18px">
       <table class="vtable">
@@ -459,61 +520,76 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
     </div>
     <div class="sec">Changelog</div>
     <div class="vlog" style="margin-bottom:8px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v1.6.0</b><span style="font-size:11px;color:#6c8ebf;background:#eef2f9;padding:2px 7px;border-radius:8px">current</span><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v1.7.0</b><span style="font-size:11px;color:#6c8ebf;background:#eef2f9;padding:2px 7px;border-radius:8px">current</span><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 28, 2026</span></div>
       <ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px">
-        <li>Import completely rebuilt — no size limit, auto-chunking, progress bar</li>
-        <li>API key status dot in nav bar (green = set, red blinking = missing)</li>
-        <li>First-time setup banner on Home</li>
-        <li>Word/PDF clear instructions (copy-paste method)</li>
-        <li>Character counter on import textarea</li>
-        <li>Chunk deduplication prevents duplicate entries</li>
-        <li>Rate limit auto-retry with 15s wait</li>
-        <li>localStorage fully isolated per domain — key persists correctly on Netlify</li>
-        <li>All AI errors surface specific actionable messages</li>
+        <li>🔮 Send to Mirror — instant Claude analysis on any entry</li>
+        <li>☀️ Daily Brief — AI morning summary on Home screen</li>
+        <li>🔍 Search tab — keyword search + AI semantic search across all entries</li>
+        <li>🧩 Pattern auto-flag on new entries</li>
+        <li>📥 Drop zone fixed — no more browser file hijacking</li>
+        <li>📂 Multi-format triage — text, JSON, images, audio sorted automatically</li>
+        <li>🖼 Image text extraction via Claude vision</li>
+        <li>🔧 ChatGPT JSON conversation parser</li>
+        <li>Global drag intercept prevents browser from opening dropped files</li>
       </ul>
     </div>
-    <div class="vlog old" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.5.0</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Full defensive hardening pass</li><li>Toast system, debounce, retry logic, storage quota guard</li><li>iOS clipboard fallback</li></ul></div>
-    <div class="vlog old" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.4.0</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>API key field, entry modal, chat fixed</li></ul></div>
-    <div class="vlog old" style="margin-bottom:18px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.0–1.3</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Initial build through temporal engine</li></ul></div>
+    <div class="vlog old" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.6.0</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Full triage import system</li><li>API key fixed via Netlify env variable</li><li>Entry modal with edit/copy/delete</li></ul></div>
+    <div class="vlog old" style="margin-bottom:18px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.0–1.5</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Initial build through hardening pass</li></ul></div>
     <div class="sec">Phase 2 Roadmap</div>
-    <div style="background:#fafaf8;border:1px solid #eee;border-radius:10px;padding:12px;margin-bottom:16px"><ul style="font-size:12px;color:#666;line-height:2.1;padding-left:14px"><li>Semantic search (vector DB)</li><li>Entity tracking — people, places, projects</li><li>Gmail & Calendar integration</li><li>Contradiction detection engine</li><li>Auto life chapter summaries</li><li>Standalone backend (Supabase)</li><li>Native iOS PWA with offline support</li></ul></div>
+    <div style="background:#fafal8;border:1px solid #eee;border-radius:10px;padding:12px;margin-bottom:16px"><ul style="font-size:12px;color:#666;line-height:2.1;padding-left:14px"><li>Semantic vector search (Supabase)</li><li>Entity tracking — people, places, projects</li><li>Gmail & Calendar integration</li><li>Apple Watch biometrics integration</li><li>Audio transcription (Whisper API)</li><li>Real-time pattern detection on entry save</li><li>ChatGPT Custom GPT connector</li><li>Native iOS PWA with offline support</li></ul></div>
   </div></div>
 </div>
 
 <!-- SETTINGS -->
 <div id="settings-panel" class="panel">
   <div class="scroll"><div class="pad" style="max-width:520px">
-
     <div class="ss">
       <h3>⚡ Anthropic API Key</h3>
       <div class="key-setup">
         <strong>How to get your free API key:</strong>
         <ol>
           <li>Go to <a href="https://platform.anthropic.com" target="_blank">platform.anthropic.com</a></li>
-          <li>Sign up or log in</li>
-          <li>Click <strong>API Keys</strong> in the left menu</li>
-          <li>Click <strong>Create Key</strong> — copy the key</li>
-          <li>Paste it below and tap Save</li>
+          <li>Sign up or log in → API Keys → Create Key</li>
+          <li>Copy the key (starts with sk-ant-)</li>
+          <li>Paste below and tap Save</li>
         </ol>
-        <div style="margin-top:8px;font-size:12px;color:#5a8abf">The key is stored only on this device. It never leaves your browser.</div>
+        <div style="margin-top:8px;font-size:12px;color:#5a8abf">Stored only on this device. Never transmitted elsewhere.</div>
       </div>
-      <div class="field"><label>API Key</label><input type="password" id="akey" placeholder="sk-ant-api03-..." autocomplete="off"/></div>
+      <div class="field">
+        <label>API Key</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="password" id="akey" placeholder="sk-ant-api03-..." autocomplete="off" style="flex:1"/>
+          <button class="btn bg" style="font-size:11px;padding:7px 10px;flex-shrink:0" onclick="toggleVisible('akey',this)">👁</button>
+          <button class="btn bg" style="font-size:11px;padding:7px 10px;flex-shrink:0" onclick="copyField('akey')">📋</button>
+        </div>
+      </div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
         <button class="btn bp" onclick="saveApiKey()">Save Key</button>
         <button class="btn bg" onclick="testApiKey()" style="font-size:12px">Test Connection</button>
       </div>
       <div class="st" id="akst"></div>
     </div>
-
     <div class="ss">
       <h3>Notion Integration (optional)</h3>
       <p style="font-size:12px;color:#888;line-height:1.6;margin-bottom:10px">Syncs entries to Notion for cross-device access and unlimited storage.</p>
-      <div class="field"><label>Notion API Key</label><input type="password" id="nkey" placeholder="secret_..."/></div>
-      <div class="field"><label>Database ID</label><input type="text" id="ndb" placeholder="32-character ID from database URL"/></div>
+      <div class="field">
+        <label>Notion API Key</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="password" id="nkey" placeholder="secret_..." style="flex:1"/>
+          <button class="btn bg" style="font-size:11px;padding:7px 10px;flex-shrink:0" onclick="toggleVisible('nkey',this)">👁</button>
+          <button class="btn bg" style="font-size:11px;padding:7px 10px;flex-shrink:0" onclick="copyField('nkey')">📋</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Database ID</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="text" id="ndb" placeholder="32-character ID from database URL" style="flex:1"/>
+          <button class="btn bg" style="font-size:11px;padding:7px 10px;flex-shrink:0" onclick="copyField('ndb')">📋</button>
+        </div>
+      </div>
       <button class="btn bp" onclick="saveNotion()">Save & Sync</button>
       <div class="st" id="nst"></div>
     </div>
-
     <div class="ss">
       <h3>Your Profile</h3>
       <div class="field"><label>Name</label><input type="text" id="uname" placeholder="What should LifeThread call you?"/></div>
@@ -523,7 +599,6 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
       <button class="btn bp" onclick="saveProfile()">Save Profile</button>
       <div class="st" id="pst"></div>
     </div>
-
     <div class="ss">
       <h3>Data</h3>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -531,14 +606,18 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
         <button class="btn bg" onclick="clearData()" style="color:#e05a5a;border-color:#e05a5a">Clear All Data</button>
       </div>
     </div>
-
   </div></div>
 </div>
 </div>
 
 <script>
 'use strict';
-const VER='1.6.0';
+// Prevent browser hijacking file drops anywhere on page
+window.addEventListener('dragover',e=>{e.preventDefault();e.stopPropagation();});
+window.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();});
+
+const VER='1.7.0';
+const API_URL='/.netlify/functions/anthropic';
 const CATS=[
   {e:'📓',l:'Journal',v:'Journal'},{e:'🎯',l:'Goals',v:'Goals'},
   {e:'👥',l:'People',v:'Relationships'},{e:'💪',l:'Health',v:'Health'},
@@ -558,64 +637,64 @@ const TPLS={
 };
 const MMAP={'✨ Expansive':'#f0c040','😌 Calm':'#6cbf8e','😐 Neutral':'#b0b0b0','😔 Heavy':'#7090b0','⚡ Energized':'#e08830','😰 Anxious':'#c07080','🙏 Grateful':'#a070c0','😤 Frustrated':'#d06050','🔥 Passionate':'#e05020','😶 Numb':'#909090','🌀 Restless':'#70a0c0'};
 const CIQS=['How are you actually feeling right now — physically, mentally, emotionally?','What was the most significant thing that happened since your last entry?','What are you avoiding? What are you not saying here?','What\'s one thing that\'s true right now that you haven\'t fully admitted to yourself?','What do you want to move toward — and what\'s actually stopping you?'];
-const AFOCUS={'':'Synthesize everything — behavioral threads, emotional arc, patterns across categories, contradictions, what has changed, what hasn\'t, and the central through-line.',patterns:'Map behavioral and emotional patterns: name each, describe the mechanism, cite evidence, note frequency.',emotional:'Trace the emotional arc. What moods dominate? What triggers what? What cycles repeat?',relationships:'Reconstruct the relational landscape. Who appears? How? What patterns emerge?',work:'Analyze work and identity patterns: investment, performance, ambivalence, avoidance.',health:'Track health, body, energy patterns. Correlate with emotional states.',finances:'Map financial decisions and patterns. Note emotional correlations.',goals:'Audit stated goals against actual logged behavior. Be honest.',contradictions:'Identify contradictions between stated values and logged behavior.',thread:'Name the single central through-line — the unresolved tension all patterns organize around.'};
+const AFOCUS={'':'Synthesize everything — behavioral threads, emotional arc, patterns, contradictions, and the central through-line.',patterns:'Map behavioral and emotional patterns: name each, describe the mechanism, cite evidence, note frequency.',emotional:'Trace the emotional arc. What moods dominate? What triggers what? What cycles repeat?',relationships:'Reconstruct the relational landscape. Who appears? How? What patterns emerge?',work:'Analyze work and identity patterns: investment, performance, ambivalence, avoidance.',health:'Track health, body, energy patterns. Correlate with emotional states.',finances:'Map financial decisions and patterns. Note emotional correlations.',goals:'Audit stated goals against actual logged behavior.',contradictions:'Identify contradictions between stated values and logged behavior.',thread:'Name the single central through-line — the unresolved tension all patterns organize around.'};
+const FILE_TYPES={text:['txt','md','text','csv','rtf'],json:['json'],image:['jpg','jpeg','png','gif','webp','bmp','heic','heif'],audio:['mp3','wav','m4a','ogg','aac','flac','mp4','mov','webm']};
 
 let entries=[],goals=[],patterns=[],chatHist=[],ciAs=[],ciQs=[],ciIdx=0;
 let selCat=null,chatMode='mirror',recording=false,recog=null;
 let nKey='',nDb='',uName='',uVals='',uFoc='',uWant='',apiKey='';
 let activeId=null,editing=false,busy=false;
+let triageFiles={text:[],json:[],image:[],audio:[],other:[]};
 
 const $=id=>document.getElementById(id);
 const nowISO=()=>new Date().toISOString();
 const today=()=>new Date().toISOString().split('T')[0];
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const getExt=n=>(n.split('.').pop()||'').toLowerCase();
+const fmtSize=b=>b<1024?b+'B':b<1048576?Math.round(b/1024)+'KB':(b/1048576).toFixed(1)+'MB';
 
 let toastT;
-function toast(msg,dur=2800){
-  const t=$('toast');t.textContent=msg;t.classList.add('show');
-  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),dur);
-}
+function toast(msg,dur=2800){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),dur);}
 function guard(fn){return function(...a){if(busy)return;busy=true;setTimeout(()=>busy=false,1000);return fn.apply(this,a);};}
 
-// ── STORAGE ───────────────────────────────────────────────────────────────
+// STORAGE
 function lsGet(k){try{return localStorage.getItem(k);}catch{return null;}}
-function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){if(e.name==='QuotaExceededError'){try{const s=JSON.parse(lsGet('lt_e')||'[]');lsSet('lt_e',JSON.stringify(s.slice(0,300)));localStorage.setItem(k,v);toast('⚠️ Storage nearly full. Oldest entries trimmed. Connect Notion for unlimited.');}catch{toast('⚠️ Storage full. Export your data, then clear.');}}}};
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){if(e.name==='QuotaExceededError'){try{const s=JSON.parse(lsGet('lt_e')||'[]');lsSet('lt_e',JSON.stringify(s.slice(0,300)));localStorage.setItem(k,v);toast('⚠️ Storage nearly full. Connect Notion for unlimited.');}catch{toast('⚠️ Storage full. Export your data.');}}}};
 const persist=()=>{lsSet('lt_e',JSON.stringify(entries.slice(0,500)));lsSet('lt_g',JSON.stringify(goals));lsSet('lt_p',JSON.stringify(patterns));};
 
-// ── TEMPORAL ──────────────────────────────────────────────────────────────
+// TEMPORAL
 const dow=d=>{try{return new Date(d+'T12:00:00').toLocaleDateString('en-US',{weekday:'long'});}catch{return '';}};
 const tod=()=>{const h=new Date().getHours();if(h<5)return'Late night';if(h<9)return'Early morning';if(h<12)return'Morning';if(h<14)return'Midday';if(h<17)return'Afternoon';if(h<20)return'Evening';return'Night';};
 const tmeta=(d,t,s)=>{try{const dt=new Date(d+'T12:00:00');return{date:d,time_of_day:t||null,day_of_week:dow(d),month:dt.toLocaleDateString('en-US',{month:'long'}),year:dt.getFullYear(),quarter:`Q${Math.ceil((dt.getMonth()+1)/3)} ${dt.getFullYear()}`,source:s||'manual',logged_at:nowISO()};}catch{return{date:d,source:s||'manual',logged_at:nowISO()};}};
 
-// ── INIT ──────────────────────────────────────────────────────────────────
+// INIT
 window.addEventListener('load',()=>{
   try{
-    apiKey=lsGet('lt_ak')||'';
-    nKey=lsGet('lt_nk')||''; nDb=lsGet('lt_nd')||'';
-    uName=lsGet('lt_un')||''; uVals=lsGet('lt_uv')||'';
-    uFoc=lsGet('lt_uf')||''; uWant=lsGet('lt_uw')||'';
+    apiKey=lsGet('lt_ak')||''; nKey=lsGet('lt_nk')||''; nDb=lsGet('lt_nd')||'';
+    uName=lsGet('lt_un')||''; uVals=lsGet('lt_uv')||''; uFoc=lsGet('lt_uf')||''; uWant=lsGet('lt_uw')||'';
     entries=JSON.parse(lsGet('lt_e')||'[]');
     goals=JSON.parse(lsGet('lt_g')||'[]');
     patterns=JSON.parse(lsGet('lt_p')||'[]');
-  }catch(e){entries=[];goals=[];patterns=[];console.warn('Init error',e);}
+  }catch(e){entries=[];goals=[];patterns=[];}
   [['akey',apiKey],['nkey',nKey],['ndb',nDb],['uname',uName],['uvals',uVals],['ufoc',uFoc],['uwant',uWant]].forEach(([id,v])=>{const el=$(id);if(el&&v)el.value=v;});
   updateKeyDot();
   renderHome();renderCats();renderEntries();renderPatterns();renderDash();initChat();
-  // Character counter for import
   const itxt=$('itxt');
   if(itxt)itxt.addEventListener('input',()=>{const l=itxt.value.length;$('charcount').textContent=l>0?l.toLocaleString()+' chars':'';});
   if(nKey&&nDb)syncNotion();
+  // Auto-generate daily brief
+  if(apiKey&&entries.length)setTimeout(genBrief,2000);
 });
 
 function updateKeyDot(){
   const dot=$('keydot');
   if(apiKey){dot.className='key-dot ok';dot.title='API key set ✓';}
-  else{dot.className='key-dot bad';dot.title='No API key — tap to fix';}
+  else{dot.className='key-dot bad';dot.title='No API key';}
   $('setupbanner').style.display=apiKey?'none':'block';
 }
 
-// ── NAV ───────────────────────────────────────────────────────────────────
+// NAV
 function show(p,el){
   document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.nb').forEach(x=>x.classList.remove('active'));
@@ -625,9 +704,10 @@ function show(p,el){
   if(p==='dash')renderDash();
   if(p==='home')renderHome();
   if(p==='version')renderVersion();
+  if(p==='search')$('search-in').focus();
 }
 
-// ── HOME ──────────────────────────────────────────────────────────────────
+// HOME
 function renderHome(){
   const h=new Date().getHours();
   $('hgreet').textContent=(h<12?'Good morning':h<17?'Good afternoon':'Good evening')+(uName?', '+uName:'')+(uName?'.':'.');
@@ -635,22 +715,36 @@ function renderHome(){
   $('ht').textContent=entries.length;$('hs').textContent=calcStreak();$('hp').textContent=patterns.length;
   $('setupbanner').style.display=apiKey?'none':'block';
   const el=$('hlast');
-  if(!entries.length){el.innerHTML='<span style="color:#ccc;font-size:13px">No entries yet. Start in Log or use Quick Capture below.</span>';return;}
+  if(!entries.length){el.innerHTML='<span style="color:#ccc;font-size:13px">No entries yet.</span>';return;}
   const e=entries[0];
   el.innerHTML=`<div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap"><span class="tag tc">${esc(e.category)}</span>${e.mood?`<span class="tag tm">${esc(e.mood)}</span>`:''}<span class="td">${esc(e.date)}</span></div><div style="font-size:13px;color:#444;line-height:1.6">${esc((e.content||'').slice(0,160))}${(e.content||'').length>160?'…':''}</div>`;
 }
+
+async function genBrief(){
+  if(!apiKey||!entries.length)return;
+  $('daily-brief').style.display='block';
+  $('brief-content').textContent='Generating your daily brief...';
+  try{
+    const r=await ai(
+      `You are LifeThread. Generate a morning brief for ${uName||'the user'} — 3-4 sentences max. Cover: one pattern currently active based on recent entries, one thing that needs attention today, one honest forward observation. No cheerleading. Direct and specific.`,
+      `Recent entries:\n${ctx(10)}\n\nGenerate morning brief.`
+    );
+    $('brief-content').textContent=r;
+  }catch{$('daily-brief').style.display='none';}
+}
+
 function openLastEntry(){if(entries.length)openEntry(entries[0].id);}
-const hqSave=guard(()=>{const v=$('hqin').value.trim();if(!v)return;addE({content:v,source:'quick'});$('hqin').value='';renderHome();toast('✓ Captured');});
+const hqSave=guard(()=>{const v=$('hqin').value.trim();if(!v)return;addE({content:v,source:'quick'});$('hqin').value='';renderHome();toast('✓ Captured');if(apiKey)setTimeout(()=>checkPatternMatch(entries[0]),500);});
 function calcStreak(){const ds=[...new Set(entries.map(e=>e.date))].sort().reverse();let s=0,d=new Date();for(const dt of ds){try{const ed=new Date(dt);const df=Math.floor((d-ed)/86400000);if(df<=s+1){s++;d=ed;}else break;}catch{}}return s;}
 
-// ── CATEGORIES ────────────────────────────────────────────────────────────
+// CATEGORIES
 function renderCats(){$('cgrid').innerHTML=CATS.map(c=>`<button class="cb${selCat===c.v?' sel':''}" onclick="pickCat('${c.v}')">${c.e} ${c.l}</button>`).join('');}
 function pickCat(v){selCat=selCat===v?null:v;renderCats();const tb=$('tplbox');if(selCat&&TPLS[selCat]){tb.style.display='block';tb.innerHTML=`<strong style="display:block;margin-bottom:4px;font-size:12px;color:#3a5a8c">Prompts</strong><span style="font-size:12px;color:#3a5a8c;line-height:1.9">${TPLS[selCat].split('\n').map(esc).join('<br>')}</span>`;}else tb.style.display='none';}
 
-// ── VOICE ─────────────────────────────────────────────────────────────────
-function toggleVoice(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('⚠️ Voice not supported. Try Chrome or Safari.');return;}if(recording){recog&&recog.stop();return;}try{recog=new SR();recog.continuous=true;recog.interimResults=true;recog.lang='en-US';recog.onstart=()=>{recording=true;const b=$('vbtn');b.classList.add('rec');b.textContent='🔴 Stop';};recog.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;$('etxt').value=t;};recog.onerror=e=>{toast('Voice error: '+e.error);recog.stop();};recog.onend=()=>{recording=false;const b=$('vbtn');b.classList.remove('rec');b.textContent='🎤 Voice';};recog.start();}catch(e){toast('Could not start voice: '+e.message);}}
+// VOICE
+function toggleVoice(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('⚠️ Voice not supported here. Try Chrome.');return;}if(recording){recog&&recog.stop();return;}try{recog=new SR();recog.continuous=true;recog.interimResults=true;recog.lang='en-US';recog.onstart=()=>{recording=true;const b=$('vbtn');b.classList.add('rec');b.textContent='🔴 Stop';};recog.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;$('etxt').value=t;};recog.onerror=e=>{toast('Voice error: '+e.error);recog.stop();};recog.onend=()=>{recording=false;const b=$('vbtn');b.classList.remove('rec');b.textContent='🎤 Voice';};recog.start();}catch(e){toast('Voice error: '+e.message);}}
 
-// ── ENTRIES ───────────────────────────────────────────────────────────────
+// ENTRIES
 function addE(f){
   const d=f.date||today();
   const e={id:Date.now()+(Math.random()*999|0),date:d,category:'Journal',mood:'',...f,title:(f.content||'').slice(0,60).replace(/\n/g,' '),temporal:tmeta(d,f.time_of_day||tod(),f.source||'manual')};
@@ -658,19 +752,45 @@ function addE(f){
   if(nKey&&nDb)saveNotionEntry(e).catch(()=>{});
   return e;
 }
+
 const saveEntry=guard(async()=>{
   const txt=$('etxt').value.trim();if(!txt)return;
   const btn=$('sbtn');btn.disabled=true;btn.textContent='Saving...';
-  addE({category:selCat||'Journal',mood:$('msel').value,content:txt});
+  const entry=addE({category:selCat||'Journal',mood:$('msel').value,content:txt});
   renderEntries();renderHome();
   $('etxt').value='';$('msel').value='';selCat=null;renderCats();$('tplbox').style.display='none';
   btn.disabled=false;btn.textContent='Save';toast('✓ Entry saved');
+  // Auto pattern check
+  if(apiKey&&patterns.length)setTimeout(()=>checkPatternMatch(entry),800);
 });
+
 const quickSave=guard(()=>{const v=$('qin').value.trim();if(!v)return;addE({content:v,source:'quick'});renderEntries();renderHome();$('qin').value='';toast('✓ Captured');});
+
+// Pattern auto-detection on new entries
+async function checkPatternMatch(entry){
+  if(!patterns.length||!entry)return;
+  try{
+    const r=await ai(
+      `You are a pattern detection system. Given a new journal entry and a list of named behavioral patterns, identify which patterns (if any) are active in this entry. Be precise. Only flag patterns that are clearly evidenced in the text. Return a brief one-sentence observation for each active pattern, or "none" if no patterns are active.`,
+      `New entry: "${entry.content.slice(0,500)}"\n\nNamed patterns:\n${patterns.map(p=>p.name+': '+p.desc).join('\n')}\n\nWhich patterns are active?`
+    );
+    if(r&&!r.toLowerCase().includes('none')){
+      // Show as a flash on the entry card
+      const card=document.querySelector(`[onclick="openEntry(${entry.id})"]`);
+      if(card){
+        let flash=card.querySelector('.mirror-flash');
+        if(!flash){flash=document.createElement('div');flash.className='mirror-flash';card.appendChild(flash);}
+        flash.textContent='🧩 '+r;
+        flash.style.display='block';
+      }
+      toast('🧩 Pattern detected');
+    }
+  }catch{}
+}
 
 function renderEntries(){
   const el=$('elist');
-  if(!entries.length){el.innerHTML='<div class="empty">No entries yet.<br>Start writing above, or use Quick Capture below.</div>';return;}
+  if(!entries.length){el.innerHTML='<div class="empty">No entries yet.<br>Start writing above or use Quick Capture below.</div>';return;}
   const g={};
   entries.slice(0,60).forEach(e=>{const k=(e.temporal?.month&&e.temporal?.year)?`${e.temporal.month} ${e.temporal.year}`:((e.date||'').slice(0,7)||'—');if(!g[k])g[k]=[];g[k].push(e);});
   el.innerHTML=Object.entries(g).map(([mo,arr])=>`
@@ -683,12 +803,13 @@ function renderEntries(){
     </div>`).join('');
 }
 
-// ── MODAL ─────────────────────────────────────────────────────────────────
+// MODAL
 function openEntry(id){
   const e=entries.find(x=>x.id===id);if(!e)return;
   activeId=id;editing=false;
   $('mtitle').textContent=e.title||e.date||'Entry';
   $('mmeta').innerHTML=`<span class="tag tc">${esc(e.category)}</span>${e.mood?`<span class="tag tm">${esc(e.mood)}</span>`:''}<span class="td">${e.temporal?.day_of_week?e.temporal.day_of_week+', ':''} ${esc(e.date)}${e.temporal?.time_of_day?' · '+e.temporal.time_of_day:''}</span>`;
+  $('mirror-insight').style.display='none';
   $('mbody').textContent=e.content||'';
   $('mbody').style.display='block';
   $('medit').value=e.content||'';$('medit').style.display='none';
@@ -697,244 +818,275 @@ function openEntry(id){
 }
 function closeModal(){$('emodal').style.display='none';document.body.style.overflow='';activeId=null;editing=false;}
 function toggleEdit(){editing=!editing;$('mbody').style.display=editing?'none':'block';$('medit').style.display=editing?'block':'none';$('etoggle').textContent=editing?'✕ Cancel':'✏️ Edit';$('esave').style.display=editing?'inline-flex':'none';if(editing)$('medit').focus();}
-const saveEdit=guard(()=>{const e=entries.find(x=>x.id===activeId);if(!e)return;const t=$('medit').value.trim();if(!t){toast('Entry cannot be empty');return;}e.content=t;e.title=t.slice(0,60).replace(/\n/g,' ');persist();renderEntries();renderHome();$('mbody').textContent=t;toggleEdit();toast('✓ Entry updated');});
+const saveEdit=guard(()=>{const e=entries.find(x=>x.id===activeId);if(!e)return;const t=$('medit').value.trim();if(!t){toast('Entry cannot be empty');return;}e.content=t;e.title=t.slice(0,60).replace(/\n/g,' ');persist();renderEntries();renderHome();$('mbody').textContent=t;toggleEdit();toast('✓ Updated');});
 function copyEntry(){const e=entries.find(x=>x.id===activeId);if(!e)return;const text=`[${e.date}][${e.category}]\n${e.content}`;if(navigator.clipboard?.writeText){navigator.clipboard.writeText(text).then(()=>toast('✓ Copied')).catch(()=>fallbackCopy(text));}else fallbackCopy(text);}
-function fallbackCopy(text){const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;opacity:0;top:0;left:0;width:1px;height:1px';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');toast('✓ Copied');}catch{toast('Long-press text in the entry to copy manually');}document.body.removeChild(ta);}
-const delEntry=guard(()=>{if(!confirm('Delete this entry permanently?'))return;entries=entries.filter(x=>x.id!==activeId);persist();renderEntries();renderHome();renderDash();closeModal();toast('Entry deleted');});
+function fallbackCopy(text){const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;opacity:0;top:0;left:0;width:1px;height:1px';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');toast('✓ Copied');}catch{toast('Long-press to copy manually');}document.body.removeChild(ta);}
+const delEntry=guard(()=>{if(!confirm('Delete this entry permanently?'))return;entries=entries.filter(x=>x.id!==activeId);persist();renderEntries();renderHome();renderDash();closeModal();toast('Deleted');});
 
-// ── NOTION ────────────────────────────────────────────────────────────────
+// SEND TO MIRROR
+async function sendToMirror(){
+  const e=entries.find(x=>x.id===activeId);if(!e)return;
+  const btn=$('mirror-btn');btn.disabled=true;btn.textContent='🔮 ...';
+  const ins=$('mirror-insight');ins.style.display='block';ins.textContent='Reading this entry...';
+  try{
+    const pCtx=patterns.length?`\nNamed patterns: ${patterns.map(p=>p.name+': '+p.desc).join(' | ')}`:'';
+    const r=await ai(
+      `You are LifeThread — a living mirror. Analyze this single entry in the context of the user's full life log. Be specific and honest. Note any active patterns by name. Connect to anything relevant from their history. 2-4 sentences max. No softening.\n\nUser: ${uName||'unnamed'}. Values: ${uVals}.${pCtx}\n\nFull context:\n${ctx(20)}`,
+      `This entry:\n"${e.content}"\n\nWhat do you see?`
+    );
+    ins.textContent=r;
+  }catch(err){ins.textContent='Error: '+err.message;}
+  btn.disabled=false;btn.textContent='🔮 Mirror';
+}
+
+// SEARCH
+function doSearch(q){
+  const out=$('search-results');
+  $('ai-search-out').style.display='none';
+  if(!q.trim()){out.innerHTML='';return;}
+  const term=q.toLowerCase();
+  const results=entries.filter(e=>(e.content||'').toLowerCase().includes(term)||(e.category||'').toLowerCase().includes(term)||(e.title||'').toLowerCase().includes(term));
+  if(!results.length){out.innerHTML='<div class="empty">No entries found for "'+esc(q)+'"</div>';return;}
+  out.innerHTML=results.slice(0,30).map(e=>{
+    const snippet=(e.content||'').slice(0,200);
+    const highlighted=snippet.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),m=>`<span class="search-highlight">${esc(m)}</span>`);
+    return`<div class="search-result" onclick="openEntry(${e.id})">
+      <div class="etop"><span class="tag tc">${esc(e.category)}</span><span class="td">${esc(e.date)}</span></div>
+      <div style="font-size:13px;color:#333;line-height:1.6">${highlighted}${snippet.length===200?'…':''}</div>
+    </div>`;
+  }).join('');
+}
+
+async function aiSearch(){
+  const q=$('search-in').value.trim();
+  if(!q){toast('Enter a search query first');return;}
+  if(!apiKey){$('ai-search-out').style.display='block';$('ai-search-content').textContent='⚙️ Add your API key in Settings.';return;}
+  $('ai-search-out').style.display='block';
+  $('ai-search-content').textContent='Searching semantically...';
+  try{
+    const r=await ai(
+      `You are LifeThread. The user is searching their life log for: "${q}". Find and synthesize all relevant entries. Quote specific entries. Note patterns. Be direct and specific.`,
+      `Search query: "${q}"\n\nLife log:\n${ctx(50)}\n\nFind everything relevant to this query.`
+    );
+    $('ai-search-content').textContent=r;
+  }catch(e){$('ai-search-content').textContent='Error: '+e.message;}
+}
+
+// PATTERNS
+function renderPatterns(){const el=$('plist');if(!patterns.length){el.innerHTML='<div class="empty">No patterns named yet.</div>';return;}el.innerHTML=patterns.map((p,i)=>`<div class="pcard"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span style="font-size:14px;font-weight:600">${esc(p.name)}</span><span style="font-size:11px;color:#aaa;background:#f5f5f5;padding:2px 7px;border-radius:10px">×${p.count||0}</span></div><div style="font-size:13px;color:#555;line-height:1.6;margin-bottom:7px">${esc(p.desc)}</div>${p.last?`<div style="font-size:11px;color:#aaa;margin-bottom:7px">Last: ${esc(p.last)}</div>`:''}<div style="display:flex;gap:7px"><button class="btn bg" style="font-size:11px;padding:5px 9px" onclick="markPattern(${i})">Mark active</button><button class="btn bg" style="font-size:11px;padding:5px 9px;color:#e05a5a;border-color:#e05a5a" onclick="removePattern(${i})">Remove</button></div></div>`).join('');}
+function addPattern(){const n=prompt('Pattern name:');if(!n?.trim())return;const d=prompt('How does it operate in your life?');if(!d?.trim())return;patterns.push({name:n.trim(),desc:d.trim(),count:0,last:null});persist();renderPatterns();toast('Pattern added');}
+const markPattern=guard(i=>{patterns[i].count=(patterns[i].count||0)+1;patterns[i].last=today();addE({category:'Mental & Emotional State',content:`Pattern active: ${patterns[i].name}\n${patterns[i].desc}`,source:'manual'});persist();renderPatterns();renderEntries();toast('Pattern logged');});
+function removePattern(i){if(!confirm('Remove?'))return;patterns.splice(i,1);persist();renderPatterns();}
+async function autoDetect(){if(!entries.length){toast('Add some entries first');return;}const btn=$('adbtn');btn.disabled=true;btn.textContent='Analyzing...';$('apout').textContent='';try{const r=await ai('Identify 4-7 recurring behavioral or emotional patterns from this life log.\n\nFor each:\nNAME: [2-5 word name]\nMECHANISM: [one sentence how it operates]\nEVIDENCE: [cite specific entries]\n\nBe precise and honest.',`Log:\n${ctx(50)}\n\nIdentify patterns.`);$('apout').textContent=r;}catch(e){$('apout').textContent='Error: '+e.message;}btn.disabled=false;btn.textContent='🧠 Auto-detect from entries';}
+
+// NOTION
 async function nReq(path,method='GET',body=null){if(!nKey)throw new Error('No Notion key');const r=await fetch('https://api.notion.com/v1'+path,{method,headers:{'Authorization':'Bearer '+nKey,'Notion-Version':'2022-06-28','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.message||'Notion '+r.status);}return r.json();}
 async function saveNotionEntry(e){if(!nKey||!nDb)return;await nReq('/pages','POST',{parent:{database_id:nDb},properties:{Title:{title:[{text:{content:(e.title||'Entry').slice(0,100)}}]},Category:{select:{name:e.category||'Journal'}},Date:{date:{start:e.date}},...(e.mood?{Mood:{select:{name:e.mood}}}:{})},children:[{object:'block',type:'paragraph',paragraph:{rich_text:[{text:{content:(e.content||'').slice(0,2000)}}]}}]});}
-async function syncNotion(){try{const res=await nReq('/databases/'+nDb+'/query','POST',{sorts:[{property:'Date',direction:'descending'}],page_size:100});if(!res.results?.length)return;const remote=[];for(const p of res.results){const pr=p.properties;let c='';try{const bl=await nReq('/blocks/'+p.id+'/children');c=(bl.results||[]).map(b=>b.paragraph?.rich_text?.[0]?.plain_text||'').join('\n');}catch{}const d=pr.Date?.date?.start||today();remote.push({id:p.id,date:d,category:pr.Category?.select?.name||'Journal',mood:pr.Mood?.select?.name||'',content:c,title:pr.Title?.title?.[0]?.plain_text||'',temporal:tmeta(d,null,'notion')});}if(remote.length){entries=remote;persist();renderEntries();renderDash();renderHome();}}catch(e){console.warn('Notion sync:',e.message);}}
+async function syncNotion(){try{const res=await nReq('/databases/'+nDb+'/query','POST',{sorts:[{property:'Date',direction:'descending'}],page_size:100});if(!res.results?.length)return;const remote=[];for(const p of res.results){const pr=p.properties;let c='';try{const bl=await nReq('/blocks/'+p.id+'/children');c=(bl.results||[]).map(b=>b.paragraph?.rich_text?.[0]?.plain_text||'').join('\n');}catch{}const d=pr.Date?.date?.start||today();remote.push({id:p.id,date:d,category:pr.Category?.select?.name||'Journal',mood:pr.Mood?.select?.name||'',content:c,title:pr.Title?.title?.[0]?.plain_text||'',temporal:tmeta(d,null,'notion')});}if(remote.length){entries=remote;persist();renderEntries();renderDash();renderHome();}}catch(e){console.warn('Notion:',e.message);}}
 
-// ── SETTINGS ──────────────────────────────────────────────────────────────
-function saveApiKey(){
-  const k=$('akey').value.trim();
-  if(k&&!k.startsWith('sk-ant-')){$('akst').innerHTML='<span class="err">⚠️ Should start with sk-ant- — check and re-paste.</span>';return;}
-  apiKey=k;lsSet('lt_ak',apiKey);
-  updateKeyDot();
-  $('akst').innerHTML=apiKey?'<span class="ok">✓ Key saved — AI features enabled.</span>':'Key cleared.';
-  setTimeout(()=>$('akst').innerHTML='',5000);
-}
-async function testApiKey(){
-  if(!apiKey){$('akst').innerHTML='<span class="err">No key to test. Save a key first.</span>';return;}
-  $('akst').textContent='Testing...';
-  try{await ai('Reply with exactly: OK','ping');$('akst').innerHTML='<span class="ok">✓ Connection successful — AI is working!</span>';}
-  catch(e){$('akst').innerHTML=`<span class="err">✗ ${e.message}</span>`;}
-}
-function saveNotion(){nKey=$('nkey').value.trim();nDb=$('ndb').value.trim();lsSet('lt_nk',nKey);lsSet('lt_nd',nDb);$('nst').textContent='✓ Saved. Syncing...';syncNotion().then(()=>$('nst').textContent='✓ Connected & synced!').catch(e=>$('nst').innerHTML=`<span class="err">⚠️ ${esc(e.message)}</span>`);}
+// SETTINGS
+function toggleVisible(id,btn){const el=$(id);if(el.type==='password'){el.type='text';btn.textContent='🙈';}else{el.type='password';btn.textContent='👁';}}
+function copyField(id){const el=$(id);const val=el.value.trim();if(!val){toast('Nothing to copy — field is empty');return;}if(navigator.clipboard?.writeText){navigator.clipboard.writeText(val).then(()=>toast('✓ Copied to clipboard')).catch(()=>fallbackCopy(val));}else fallbackCopy(val);}
+function saveApiKey(){const k=$('akey').value.trim();if(k&&!k.startsWith('sk-ant-')){$('akst').innerHTML='<span class="err">⚠️ Should start with sk-ant-</span>';return;}apiKey=k;lsSet('lt_ak',apiKey);updateKeyDot();$('akst').innerHTML=apiKey?'<span class="ok">✓ Saved — AI enabled.</span>':'Cleared.';setTimeout(()=>$('akst').innerHTML='',5000);}
+async function testApiKey(){if(!apiKey){$('akst').innerHTML='<span class="err">No key to test.</span>';return;}$('akst').textContent='Testing...';try{await ai('Reply with exactly: OK','ping');$('akst').innerHTML='<span class="ok">✓ Connected!</span>';}catch(e){$('akst').innerHTML=`<span class="err">✗ ${e.message}</span>`;}}
+function saveNotion(){nKey=$('nkey').value.trim();nDb=$('ndb').value.trim();lsSet('lt_nk',nKey);lsSet('lt_nd',nDb);$('nst').textContent='Syncing...';syncNotion().then(()=>$('nst').textContent='✓ Connected!').catch(e=>$('nst').innerHTML=`<span class="err">⚠️ ${esc(e.message)}</span>`);}
 function saveProfile(){uName=$('uname').value.trim();uVals=$('uvals').value.trim();uFoc=$('ufoc').value.trim();uWant=$('uwant').value.trim();lsSet('lt_un',uName);lsSet('lt_uv',uVals);lsSet('lt_uf',uFoc);lsSet('lt_uw',uWant);$('pst').innerHTML='<span class="ok">✓ Saved.</span>';renderHome();setTimeout(()=>$('pst').innerHTML='',3000);}
-function clearData(){if(!confirm('Clear all local entries, goals, and patterns?\n\nTip: Export first so you have a backup.'))return;entries=[];goals=[];patterns=[];persist();renderHome();renderEntries();renderDash();renderPatterns();toast('All local data cleared');}
+function clearData(){if(!confirm('Clear all local data?\n\nExport first to keep a backup.'))return;entries=[];goals=[];patterns=[];persist();renderHome();renderEntries();renderDash();renderPatterns();toast('Cleared');}
 
-// ── DASHBOARD ─────────────────────────────────────────────────────────────
+// DASHBOARD
 function renderDash(){$('dt').textContent=entries.length;$('dstr').textContent=calcStreak();const c={};CATS.forEach(x=>c[x.v]=0);entries.forEach(e=>{if(c[e.category]!==undefined)c[e.category]++;else c['Journal']++;});const mx=Math.max(...Object.values(c),1);$('cbars').innerHTML=CATS.map(x=>`<div class="brow"><div class="blabel">${x.e} ${x.l}</div><div class="btrack"><div class="bfill" style="width:${(c[x.v]/mx)*100}%"></div></div><div class="bcnt">${c[x.v]}</div></div>`).join('');const me=entries.filter(e=>e.mood).slice(0,50).reverse();$('mline').innerHTML=me.length?me.map(e=>`<div class="mdot" style="background:${MMAP[e.mood]||'#ddd'}" title="${esc(e.date+': '+e.mood)}">${(e.mood||'').split(' ')[0]}</div>`).join('')+'<span style="font-size:11px;color:#aaa;margin-left:6px">← recent</span>':'<span style="color:#ccc;font-size:12px">No mood data yet</span>';renderGoals();}
 function renderGoals(){const el=$('glist');if(!goals.length){el.innerHTML='<div style="color:#ccc;font-size:13px;padding:6px 0">No goals yet.</div>';return;}el.innerHTML=goals.map((g,i)=>`<div class="gi"><div class="gt" title="${esc(g.text)}">${esc(g.text)}</div><div class="gpt"><div class="gpf" style="width:${g.pct||0}%"></div></div><span style="font-size:12px;color:#6c8ebf;font-weight:600;width:32px;flex-shrink:0;text-align:right">${g.pct||0}%</span><input type="range" min="0" max="100" value="${g.pct||0}" style="width:50px;flex-shrink:0" oninput="goals[${i}].pct=+this.value;persist();renderGoals()"/><button onclick="goals.splice(${i},1);persist();renderGoals()" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:18px;line-height:1;flex-shrink:0">×</button></div>`).join('');}
 function addGoal(){const t=prompt('Enter a goal:');if(!t?.trim())return;goals.push({text:t.trim(),pct:0});persist();renderGoals();}
-async function genDigest(){const btn=$('dgbtn');btn.disabled=true;btn.textContent='...';$('dout').innerHTML='<span style="color:#aaa;font-size:13px">Generating...</span>';try{const r=await ai(`You are LifeThread. Write a precise, honest weekly digest for ${uName||'the user'}. Cover dominant themes, emotional patterns, goal progress or avoidance, one behavioral pattern worth naming, one forward-looking honest observation. Under 280 words. No cheerleading.`,`Life log:\n${ctx(20)}\n\nGenerate my weekly digest.`);$('dout').innerHTML=`<div class="dbox">${esc(r).replace(/\n/g,'<br>')}</div>`;}catch(e){$('dout').innerHTML=`<span class="err">${e.message==='NO_KEY'?'⚙️ Add your Anthropic API key in Settings.':esc(e.message)}</span>`;}btn.disabled=false;btn.textContent='Regenerate';}
+async function genDigest(){const btn=$('dgbtn');btn.disabled=true;btn.textContent='...';$('dout').innerHTML='<span style="color:#aaa;font-size:13px">Generating...</span>';try{const r=await ai(`You are LifeThread. Write a precise, honest weekly digest for ${uName||'the user'}. Cover dominant themes, emotional patterns, goal progress or avoidance, one behavioral pattern worth naming, one forward-looking honest observation. Under 280 words. No cheerleading.`,`Log:\n${ctx(20)}\n\nGenerate weekly digest.`);$('dout').innerHTML=`<div class="dbox">${esc(r).replace(/\n/g,'<br>')}</div>`;}catch(e){$('dout').innerHTML=`<span class="err">${esc(e.message)}</span>`;}btn.disabled=false;btn.textContent='Regenerate';}
 
-// ── CHECKIN ───────────────────────────────────────────────────────────────
+// CHECKIN
 function startCI(){$('cistart').style.display='none';$('ciflow').style.display='block';ciQs=[...CIQS];ciAs=[];ciIdx=0;showCIQ();}
 function showCIQ(){$('ciq').textContent=ciQs[ciIdx];$('cia').value='';$('cipr').textContent=`${ciIdx+1} of ${ciQs.length}`;}
 const nextCI=guard(()=>{const a=$('cia').value.trim();if(!a){toast('Write something first');return;}ciAs.push({q:ciQs[ciIdx],a});ciIdx++;if(ciIdx<ciQs.length){showCIQ();return;}addE({category:'Journal',content:ciAs.map(x=>`Q: ${x.q}\nA: ${x.a}`).join('\n\n'),title:`Check-in — ${new Date().toLocaleDateString()}`,source:'checkin'});$('ciflow').style.display='none';$('cidone').style.display='block';renderEntries();renderHome();toast('✓ Check-in saved');});
 function resetCI(){$('cidone').style.display='none';$('cistart').style.display='block';}
 
-// ── ARCHIVE ───────────────────────────────────────────────────────────────
+// ARCHIVE
 async function runArchive(){
   const btn=$('abtn');btn.disabled=true;btn.textContent='Running...';
   const el=$('aout');el.style.display='block';el.textContent='Reading your history...';
   const focus=$('afocus').value,range=$('arange').value;
   let filt=entries;
   if(range!=='all'){const cut=new Date(Date.now()-parseInt(range)*86400000).toISOString().split('T')[0];filt=entries.filter(e=>e.date>=cut);}
-  if(!filt.length){el.textContent='No entries in this time range yet.';btn.disabled=false;btn.textContent='Run Synthesis';return;}
+  if(!filt.length){el.textContent='No entries in this range.';btn.disabled=false;btn.textContent='Run Synthesis';return;}
   const pctx=patterns.length?`\nNamed patterns: ${patterns.map(p=>p.name+': '+p.desc).join('; ')}`:'';
-  const log=filt.slice(0,80).map(e=>{const t=e.temporal;const tc=t?`[${t.day_of_week||''} ${e.date}${t.time_of_day?' '+t.time_of_day:''}${t.quarter?' · '+t.quarter:''}]`:`[${e.date}]`;return`${tc}[${e.category}]${e.mood?' ['+e.mood+']':''}\n${(e.content||'').slice(0,600)}`;}).join('\n\n---\n\n');
-  try{const r=await ai(`You are LifeThread — a forensic narrative archivist.\nUser: ${uName||'unnamed'}. Values: ${uVals}. Focus: ${uFoc}.${pctx}\n\nTASK: ${AFOCUS[focus]||AFOCUS['']}\n\nRULES: Second person. Name patterns precisely. Cite entries. Note recurrence. No softening. Dense and structured.`,`Log (${filt.length} entries):\n\n${log}\n\nRun synthesis.`);el.textContent=r;}
-  catch(e){el.textContent=e.message==='NO_KEY'?'⚙️ Add your API key in Settings.':'Error — '+e.message;}
+  const log=filt.slice(0,80).map(e=>{const t=e.temporal;const tc=t?`[${t.day_of_week||''} ${e.date}${t.time_of_day?' '+t.time_of_day:''}]`:`[${e.date}]`;return`${tc}[${e.category}]${e.mood?' ['+e.mood+']':''}\n${(e.content||'').slice(0,600)}`;}).join('\n\n---\n\n');
+  try{const r=await ai(`You are LifeThread — a forensic narrative archivist.\nUser: ${uName||'unnamed'}. Values: ${uVals}. Focus: ${uFoc}.${pctx}\n\nTASK: ${AFOCUS[focus]||AFOCUS['']}\n\nRULES: Second person. Name patterns precisely. Cite entries. Note recurrence. No softening.`,`Log (${filt.length} entries):\n\n${log}\n\nRun synthesis.`);el.textContent=r;}
+  catch(e){el.textContent='Error — '+e.message;}
   btn.disabled=false;btn.textContent='Run Synthesis';
 }
 
-// ── PATTERNS ──────────────────────────────────────────────────────────────
-function renderPatterns(){const el=$('plist');if(!patterns.length){el.innerHTML='<div class="empty">No patterns named yet.<br>Add one above or use auto-detect below.</div>';return;}el.innerHTML=patterns.map((p,i)=>`<div class="pcard"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span style="font-size:14px;font-weight:600">${esc(p.name)}</span><span style="font-size:11px;color:#aaa;background:#f5f5f5;padding:2px 7px;border-radius:10px">×${p.count||0}</span></div><div style="font-size:13px;color:#555;line-height:1.6;margin-bottom:7px">${esc(p.desc)}</div>${p.last?`<div style="font-size:11px;color:#aaa;margin-bottom:7px">Last: ${esc(p.last)}</div>`:''}<div style="display:flex;gap:7px"><button class="btn bg" style="font-size:11px;padding:5px 9px" onclick="markPattern(${i})">Mark active</button><button class="btn bg" style="font-size:11px;padding:5px 9px;color:#e05a5a;border-color:#e05a5a" onclick="removePattern(${i})">Remove</button></div></div>`).join('');}
-function addPattern(){const n=prompt('Pattern name:');if(!n?.trim())return;const d=prompt('How does it operate in your life?');if(!d?.trim())return;patterns.push({name:n.trim(),desc:d.trim(),count:0,last:null});persist();renderPatterns();toast('Pattern added');}
-const markPattern=guard(i=>{patterns[i].count=(patterns[i].count||0)+1;patterns[i].last=today();addE({category:'Mental & Emotional State',content:`Pattern active: ${patterns[i].name}\n${patterns[i].desc}`,source:'manual'});persist();renderPatterns();renderEntries();toast('Pattern logged');});
-function removePattern(i){if(!confirm('Remove this pattern?'))return;patterns.splice(i,1);persist();renderPatterns();}
-async function autoDetect(){if(!entries.length){toast('Add some entries first');return;}const btn=$('adbtn');btn.disabled=true;btn.textContent='Analyzing...';$('apout').textContent='';try{const r=await ai('Identify 4-7 recurring behavioral or emotional patterns from this life log.\n\nFor each:\nNAME: [2-5 word precise name]\nMECHANISM: [one sentence — how it operates]\nEVIDENCE: [cite specific entries]\n\nBe honest and precise. No therapy language.',`Log:\n${ctx(50)}\n\nIdentify patterns.`);$('apout').textContent=r;}catch(e){$('apout').textContent=e.message==='NO_KEY'?'⚙️ Add your API key in Settings.':'Error: '+e.message;}btn.disabled=false;btn.textContent='🧠 Auto-detect from entries';}
-
-// ── AI CORE ───────────────────────────────────────────────────────────────
-const API_URL='/.netlify/functions/anthropic';
-
+// AI CORE
 async function ai(sys,msg,retries=2){
-  if(!apiKey)throw new Error('NO_KEY');
   let lastErr;
   for(let i=0;i<=retries;i++){
     try{
-      const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:[{role:'user',content:msg}]})});
-      if(r.status===401)throw new Error('API key invalid or expired. Go to Settings → check your key.');
-      if(r.status===429)throw new Error('Rate limited. Wait 30 seconds and try again.');
-      if(r.status>=500)throw new Error('Service unavailable. Try again in a moment.');
-      if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error?.message||`API error ${r.status}`);}
+      const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:[{role:'user',content:msg}]})});
+      if(r.status===401)throw new Error('API key invalid. Check Settings.');
+      if(r.status===429)throw new Error('Rate limited. Wait 30s.');
+      if(r.status>=500)throw new Error('Service unavailable. Try again.');
+      if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error?.message||`Error ${r.status}`);}
       const d=await r.json();
       const text=d.content?.[0]?.text||'';
-      if(!text)throw new Error('Empty response. Try again.');
+      if(!text)throw new Error('Empty response.');
       return text;
-    }catch(e){
-      lastErr=e;
-      if(e.message.includes('invalid')||e.message.includes('NO_KEY')||e.message.includes('Rate'))throw e;
-      if(i<retries)await sleep(1200*(i+1));
-    }
+    }catch(e){lastErr=e;if(e.message.includes('invalid')||e.message.includes('Rate'))throw e;if(i<retries)await sleep(1200*(i+1));}
   }
   throw lastErr;
 }
 
-function safeJSON(text){
-  let t=text.replace(/^\uFEFF/,'').trim();
-  t=t.replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'').trim();
-  const a=t.indexOf('['),o=t.indexOf('{');
-  let s=-1;
-  if(a!==-1&&(o===-1||a<o))s=a;else if(o!==-1)s=o;
-  if(s>0)t=t.slice(s);
-  const ae=t.lastIndexOf(']'),oe=t.lastIndexOf('}');
-  const e=Math.max(ae,oe);
-  if(e!==-1)t=t.slice(0,e+1);
-  return JSON.parse(t);
-}
+function safeJSON(text){let t=text.replace(/^\uFEFF/,'').trim();t=t.replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'').trim();const a=t.indexOf('['),o=t.indexOf('{');let s=-1;if(a!==-1&&(o===-1||a<o))s=a;else if(o!==-1)s=o;if(s>0)t=t.slice(s);const ae=t.lastIndexOf(']'),oe=t.lastIndexOf('}');const e=Math.max(ae,oe);if(e!==-1)t=t.slice(0,e+1);return JSON.parse(t);}
 
-// ── CHAT ──────────────────────────────────────────────────────────────────
+// CHAT
 const MSYS={
-  base:`You are LifeThread — a rigorous personal intelligence system functioning as a living mirror.\n\nUSER: Name: __N__. Values: __V__. Focus: __F__. Wants from system: __W__.\nNamed patterns: __P__\n\nPRINCIPLES:\n- Speak directly. Do not soften what is true.\n- Name patterns precisely, by their actual names.\n- Connect across categories and time. Name connections explicitly.\n- Note recurrence: "This is the third time in your log that..."\n- Earn observations through evidence from actual entries.\n- The goal is clarity, not comfort.`,
-  reflect:'\n\nMODE: Guided Reflection. Ask one precise question at a time. No premature interpretation.',
-  decide:'\n\nMODE: Decision Support. Surface assumptions, map consequences, draw from values and history.',
-  future:'\n\nMODE: Future Self, one year out. Honest, specific, draws from actual patterns. Not motivational.',
-  review:'\n\nMODE: Weekly Review. What happened, what patterns were active, what shifted, what needs attention.',
-  letter:'\n\nMODE: Letter from future self (1 year). Specific, honest, compassionate but not soft.',
-  analyst:'\n\nMODE: Pure Pattern Analyst. Evidence-based patterns, correlations, contradictions. Precise.',
-  open:'You are LifeThread — a trusted companion. User: __N__. Be warm, present, real. No agenda.'
+  base:`You are LifeThread — a rigorous personal intelligence system functioning as a living mirror.\n\nUSER: Name: __N__. Values: __V__. Focus: __F__. Wants: __W__.\nPatterns: __P__\n\nPRINCIPLES:\n- Speak directly. Do not soften.\n- Name patterns precisely.\n- Connect across categories and time.\n- Note recurrence explicitly.\n- Earn observations through evidence.\n- Goal is clarity, not comfort.`,
+  reflect:'\n\nMODE: Guided Reflection. One question at a time. No premature interpretation.',
+  decide:'\n\nMODE: Decision Support. Surface assumptions, map consequences, draw from history.',
+  future:'\n\nMODE: Future Self, one year out. Honest, specific, not motivational.',
+  review:'\n\nMODE: Weekly Review. What happened, what patterns active, what needs attention.',
+  letter:'\n\nMODE: Letter from future self. Specific, honest, not soft.',
+  analyst:'\n\nMODE: Pure Pattern Analyst. Evidence-based. Precise.',
+  open:'You are LifeThread — a trusted companion. User: __N__. Warm, present, real.'
 };
 function getSys(mode){const pat=patterns.length?patterns.map(p=>p.name+': '+p.desc).join(' | '):'none';const base=MSYS.base.replace('__N__',uName||'[not set]').replace('__V__',uVals||'[not set]').replace('__F__',uFoc||'[not set]').replace('__W__',uWant||'[not set]').replace('__P__',pat);if(mode==='open')return MSYS.open.replace('__N__',uName||'friend');if(mode==='mirror')return base;return base+(MSYS[mode]||'');}
-function ctx(lim=40){const pr=`Name: ${uName}. Values: ${uVals}. Focus: ${uFoc}. Wants: ${uWant}.`;const pc=patterns.length?`\nPatterns: ${patterns.map(p=>p.name+': '+p.desc).join(' | ')}`:'';const sp=entries.length>=2?`\nLog spans: ${entries[entries.length-1]?.date} → ${entries[0]?.date} (${entries.length} total)`:'';const log=entries.slice(0,lim).map(e=>{const t=e.temporal;const tc=t?`[${t.day_of_week||''} ${e.date}${t.time_of_day?' '+t.time_of_day:''}]`:`[${e.date}]`;return`${tc}[${e.category}]${e.mood?' ['+e.mood+']':''}\n${(e.content||'').slice(0,500)}`;}).join('\n\n---\n\n');return pr+pc+sp+'\n\nLIFE LOG:\n'+log;}
-function initChat(){addMsg('ai',`Hello${uName?', '+uName:''}.\n\nI hold everything you've logged — across time, across categories, across the patterns you've named. I'm not here to make you feel better. I'm here to help you see clearly.\n\nWhat's on your mind?`);}
-function setMode(m,el){chatMode=m;document.querySelectorAll('.mc').forEach(x=>x.classList.remove('am'));if(el)el.classList.add('am');const L={mirror:'Mirror mode',reflect:'Guided Reflection',decide:'Decision Support',future:'Future Self — one year out',review:'Weekly Review',letter:'Writing your letter...',analyst:'Pattern Analyst',open:'Open conversation'};addMsg('sys',L[m]||m);if(m==='letter')setTimeout(genLetter,400);}
-async function genLetter(){addTyping();try{const r=await ai(getSys('letter')+`\n\nLIFE LOG:\n${ctx(40)}`,'Write my letter from my future self.');removeTyping();addMsg('ai',r);}catch(e){removeTyping();addMsg('ai',e.message==='NO_KEY'?'⚙️ Add your API key in Settings.':'Error generating letter.');}}
+function ctx(lim=40){const pr=`Name: ${uName}. Values: ${uVals}. Focus: ${uFoc}. Wants: ${uWant}.`;const pc=patterns.length?`\nPatterns: ${patterns.map(p=>p.name+': '+p.desc).join(' | ')}`:'';const sp=entries.length>=2?`\nSpans: ${entries[entries.length-1]?.date} → ${entries[0]?.date} (${entries.length} total)`:'';const log=entries.slice(0,lim).map(e=>{const t=e.temporal;const tc=t?`[${t.day_of_week||''} ${e.date}${t.time_of_day?' '+t.time_of_day:''}]`:`[${e.date}]`;return`${tc}[${e.category}]${e.mood?' ['+e.mood+']':''}\n${(e.content||'').slice(0,500)}`;}).join('\n\n---\n\n');return pr+pc+sp+'\n\nLIFE LOG:\n'+log;}
+function initChat(){addMsg('ai',`Hello${uName?', '+uName:''}.\n\nI hold everything you've logged — across time, categories, and the patterns you've named. I'm not here to make you feel better. I'm here to help you see clearly.\n\nWhat's on your mind?`);}
+function setMode(m,el){chatMode=m;document.querySelectorAll('.mc').forEach(x=>x.classList.remove('am'));if(el)el.classList.add('am');const L={mirror:'Mirror mode',reflect:'Guided Reflection',decide:'Decision Support',future:'Future Self',review:'Weekly Review',letter:'Writing your letter...',analyst:'Pattern Analyst',open:'Open conversation'};addMsg('sys',L[m]||m);if(m==='letter')setTimeout(genLetter,400);}
+async function genLetter(){addTyping();try{const r=await ai(getSys('letter')+`\n\nLIFE LOG:\n${ctx(40)}`,'Write my letter.');removeTyping();addMsg('ai',r);}catch(e){removeTyping();addMsg('ai','Error: '+e.message);}}
 function addMsg(role,text){const c=$('cmsgs');const d=document.createElement('div');d.className=`msg ${role}`;const safe=esc(text).replace(/\n/g,'<br>');d.innerHTML=role==='sys'?`<div class="bub">${safe}</div>`:`<div class="av">${role==='ai'?'🔮':'👤'}</div><div class="bub">${safe}</div>`;c.appendChild(d);requestAnimationFrame(()=>c.scrollTop=c.scrollHeight);return d;}
 function addTyping(){const c=$('cmsgs');const d=document.createElement('div');d.className='msg ai';d.id='typing';d.innerHTML=`<div class="av">🔮</div><div class="bub"><div class="tdots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
 function removeTyping(){const t=$('typing');if(t)t.remove();}
 async function sendChat(){
-  if(!apiKey){addMsg('ai','⚙️ No API key. Go to ⚙ Settings, add your key from platform.anthropic.com, tap Save Key.');return;}
   const inp=$('cin');const msg=inp.value.trim();if(!msg)return;
   inp.value='';inp.style.height='auto';
   addMsg('user',msg);chatHist.push({role:'user',content:msg});
   $('csend').disabled=true;addTyping();
   const sys=getSys(chatMode)+`\n\nLIFE LOG:\n${ctx(40)}`;
   try{
-    const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:chatHist.slice(-14)})});
+    const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:chatHist.slice(-14)})});
     removeTyping();
-    if(r.status===401){addMsg('ai','⚙️ API key invalid. Go to Settings → re-enter your key.');$('csend').disabled=false;return;}
-    if(r.status===429){addMsg('ai','⏱ Rate limited. Wait 30 seconds and try again.');$('csend').disabled=false;return;}
-    if(!r.ok){const d=await r.json().catch(()=>({}));addMsg('ai',`Error ${r.status}: ${d.error?.message||'try again'}`);$('csend').disabled=false;return;}
+    if(r.status===401){addMsg('ai','⚙️ API key invalid. Check Settings.');$('csend').disabled=false;return;}
+    if(r.status===429){addMsg('ai','⏱ Rate limited. Wait 30s.');$('csend').disabled=false;return;}
+    if(!r.ok){const d=await r.json().catch(()=>({}));addMsg('ai',`Error: ${d.error?.message||r.status}`);$('csend').disabled=false;return;}
     const d=await r.json();
     const rep=d.content?.[0]?.text;
-    if(!rep){addMsg('ai','Empty response. Please try again.');$('csend').disabled=false;return;}
+    if(!rep){addMsg('ai','Empty response. Try again.');$('csend').disabled=false;return;}
     addMsg('ai',rep);chatHist.push({role:'assistant',content:rep});
-  }catch(e){removeTyping();addMsg('ai',navigator.onLine?'Connection error. Try again.':'You appear to be offline.');}
+  }catch(e){removeTyping();addMsg('ai',navigator.onLine?'Connection error.':'You appear to be offline.');}
   $('csend').disabled=false;
 }
 
-// ── IMPORT ────────────────────────────────────────────────────────────────
-function handleFile(e){
-  const f=e.target.files[0];if(!f)return;
-  e.target.value='';
-  const ext=(f.name.split('.').pop()||'').toLowerCase();
-  if(['doc','docx','pdf'].includes(ext)){
-    $('ist').innerHTML='<span class="err">⚠️ Word and PDF files cannot be read directly.<br>Open the file → Select All (Ctrl+A/Cmd+A) → Copy → Paste into the box above.</span>';
-    return;
-  }
-  if(f.size>10*1024*1024){$('ist').innerHTML='<span class="err">⚠️ File over 10MB. Open it, copy sections, and paste.</span>';return;}
-  const r=new FileReader();
-  r.onload=ev=>{$('itxt').value=ev.target.result;$('charcount').textContent=ev.target.result.length.toLocaleString()+' chars';$('ist').innerHTML=`<span class="ok">✓ File loaded (${Math.round(f.size/1024)}KB). Tap Import to process.</span>`;};
-  r.onerror=()=>toast('Error reading file. Try copy-pasting the text instead.');
-  r.readAsText(f,'UTF-8');
+// TRIAGE / IMPORT
+function handleDrop(e){const files=e.dataTransfer.files;if(files.length)handleFiles(files);}
+function handleFiles(files){
+  triageFiles={text:[],json:[],image:[],audio:[],other:[]};
+  for(const f of files){const ext=getExt(f.name);if(FILE_TYPES.json.includes(ext))triageFiles.json.push(f);else if(FILE_TYPES.text.includes(ext))triageFiles.text.push(f);else if(FILE_TYPES.image.includes(ext))triageFiles.image.push(f);else if(FILE_TYPES.audio.includes(ext))triageFiles.audio.push(f);else triageFiles.other.push(f);}
+  renderTriage();
 }
-
-function chunkText(text,max=7000){
-  if(text.length<=max)return[text];
-  const chunks=[];let rem=text;
-  while(rem.length>0){
-    if(rem.length<=max){chunks.push(rem);break;}
-    let cut=max;
-    const p=rem.lastIndexOf('\n\n',cut);if(p>max*0.4)cut=p;
-    else{const n=rem.lastIndexOf('\n',cut);if(n>max*0.4)cut=n;
-    else{const s=rem.lastIndexOf('. ',cut);if(s>max*0.4)cut=s+1;}}
-    const chunk=rem.slice(0,cut).trim();
-    if(chunk.length>30)chunks.push(chunk);
-    rem=rem.slice(cut).trim();
-  }
-  return chunks.filter(c=>c.length>30);
+function renderTriage(){
+  $('triage-out').style.display='block';
+  const icons={text:'📄',json:'🔧',image:'🖼',audio:'🎙',other:'📎'};
+  ['text','json','image','audio','other'].forEach(g=>{
+    const el=$(`triage-${g}`),list=$(`triage-${g}-list`),count=$(`triage-${g}-count`);
+    if(!triageFiles[g].length){el.style.display='none';return;}
+    el.style.display='block';count.textContent=triageFiles[g].length;
+    list.innerHTML=triageFiles[g].map(f=>`<div class="tfile"><span>${icons[g]}</span><span class="tfile-name">${esc(f.name)}</span><span class="tfile-size">${fmtSize(f.size)}</span></div>`).join('');
+  });
+  toast(`Found ${Object.values(triageFiles).flat().length} files`);
 }
+function toggleTriage(g){$(`triage-${g}-list`).classList.toggle('open');}
 
-async function processImport(){
-  const raw=$('itxt').value.trim();
-  if(!raw){toast('Paste some text first');return;}
-  if(!apiKey){$('ist').innerHTML='<span class="err">⚙️ Add your Anthropic API key in Settings first — AI is needed to parse entries.</span>';return;}
+async function processGroup(type){
+  if(!triageFiles[type]?.length)return;
   const dc=$('icat').value;
   const st=$('ist');
-  const btn=$('ibtn');btn.disabled=true;
-  const prog=$('iprog');prog.style.display='block';
-  const fill=$('ipfill');const label=$('iplabel');
-  const chunks=chunkText(raw,7000);
-  const allParsed=[];
-  const ISYS=`Parse the following text into individual journal/life log entries. Look for date markers, "Good morning" resets, timestamps, or contextual clues to date each entry.\n\nReturn ONLY a valid JSON array. Each item:\n{"date":"YYYY-MM-DD","time_of_day":"Morning|Afternoon|Evening|Night|Late night|null","category":"Journal|Goals|Relationships|Health|Finances|Spirituality|Creative Work|Learning & Growth|Family|Dreams & Visions|Mental & Emotional State","content":"full entry text","title":"5-8 word title","date_confidence":"exact|inferred|unknown"}\n\nDefault category: ${dc}. Today: ${today()}. Return ONLY the JSON array. No markdown. No explanation.`;
+  $('iprog').style.display='block';
+  const fill=$('ipfill'),label=$('iplabel');
+  let total=0;
+  const files=triageFiles[type];
+  const ISYS=`Parse this text into individual journal/life log entries. Return ONLY a JSON array: [{"date":"YYYY-MM-DD","time_of_day":"Morning|Afternoon|Evening|Night|null","category":"Journal|Goals|Relationships|Health|Finances|Spirituality|Creative Work|Learning & Growth|Family|Dreams & Visions|Mental & Emotional State","content":"full text","title":"5-8 words","date_confidence":"exact|inferred|unknown"}]. Default: ${dc}. Today: ${today()}. JSON only.`;
 
-  for(let i=0;i<chunks.length;i++){
-    const pct=Math.round((i/chunks.length)*100);
-    fill.style.width=pct+'%';
-    label.textContent=chunks.length>1?`Processing chunk ${i+1} of ${chunks.length}...`:'Processing...';
-    st.innerHTML=`<span style="color:#6c8ebf">${chunks.length>1?`Part ${i+1} of ${chunks.length}...`:'Parsing entries...'}</span>`;
-    try{
-      const raw_r=await ai(ISYS,chunks[i]);
-      try{const p=safeJSON(raw_r);if(Array.isArray(p))allParsed.push(...p);}
-      catch{console.warn('JSON parse failed chunk',i+1);}
-    }catch(e){
-      if(e.message==='NO_KEY'){st.innerHTML='<span class="err">⚙️ API key missing.</span>';prog.style.display='none';btn.disabled=false;return;}
-      if(e.message.includes('Rate')){label.textContent=`Rate limited — waiting 20s then retrying...`;await sleep(20000);i--;continue;}
-      console.warn('Chunk error:',e.message);
+  if(type==='image'){
+    for(let i=0;i<files.length;i++){
+      fill.style.width=Math.round((i/files.length)*100)+'%';label.textContent=`Reading image ${i+1} of ${files.length}...`;
+      try{
+        const b64=await fileToBase64(files[i]);
+        const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:files[i].type||'image/jpeg',data:b64}},{type:'text',text:'Extract all visible text from this image. Return only the extracted text.'}]}]})});
+        const d=await r.json();const text=d.content?.[0]?.text||'';
+        if(text.trim().length>20){addE({category:dc,content:text.trim(),title:files[i].name.slice(0,60),source:'import-image'});total++;}
+      }catch(e){console.warn(e);}
+      await sleep(500);
     }
-    if(i<chunks.length-1)await sleep(700);
+  } else if(type==='json'){
+    for(let i=0;i<files.length;i++){
+      fill.style.width=Math.round((i/files.length)*100)+'%';label.textContent=`Parsing JSON ${i+1} of ${files.length}...`;
+      try{
+        const text=await fileToText(files[i]);const data=JSON.parse(text);
+        let extracted='';
+        if(data.mapping){const msgs=Object.values(data.mapping).filter(m=>m.message?.content?.parts&&m.message.author.role!=='system').sort((a,b)=>(a.message.create_time||0)-(b.message.create_time||0));extracted=msgs.map(m=>{const role=m.message.author.role==='user'?'Me':'GPT';const content=m.message.content.parts.filter(p=>typeof p==='string').join(' ');return content.trim()?`${role}: ${content.trim()}`:'';}).filter(Boolean).join('\n\n');}
+        else extracted=text.slice(0,5000);
+        if(extracted.trim().length>50){
+          const chunks=chunkText(extracted,7000);
+          for(const chunk of chunks){try{const raw_r=await ai(`Parse this ChatGPT conversation. Extract only meaningful personal content — thoughts, feelings, goals, decisions. Skip generic AI responses. ${ISYS}`,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-json',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}
+        }
+      }catch(e){console.warn(e);}
+    }
+  } else {
+    for(let i=0;i<files.length;i++){
+      fill.style.width=Math.round((i/files.length)*100)+'%';label.textContent=`Processing ${i+1} of ${files.length}...`;
+      try{const text=await fileToText(files[i]);const chunks=chunkText(text,7000);for(const chunk of chunks){try{const raw_r=await ai(ISYS,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}}catch(e){console.warn(e);}
+    }
   }
 
-  fill.style.width='100%';label.textContent='Saving entries...';
-
-  if(!allParsed.length){st.innerHTML='<span class="err">⚠️ Could not parse any entries. Try pasting a smaller, cleaner section of text.</span>';prog.style.display='none';btn.disabled=false;return;}
-
-  // Deduplicate
-  const seen=new Set();
-  const deduped=allParsed.filter(p=>{
-    if(!p?.content?.trim())return false;
-    const fp=p.content.trim().slice(0,100);
-    if(seen.has(fp))return false;
-    seen.add(fp);return true;
-  });
-
-  let count=0,ex=0,inf=0,unk=0;
-  for(const p of deduped.sort((a,b)=>(a.date||'').localeCompare(b.date||''))){
-    addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.trim().slice(0,60),source:'import',date_confidence:p.date_confidence||'unknown'});
-    count++;
-    if(p.date_confidence==='exact')ex++;
-    else if(p.date_confidence==='inferred')inf++;
-    else unk++;
-  }
+  fill.style.width='100%';$('iprog').style.display='none';
   entries.sort((a,b)=>b.date.localeCompare(a.date));
   persist();renderEntries();renderDash();renderHome();
-  prog.style.display='none';
-  $('itxt').value='';$('charcount').textContent='';
-  st.innerHTML=`<span class="ok">✓ Imported ${count} entries — ${ex} exact dates, ${inf} inferred, ${unk} unknown.</span>`;
-  toast(`✓ ${count} entries imported`);
-  btn.disabled=false;
+  st.innerHTML=`<span class="ok">✓ Imported ${total} entries from ${files.length} ${type} file${files.length>1?'s':''}.</span>`;
+  toast(`✓ ${total} entries imported`);
 }
 
-// ── VERSION ───────────────────────────────────────────────────────────────
-function renderVersion(){$('ve').textContent=entries.length||'0';$('vp').textContent=patterns.length||'0';$('vg').textContent=goals.length||'0';const s=[...entries].filter(e=>e.date).sort((a,b)=>a.date.localeCompare(b.date));$('vsp').textContent=s.length>=2?`${s[0].date} → ${s[s.length-1].date}`:s.length===1?s[0].date:'—';$('vak').innerHTML=apiKey?'<span class="ok">✓ Set and active</span>':'<span class="err">✗ Missing — go to Settings</span>';$('vno').textContent=nKey&&nDb?'✓ Connected':'Not connected';$('vpr').textContent=`${[uName,uVals,uFoc,uWant].filter(Boolean).length} / 4 fields`;}
+function chunkText(text,max=7000){if(text.length<=max)return[text];const chunks=[];let rem=text;while(rem.length>0){if(rem.length<=max){chunks.push(rem);break;}let cut=max;const p=rem.lastIndexOf('\n\n',cut);if(p>max*0.4)cut=p;else{const n=rem.lastIndexOf('\n',cut);if(n>max*0.4)cut=n;else{const s=rem.lastIndexOf('. ',cut);if(s>max*0.4)cut=s+1;}}const chunk=rem.slice(0,cut).trim();if(chunk.length>30)chunks.push(chunk);rem=rem.slice(cut).trim();}return chunks.filter(c=>c.length>30);}
+function fileToBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});}
+function fileToText(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsText(file,'UTF-8');});}
 
-// ── EXPORT ────────────────────────────────────────────────────────────────
+async function processImport(){
+  const raw=$('itxt').value.trim();if(!raw){toast('Paste some text first');return;}
+  const dc=$('icat').value,st=$('ist'),btn=$('ibtn');btn.disabled=true;
+  $('iprog').style.display='block';
+  const fill=$('ipfill'),label=$('iplabel');
+  const chunks=chunkText(raw,7000);let total=0,ex=0,inf=0,unk=0;
+  const allParsed=[];
+  const ISYS=`Parse into individual journal/life log entries. Return ONLY a JSON array: [{"date":"YYYY-MM-DD","time_of_day":"Morning|Afternoon|Evening|Night|Late night|null","category":"Journal|Goals|Relationships|Health|Finances|Spirituality|Creative Work|Learning & Growth|Family|Dreams & Visions|Mental & Emotional State","content":"full text","title":"5-8 words","date_confidence":"exact|inferred|unknown"}]. Default: ${dc}. Today: ${today()}. JSON only.`;
+  for(let i=0;i<chunks.length;i++){
+    fill.style.width=Math.round((i/chunks.length)*100)+'%';
+    label.textContent=chunks.length>1?`Part ${i+1} of ${chunks.length}...`:'Processing...';
+    st.innerHTML=`<span style="color:#6c8ebf">${chunks.length>1?`Processing ${i+1} of ${chunks.length}...`:'Parsing...'}</span>`;
+    try{const raw_r=await ai(ISYS,chunks[i]);try{const p=safeJSON(raw_r);if(Array.isArray(p))allParsed.push(...p);}catch{}}
+    catch(e){if(e.message.includes('Rate')){label.textContent='Rate limited — waiting 20s...';await sleep(20000);i--;continue;}console.warn(e);}
+    if(i<chunks.length-1)await sleep(700);
+  }
+  fill.style.width='100%';label.textContent='Saving...';
+  if(!allParsed.length){st.innerHTML='<span class="err">⚠️ No entries parsed. Try a different text format.</span>';$('iprog').style.display='none';btn.disabled=false;return;}
+  const seen=new Set();
+  const deduped=allParsed.filter(p=>{if(!p?.content?.trim())return false;const fp=p.content.trim().slice(0,100);if(seen.has(fp))return false;seen.add(fp);return true;});
+  for(const p of deduped.sort((a,b)=>(a.date||'').localeCompare(b.date||''))){
+    addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import',date_confidence:p.date_confidence||'unknown'});
+    total++;if(p.date_confidence==='exact')ex++;else if(p.date_confidence==='inferred')inf++;else unk++;
+  }
+  entries.sort((a,b)=>b.date.localeCompare(a.date));persist();renderEntries();renderDash();renderHome();
+  $('iprog').style.display='none';$('itxt').value='';$('charcount').textContent='';
+  st.innerHTML=`<span class="ok">✓ ${total} entries — ${ex} exact, ${inf} inferred, ${unk} unknown dates.</span>`;
+  toast(`✓ ${total} entries imported`);btn.disabled=false;
+}
+
+// VERSION
+function renderVersion(){$('ve').textContent=entries.length||'0';$('vp').textContent=patterns.length||'0';$('vg').textContent=goals.length||'0';const s=[...entries].filter(e=>e.date).sort((a,b)=>a.date.localeCompare(b.date));$('vsp').textContent=s.length>=2?`${s[0].date} → ${s[s.length-1].date}`:s.length===1?s[0].date:'—';$('vak').innerHTML=apiKey?'<span class="ok">✓ Active</span>':'<span class="err">✗ Missing</span>';$('vno').textContent=nKey&&nDb?'✓ Connected':'Not connected';$('vpr').textContent=`${[uName,uVals,uFoc,uWant].filter(Boolean).length} / 4 fields`;}
+
+// EXPORT
 function exportData(){try{const d={exported:nowISO(),version:VER,entries,goals,patterns,profile:{uName,uVals,uFoc,uWant}};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`lifethread-${today()}.json`;document.body.appendChild(a);a.click();document.body.removeChild(a);toast('✓ Backup downloaded');}catch(e){toast('Export failed: '+e.message);}}
 </script>
 </body>
