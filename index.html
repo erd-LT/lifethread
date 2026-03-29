@@ -12,7 +12,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
 /* ═══════════════════════════════════════════════════════════════
-   LIFETHREAD v3.0 — DESIGN SYSTEM
+   LIFETHREAD v3.1 — DESIGN SYSTEM
    Typeface: DM Sans (body) + DM Serif Display (accents)
    Theme: dark-first, ink + slate, surgical precision
 ═══════════════════════════════════════════════════════════════ */
@@ -58,7 +58,7 @@ body{font-family:var(--font);background:var(--bg0);color:var(--text0);font-size:
 
 /* ─── MODE BAR (top level) ──────────────────────────────────── */
 #mode-bar{display:flex;align-items:center;background:var(--bg1);border-bottom:1px solid var(--border);flex-shrink:0;height:44px;padding:0 10px;gap:4px;position:relative;z-index:10}
-.mode-logo{font-family:var(--font-serif);font-size:17px;color:var(--text0);margin-right:6px;flex-shrink:0}.mode-logo span{color:var(--blue)}
+.mode-logo{font-family:var(--font-serif);font-size:17px;color:var(--text0);margin-right:6px;flex-shrink:0;cursor:pointer;border:none;background:none;padding:0;transition:opacity .15s}.mode-logo:hover{opacity:.7}.mode-logo span{color:var(--blue)}
 .mode-btn{padding:6px 14px;border:none;background:none;cursor:pointer;font-size:12px;font-weight:500;color:var(--text2);border-radius:var(--r6);transition:all .15s;font-family:var(--font);flex-shrink:0;display:flex;align-items:center;gap:5px}
 .mode-btn.active.life{background:var(--life-dim);color:var(--blue)}
 .mode-btn.active.fin{background:var(--fin-dim);color:var(--fin)}
@@ -341,13 +341,13 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text3);text-trans
 
 <!-- ── MODE BAR ─────────────────────────────────────────────── -->
 <div id="mode-bar">
-  <div class="mode-logo">Life<span>Thread</span></div>
+  <button class="mode-logo" onclick="goHome()" title="Home">Life<span>Thread</span></button>
   <div class="mode-divider"></div>
   <button class="mode-btn active life" id="mode-life" onclick="switchMode('life')">🧠 Life</button>
   <button class="mode-btn fin" id="mode-finance" onclick="switchMode('finance')">💰 Finance</button>
   <div id="mode-right">
     <div id="syncdot" class="status-dot dot-off" title="Sync status"></div>
-    <button class="ib" onclick="show('version',null)">v3.0</button>
+    <button class="ib" onclick="show('version',null)">v3.1</button>
     <button class="ib" onclick="showGlobalSettings()">⚙ Settings</button>
     <button class="ib" style="color:var(--red)" onclick="doLogout()">↩</button>
   </div>
@@ -355,7 +355,7 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text3);text-trans
 
 <!-- ── LIFE NAV ──────────────────────────────────────────────── -->
 <nav id="life-nav">
-  <button class="nb active-life" id="nb-home" onclick="show('home',this)">🏠 Home</button>
+  <button class="nb active-life" id="nb-overview" onclick="show('home',this)">🏠 Overview</button>
   <button class="nb" onclick="show('log',this)">📓 Log</button>
   <button class="nb" onclick="show('chat',this)">💬 Chat</button>
   <button class="nb" onclick="show('search',this)">🔍 Search</button>
@@ -826,7 +826,7 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text3);text-trans
   <div class="scroll"><div class="pad" style="max-width:560px">
     <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
       <div style="font-family:var(--font-serif);font-size:20px">LifeThread</div>
-      <div style="font-size:12px;color:var(--blue);font-weight:600;background:var(--blue-soft);padding:2px 9px;border-radius:var(--r20)">v3.0.0</div>
+      <div style="font-size:12px;color:var(--blue);font-weight:600;background:var(--blue-soft);padding:2px 9px;border-radius:var(--r20)">v3.1.0</div>
     </div>
     <div style="font-size:12px;color:var(--text3);margin-bottom:20px">Unified build · DM Sans · Dark-first</div>
     <div class="sec">System Stats</div>
@@ -845,14 +845,21 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text3);text-trans
     </div>
     <div class="sec">Changelog</div>
     <div class="vlog" style="margin-bottom:8px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v3.0.0</b><span style="font-size:11px;color:var(--blue);background:var(--blue-soft);padding:2px 7px;border-radius:var(--r8)">current</span><span style="font-size:11px;color:var(--text3);margin-left:auto">Mar 2026</span></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v3.1.0</b><span style="font-size:11px;color:var(--blue);background:var(--blue-soft);padding:2px 7px;border-radius:var(--r8)">current</span><span style="font-size:11px;color:var(--text3);margin-left:auto">Mar 2026</span></div>
+      <ul style="font-size:12px;color:var(--text2);line-height:1.9;padding-left:14px">
+        <li>🏠 Logo = home button — taps return to active module's Overview</li>
+        <li>🏠 → Overview (Life nav), pattern set for all future modules</li>
+        <li>🧠 Unified AI context — finance snapshot available in every chat call</li>
+        <li>💬 Chat system prompt upgraded to unified life + finance mirror</li>
+        <li>💾 Finance snapshot cached on load, no extra API calls during chat</li>
+      </ul>
+    </div>
+    <div class="vlog old" style="margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v3.0.0</b><span style="font-size:11px;color:var(--text3);margin-left:auto">Mar 2026</span></div>
       <ul style="font-size:12px;color:var(--text2);line-height:1.9;padding-left:14px">
         <li>🔀 Full merge — one codebase, one login, one AI context</li>
-        <li>⚙ Finance settings tab — Railway URL, SFD target, Webull, allocation targets</li>
-        <li>⚙ Life settings tab — profile, Notion, data export</li>
-        <li>⚙ Global settings — Anthropic key, account, version</li>
+        <li>⚙ Finance, Life, and Global settings tabs</li>
         <li>🎨 Dark-first design system — DM Sans + DM Serif Display</li>
-        <li>🧩 Modular architecture — each module self-contained</li>
       </ul>
     </div>
     <div class="vlog old" style="margin-bottom:8px">
@@ -934,7 +941,7 @@ window.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();});
 /* ═══════════════════════════════════════════════════
    MODULE 0 — CONSTANTS & GLOBALS
 ═══════════════════════════════════════════════════ */
-const VER='3.0.0';
+const VER='3.1.0';
 const SB_URL='https://khntsltigjjelvmecvrq.supabase.co';
 const SB_KEY='sb_publishable_yqNAjCBe0Cg-JeD8aeSsAw_2slonEr_';
 const API_URL='/.netlify/functions/anthropic';
@@ -1138,8 +1145,25 @@ function switchMode(mode){
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active-life','active-fin'));
   if(mode==='life'){
     $('home-panel').classList.add('active');
-    $('nb-home').classList.add('active-life');
+    $('nb-overview').classList.add('active-life');
   } else {
+    $('finance-panel').classList.add('active');
+    $('nb-finance').classList.add('active-fin');
+    loadFinance();
+  }
+}
+
+// Logo tap = home for whichever module is active
+function goHome(){
+  if(currentMode==='life'){
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.nb').forEach(x=>x.classList.remove('active-life','active-fin'));
+    $('home-panel').classList.add('active');
+    $('nb-overview').classList.add('active-life');
+    renderHome();
+  } else {
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.nb').forEach(x=>x.classList.remove('active-life','active-fin'));
     $('finance-panel').classList.add('active');
     $('nb-finance').classList.add('active-fin');
     loadFinance();
@@ -1279,10 +1303,37 @@ async function sendToMirror(){
 /* ═══════════════════════════════════════════════════
    MODULE 5 — CHAT
 ═══════════════════════════════════════════════════ */
-const MSYS={base:`You are LifeThread — a rigorous personal intelligence system functioning as a living mirror.\n\nUSER: Name: __N__. Values: __V__. Focus: __F__. Wants: __W__.\nPatterns: __P__\n\nPRINCIPLES:\n- Speak directly. Do not soften.\n- Name patterns precisely.\n- Connect across categories and time.\n- Note recurrence explicitly.\n- Goal is clarity, not comfort.`,reflect:'\n\nMODE: Guided Reflection. One question at a time.',decide:'\n\nMODE: Decision Support. Surface assumptions, map consequences.',future:'\n\nMODE: Future Self, one year out. Honest, specific.',review:'\n\nMODE: Weekly Review. What happened, what patterns active, what needs attention.',letter:'\n\nMODE: Letter from future self. Specific, honest, not soft.',analyst:'\n\nMODE: Pure Pattern Analyst. Evidence-based. Precise.',open:'You are LifeThread — a trusted companion. User: __N__. Warm, present, real.'};
+const MSYS={base:`You are LifeThread — a unified personal and financial intelligence system functioning as a living mirror.\n\nUSER: Name: __N__. Values: __V__. Focus: __F__. Wants: __W__.\nPatterns: __P__\n\nPRINCIPLES:\n- Speak directly. Do not soften.\n- Name patterns precisely. Connect across life AND finance.\n- Note recurrence explicitly.\n- Goal is clarity, not comfort.\n- You see both the human interior and the financial reality simultaneously.`,reflect:'\n\nMODE: Guided Reflection. One question at a time.',decide:'\n\nMODE: Decision Support. Surface assumptions, map consequences. Include financial dimension if relevant.',future:'\n\nMODE: Future Self, one year out. Honest, specific. Address both life trajectory and financial position.',review:'\n\nMODE: Weekly Review. What happened, what patterns active, what needs attention across life and finances.',letter:'\n\nMODE: Letter from future self. Specific, honest, not soft.',analyst:'\n\nMODE: Pure Pattern Analyst. Evidence-based. Precise.',open:'You are LifeThread — a trusted companion. User: __N__. Warm, present, real.'};
 function getSys(mode){const pat=patterns.length?patterns.map(p=>p.name+': '+p.desc).join(' | '):'none';const base=MSYS.base.replace('__N__',uName||'[not set]').replace('__V__',uVals||'[not set]').replace('__F__',uFoc||'[not set]').replace('__W__',uWant||'[not set]').replace('__P__',pat);if(mode==='open')return MSYS.open.replace('__N__',uName||'friend');if(mode==='mirror')return base;return base+(MSYS[mode]||'');}
-function ctx(lim=40){const pr=`Name: ${uName}. Values: ${uVals}. Focus: ${uFoc}. Wants: ${uWant}.`;const pc=patterns.length?`\nPatterns: ${patterns.map(p=>p.name+': '+p.desc).join(' | ')}`:'';const sp=entries.length>=2?`\nSpans: ${entries[entries.length-1]?.date} → ${entries[0]?.date} (${entries.length} total)`:'';const log=entries.slice(0,lim).map(e=>{const t=e.temporal;const tc=t?`[${t.day_of_week||''} ${e.date}${t.time_of_day?' '+t.time_of_day:''}]`:`[${e.date}]`;return`${tc}[${e.category}]${e.mood?' ['+e.mood+']':''}\n${(e.content||'').slice(0,500)}`;}).join('\n\n---\n\n');return pr+pc+sp+'\n\nLIFE LOG:\n'+log;}
-function initChat(){addMsg('ai',`Hello${uName?', '+uName:''}.\n\nI hold everything you've logged — across time, categories, and the patterns you've named. I'm not here to make you feel better. I'm here to help you see clearly.\n\nWhat's on your mind?`);}
+
+// ctx() — builds the full context string for any AI call.
+// Pass finSnap=true to append the cached finance snapshot (no extra network call).
+function ctx(lim=40,finSnap=false){
+  const pr=`Name: ${uName}. Values: ${uVals}. Focus: ${uFoc}. Wants: ${uWant}.`;
+  const pc=patterns.length?`\nPatterns: ${patterns.map(p=>p.name+': '+p.desc).join(' | ')}`:'';
+  const sp=entries.length>=2?`\nSpans: ${entries[entries.length-1]?.date} → ${entries[0]?.date} (${entries.length} total)`:'';
+  const log=entries.slice(0,lim).map(e=>{const t=e.temporal;const tc=t?`[${t.day_of_week||''} ${e.date}${t.time_of_day?' '+t.time_of_day:''}]`:`[${e.date}]`;return`${tc}[${e.category}]${e.mood?' ['+e.mood+']':''}\n${(e.content||'').slice(0,500)}`;}).join('\n\n---\n\n');
+  let fin='';
+  if(finSnap&&lastFinSnapshot){
+    const f=lastFinSnapshot;
+    fin=`\n\nFINANCIAL SNAPSHOT (as of ${f.ts}):\nPortfolio: $${f.total||'—'} | P&L: $${f.pnl||'—'} | Monthly Div: $${f.div||'—'}\nSFD: ${f.sfdPct||0}% of $${finSettings.sfdTarget}/mo target\nSource: ${f.source||'manual'}${f.macro?' | Macro: '+f.macro:''}`;
+  }
+  return pr+pc+sp+'\n\nLIFE LOG:\n'+log+fin;
+}
+
+// lastFinSnapshot — cached whenever Finance tab loads, so chat has it without extra calls
+let lastFinSnapshot=null;
+function cacheFinSnapshot(d){
+  if(!d?.portfolio)return;
+  lastFinSnapshot={
+    ts:new Date().toLocaleTimeString(),
+    total:d.portfolio.total,pnl:d.portfolio.pnl,
+    div:d.portfolio.monthly_div,source:d.portfolio.source,
+    sfdPct:d.sfd?.progress||(((d.portfolio.monthly_div||0)/finSettings.sfdTarget)*100).toFixed(1),
+    macro:d.macro?.slice(0,3).map(m=>m.label+' '+m.signal).join(', ')
+  };
+}
+function initChat(){addMsg('ai',`Hello${uName?', '+uName:''}.\n\nI hold everything you've logged — your life entries, patterns, and financial position. I see all of it at once. I'm not here to make you feel better. I'm here to help you see clearly.\n\nWhat's on your mind?`);}
 function setMode(m,el){chatMode=m;document.querySelectorAll('.mc').forEach(x=>x.classList.remove('am'));if(el)el.classList.add('am');const L={mirror:'Mirror mode',reflect:'Guided Reflection',decide:'Decision Support',future:'Future Self',review:'Weekly Review',letter:'Writing your letter...',analyst:'Pattern Analyst',open:'Open conversation'};addMsg('sys',L[m]||m);if(m==='letter')setTimeout(genLetter,400);}
 async function genLetter(){addTyping();try{const r=await ai(getSys('letter')+`\n\nLIFE LOG:\n${ctx(40)}`,'Write my letter.');removeTyping();addMsg('ai',r);}catch(e){removeTyping();addMsg('ai','Error: '+e.message);}}
 function addMsg(role,text){const c=$('cmsgs');const d=document.createElement('div');d.className=`msg ${role}`;const safe=esc(text).replace(/\n/g,'<br>');d.innerHTML=role==='sys'?`<div class="bub">${safe}</div>`:`<div class="av">${role==='ai'?'🔮':'👤'}</div><div class="bub">${safe}</div>`;c.appendChild(d);requestAnimationFrame(()=>c.scrollTop=c.scrollHeight);return d;}
@@ -1292,7 +1343,7 @@ async function sendChat(){
   const inp=$('cin');const msg=inp.value.trim();if(!msg)return;
   inp.value='';inp.style.height='auto';addMsg('user',msg);chatHist.push({role:'user',content:msg});
   $('csend').disabled=true;addTyping();
-  const sys=getSys(chatMode)+`\n\nLIFE LOG:\n${ctx(40)}`;
+  const sys=getSys(chatMode)+`\n\nLIFE LOG:\n${ctx(40,true)}`;
   try{
     const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:chatHist.slice(-14)})});
     removeTyping();
@@ -1462,6 +1513,7 @@ async function loadFinance(){
     renderFinDrift(d.portfolio?.drift);
     renderFinRules(d.rules);
     fetchFinMacro();
+    cacheFinSnapshot(d);
   }catch(e){st.className='fin-status err';st.textContent='✗ Could not reach InTelSys — '+e.message;}
   renderHoldingsTable();
 }
