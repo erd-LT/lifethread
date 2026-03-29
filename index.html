@@ -471,6 +471,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
       <div id="triage-text" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('text')"><span>📄 Text & Documents</span><span id="triage-text-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-text-list" class="triage-list"></div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('text')">Import Text Files</button></div>
       <div id="triage-json" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('json')"><span>🔧 JSON / ChatGPT Data</span><span id="triage-json-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-json-list" class="triage-list"></div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('json')">Extract Conversations</button></div>
       <div id="triage-image" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('image')"><span>🖼 Images</span><span id="triage-image-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-image-list" class="triage-list"></div><div style="font-size:12px;color:#888;margin-top:6px">AI reads visible text in each image.</div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('image')">Extract Text from Images</button></div>
+      <div id="triage-zip" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('zip')"><span>🗜 ZIP Files</span><span id="triage-zip-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-zip-list" class="triage-list"></div><div style="font-size:12px;color:#888;margin-top:6px;line-height:1.6">Extract the ZIP first, then drop the files inside here. Or paste the text content directly below.</div></div>
       <div id="triage-audio" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('audio')"><span>🎙 Audio</span><span id="triage-audio-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-audio-list" class="triage-list"></div><div style="font-size:12px;color:#aaa;margin-top:6px">Audio transcription coming in Phase 2.</div></div>
       <div id="triage-other" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('other')"><span>📎 Other</span><span id="triage-other-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-other-list" class="triage-list"></div></div>
       <div class="divider"></div>
@@ -614,7 +615,7 @@ const TPLS={Health:'Sleep quality?\nEnergy level?\nMovement today?\nWhat is your
 const MMAP={'✨ Expansive':'#f0c040','😌 Calm':'#6cbf8e','😐 Neutral':'#b0b0b0','😔 Heavy':'#7090b0','⚡ Energized':'#e08830','😰 Anxious':'#c07080','🙏 Grateful':'#a070c0','😤 Frustrated':'#d06050','🔥 Passionate':'#e05020','😶 Numb':'#909090','🌀 Restless':'#70a0c0'};
 const CIQS=['How are you actually feeling right now — physically, mentally, emotionally?','What was the most significant thing that happened since your last entry?','What are you avoiding? What are you not saying here?','What\'s one thing that\'s true right now that you haven\'t fully admitted to yourself?','What do you want to move toward — and what\'s actually stopping you?'];
 const AFOCUS={'':'Synthesize everything — behavioral threads, emotional arc, patterns, contradictions, and the central through-line.',patterns:'Map behavioral patterns: name each, mechanism, evidence, frequency.',emotional:'Trace the emotional arc. Moods, triggers, cycles.',relationships:'Reconstruct the relational landscape.',work:'Work and identity patterns.',health:'Health and body patterns.',finances:'Financial decisions and patterns.',goals:'Goals vs. actual behavior.',contradictions:'Contradictions between stated values and behavior.',thread:'The single central through-line.'};
-const FILE_TYPES={text:['txt','md','text','csv','rtf'],json:['json'],image:['jpg','jpeg','png','gif','webp','bmp','heic','heif'],audio:['mp3','wav','m4a','ogg','aac','flac','mp4','mov','webm']};
+const FILE_TYPES={text:['txt','md','text','csv','rtf','doc','docx','pages'],json:['json'],image:['jpg','jpeg','png','gif','webp','bmp','heic','heif'],audio:['mp3','wav','m4a','ogg','aac','flac','mp4','mov','webm'],zip:['zip']};
 
 let entries=[],goals=[],patterns=[],chatHist=[],ciAs=[],ciQs=[],ciIdx=0;
 let selCat=null,chatMode='mirror',recording=false,recog=null;
@@ -1079,20 +1080,30 @@ async function saveProfile(){
 // ── TRIAGE / IMPORT ───────────────────────────────────────────────────────
 function handleDrop(e){const files=e.dataTransfer.files;if(files.length)handleFiles(files);}
 function handleFiles(files){
-  triageFiles={text:[],json:[],image:[],audio:[],other:[]};
-  for(const f of files){const ext=getExt(f.name);if(FILE_TYPES.json.includes(ext))triageFiles.json.push(f);else if(FILE_TYPES.text.includes(ext))triageFiles.text.push(f);else if(FILE_TYPES.image.includes(ext))triageFiles.image.push(f);else if(FILE_TYPES.audio.includes(ext))triageFiles.audio.push(f);else triageFiles.other.push(f);}
+  triageFiles={text:[],json:[],image:[],audio:[],zip:[],other:[]};
+  for(const f of files){
+    const ext=getExt(f.name);
+    if(FILE_TYPES.zip.includes(ext))triageFiles.zip.push(f);
+    else if(FILE_TYPES.json.includes(ext))triageFiles.json.push(f);
+    else if(FILE_TYPES.text.includes(ext))triageFiles.text.push(f);
+    else if(['doc','docx','pages'].includes(ext))triageFiles.text.push(f); // Word docs as text
+    else if(FILE_TYPES.image.includes(ext))triageFiles.image.push(f);
+    else if(FILE_TYPES.audio.includes(ext))triageFiles.audio.push(f);
+    else triageFiles.other.push(f);
+  }
   renderTriage();
 }
 function renderTriage(){
   $('triage-out').style.display='block';
-  const icons={text:'📄',json:'🔧',image:'🖼',audio:'🎙',other:'📎'};
-  ['text','json','image','audio','other'].forEach(g=>{
+  const icons={text:'📄',json:'🔧',image:'🖼',audio:'🎙',zip:'🗜',other:'📎'};
+  ['text','json','image','audio','zip','other'].forEach(g=>{
     const el=$(`triage-${g}`),list=$(`triage-${g}-list`),count=$(`triage-${g}-count`);
-    if(!triageFiles[g]?.length){el.style.display='none';return;}
+    if(!el||!triageFiles[g]?.length){if(el)el.style.display='none';return;}
     el.style.display='block';count.textContent=triageFiles[g].length;
     list.innerHTML=triageFiles[g].map(f=>`<div class="tfile"><span>${icons[g]}</span><span class="tfile-name">${esc(f.name)}</span><span class="tfile-size">${fmtSize(f.size)}</span></div>`).join('');
   });
-  toast(`Found ${Object.values(triageFiles).flat().length} files`);
+  const total=Object.values(triageFiles).flat().length;
+  toast(`Found ${total} file${total>1?'s':''} — select a group to import`);
 }
 function toggleTriage(g){$(`triage-${g}-list`).classList.toggle('open');}
 
@@ -1107,27 +1118,79 @@ async function processGroup(type){
   const fill=$('ipfill'),label=$('iplabel');
   let total=0;const files=triageFiles[type];
   const ISYS=`Parse this text into individual journal/life log entries. Return ONLY a JSON array: [{"date":"YYYY-MM-DD","time_of_day":"Morning|Afternoon|Evening|Night|null","category":"Journal|Goals|Relationships|Health|Finances|Spirituality|Creative Work|Learning & Growth|Family|Dreams & Visions|Mental & Emotional State","content":"full text","title":"5-8 words","date_confidence":"exact|inferred|unknown"}]. Default: ${dc}. Today: ${today()}. JSON only.`;
+
   if(type==='image'){
     for(let i=0;i<files.length;i++){
-      fill.style.width=Math.round((i/files.length)*100)+'%';label.textContent=`Reading image ${i+1} of ${files.length}...`;
-      try{const b64=await fileToBase64(files[i]);const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:files[i].type||'image/jpeg',data:b64}},{type:'text',text:'Extract all visible text from this image.'}]}]})});const d=await r.json();const text=d.content?.[0]?.text||'';if(text.trim().length>20){addE({category:dc,content:text.trim(),title:files[i].name.slice(0,60),source:'import-image'});total++;}}catch(e){console.warn(e);}
+      fill.style.width=Math.round((i/files.length)*100)+'%';
+      label.textContent=`Reading image ${i+1} of ${files.length}...`;
+      try{
+        const b64=await fileToBase64(files[i]);
+        const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:files[i].type||'image/jpeg',data:b64}},{type:'text',text:'Extract all visible text from this image. Return only the extracted text, nothing else.'}]}]})});
+        const d=await r.json();const text=d.content?.[0]?.text||'';
+        if(text.trim().length>20){addE({category:dc,content:text.trim(),title:files[i].name.slice(0,60),source:'import-image'});total++;}
+      }catch(e){console.warn(e);}
       await sleep(500);
     }
   } else if(type==='json'){
     for(let i=0;i<files.length;i++){
-      fill.style.width=Math.round((i/files.length)*100)+'%';label.textContent=`Parsing JSON ${i+1} of ${files.length}...`;
-      try{const text=await fileToText(files[i]);const data=JSON.parse(text);let extracted='';
-        if(data.mapping){const msgs=Object.values(data.mapping).filter(m=>m.message?.content?.parts&&m.message.author.role!=='system').sort((a,b)=>(a.message.create_time||0)-(b.message.create_time||0));extracted=msgs.map(m=>{const role=m.message.author.role==='user'?'Me':'GPT';const content=m.message.content.parts.filter(p=>typeof p==='string').join(' ');return content.trim()?`${role}: ${content.trim()}`:'';}).filter(Boolean).join('\n\n');}
-        else extracted=text.slice(0,5000);
-        if(extracted.trim().length>50){const chunks=chunkText(extracted,7000);for(const chunk of chunks){try{const raw_r=await ai(`Parse this ChatGPT conversation. Extract only meaningful personal content. ${ISYS}`,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-json',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}}
+      fill.style.width=Math.round((i/files.length)*100)+'%';
+      label.textContent=`Parsing JSON ${i+1} of ${files.length}...`;
+      try{
+        const text=await fileToText(files[i]);const data=JSON.parse(text);let extracted='';
+        if(data.mapping){
+          const msgs=Object.values(data.mapping).filter(m=>m.message?.content?.parts&&m.message.author.role!=='system').sort((a,b)=>(a.message.create_time||0)-(b.message.create_time||0));
+          extracted=msgs.map(m=>{const role=m.message.author.role==='user'?'Me':'GPT';const content=m.message.content.parts.filter(p=>typeof p==='string').join(' ');return content.trim()?`${role}: ${content.trim()}`:'';}).filter(Boolean).join('\n\n');
+        } else extracted=text.slice(0,5000);
+        if(extracted.trim().length>50){
+          const chunks=chunkText(extracted,7000);
+          for(const chunk of chunks){
+            try{const raw_r=await ai(`Parse this ChatGPT conversation. Extract only meaningful personal content — thoughts, feelings, goals, decisions. Skip generic AI filler. ${ISYS}`,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-json',date_confidence:p.date_confidence});total++;}}}}catch{}
+            await sleep(600);
+          }
+        }
       }catch(e){console.warn(e);}
     }
   } else {
+    // Text files — including Word docs (.docx)
     for(let i=0;i<files.length;i++){
-      fill.style.width=Math.round((i/files.length)*100)+'%';label.textContent=`Processing ${i+1} of ${files.length}...`;
-      try{const text=await fileToText(files[i]);const chunks=chunkText(text,7000);for(const chunk of chunks){try{const raw_r=await ai(ISYS,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}}catch(e){console.warn(e);}
+      fill.style.width=Math.round((i/files.length)*100)+'%';
+      label.textContent=`Processing ${i+1} of ${files.length}: ${files[i].name}`;
+      const ext=getExt(files[i].name);
+      let text='';
+      try{
+        if(['doc','docx','pages'].includes(ext)){
+          // Word docs: use AI vision on file as base64, or read as binary and extract text
+          // Try reading as text first (works for some .doc files)
+          try{
+            text=await fileToText(files[i]);
+            // If it's binary garbage, it'll be mostly non-printable chars
+            const printable=(text.match(/[\x20-\x7E]/g)||[]).length;
+            if(printable/text.length<0.5){
+              // Binary file — tell user to copy-paste
+              st.innerHTML=`<span class="err">⚠️ "${files[i].name}" is a binary Word file. Open it → Select All (Ctrl+A) → Copy → Paste into the text box below.</span>`;
+              continue;
+            }
+          }catch{
+            st.innerHTML=`<span class="err">⚠️ "${files[i].name}" — Open it, copy the text, and paste below.</span>`;
+            continue;
+          }
+        } else {
+          text=await fileToText(files[i]);
+        }
+        if(!text.trim()){continue;}
+        const chunks=chunkText(text,7000);
+        for(const chunk of chunks){
+          try{
+            const raw_r=await ai(ISYS,chunk);
+            const parsed=safeJSON(raw_r);
+            if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import',date_confidence:p.date_confidence});total++;}}}
+          }catch{}
+          await sleep(600);
+        }
+      }catch(e){console.warn(e);}
     }
   }
+
   fill.style.width='100%';$('iprog').style.display='none';
   entries.sort((a,b)=>b.date.localeCompare(a.date));
   renderEntries();renderDash();renderHome();
