@@ -8,6 +8,9 @@
 <meta name="apple-mobile-web-app-title" content="LifeThread"/>
 <meta name="theme-color" content="#6c8ebf"/>
 <title>LifeThread</title>
+<!-- CDN: mammoth.js for .docx extraction, JSZip for .zip extraction -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
@@ -79,7 +82,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .hquick{display:flex;gap:8px;padding:0 16px 12px;align-items:center}
 .hquick input{flex:1;padding:10px 14px;border:1.5px solid #e0e8f5;border-radius:20px;background:#f7f9fd;font-size:16px}
 .hquick button{width:36px;height:36px;border-radius:50%;background:#6c8ebf;border:none;cursor:pointer;color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.jrow{display:flex;gap:7px;padding:0 16px 16px;flex-wrap:wrap}
+.jrow{display:flex;gap:8px;padding:0 16px 16px;flex-wrap:wrap}
 .daily-brief{margin:0 16px 12px;background:linear-gradient(135deg,#eef2f9,#f5f0ff);border:1px solid #d0d8f0;border-radius:10px;padding:14px}
 .daily-brief h3{font-size:11px;font-weight:600;color:#3a5a8c;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
 .brief-content{font-size:13px;color:#333;line-height:1.7}
@@ -158,7 +161,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .dot{width:6px;height:6px;border-radius:50%;background:#bbb;animation:bop 1.2s infinite}
 .dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
 @keyframes bop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
-.cmodes{display:flex;gap:5px;padding:7px 10px;overflow-x:auto;border-top:1px solid #eee;background:#fafal8;flex-shrink:0;scrollbar-width:none}
+.cmodes{display:flex;gap:5px;padding:7px 10px;overflow-x:auto;border-top:1px solid #eee;background:#fafaf8;flex-shrink:0;scrollbar-width:none}
 .cmodes::-webkit-scrollbar{display:none}
 .mc{padding:5px 11px;border:1.5px solid #e0e8f5;border-radius:16px;background:#fff;font-size:11px;cursor:pointer;white-space:nowrap;color:#5a7aad;font-weight:500;flex-shrink:0}
 .mc.am{background:#eef2f9;border-color:#6c8ebf}
@@ -204,7 +207,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .vtable{width:100%;font-size:13px;border-collapse:collapse}
 .vtable td{padding:9px 12px;border-bottom:1px solid #eee;vertical-align:top}
 .vtable tr:last-child td{border:none}
-.vlog{border-left:3px solid #6c8ebf;padding:10px 12px;background:#fafal8;border-radius:0 8px 8px 0;margin-bottom:8px}
+.vlog{border-left:3px solid #6c8ebf;padding:10px 12px;background:#fafaf8;border-radius:0 8px 8px 0;margin-bottom:8px}
 .vlog.old{border-color:#ddd}
 </style>
 </head>
@@ -455,7 +458,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 <div id="import-panel" class="panel">
   <div class="scroll"><div class="pad">
     <div class="sec">Import & Triage</div>
-    <p style="font-size:13px;color:#888;margin-bottom:14px;line-height:1.6">Drop any files — text, JSON, images. LifeThread sorts by type and processes each group.</p>
+    <p style="font-size:13px;color:#888;margin-bottom:14px;line-height:1.6">Drop any files — text, Word docs (.docx), JSON, ZIP, images. LifeThread reads and imports everything automatically.</p>
     <div id="dropzone" class="drop-zone"
       onclick="$('fin').click()"
       ondragover="event.preventDefault();event.stopPropagation();this.classList.add('drag-over')"
@@ -463,7 +466,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
       ondrop="event.preventDefault();event.stopPropagation();this.classList.remove('drag-over');handleDrop(event)">
       <div style="font-size:28px;margin-bottom:8px">📂</div>
       <div style="font-size:14px;font-weight:600;color:#3a5a8c;margin-bottom:4px">Drop files here or tap to browse</div>
-      <div style="font-size:12px;color:#aaa">Text, JSON, images — any format</div>
+      <div style="font-size:12px;color:#aaa">Text, Word (.docx), JSON, ZIP, images — auto-processed</div>
     </div>
     <input type="file" id="fin" multiple accept="*/*" style="display:none" onchange="handleFiles(event.target.files)"/>
     <div id="triage-out" style="display:none">
@@ -471,7 +474,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
       <div id="triage-text" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('text')"><span>📄 Text & Documents</span><span id="triage-text-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-text-list" class="triage-list"></div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('text')">Import Text Files</button></div>
       <div id="triage-json" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('json')"><span>🔧 JSON / ChatGPT Data</span><span id="triage-json-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-json-list" class="triage-list"></div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('json')">Extract Conversations</button></div>
       <div id="triage-image" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('image')"><span>🖼 Images</span><span id="triage-image-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-image-list" class="triage-list"></div><div style="font-size:12px;color:#888;margin-top:6px">AI reads visible text in each image.</div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('image')">Extract Text from Images</button></div>
-      <div id="triage-zip" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('zip')"><span>🗜 ZIP Files</span><span id="triage-zip-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-zip-list" class="triage-list"></div><div style="font-size:12px;color:#888;margin-top:6px;line-height:1.6">Extract the ZIP first, then drop the files inside here. Or paste the text content directly below.</div></div>
+      <div id="triage-zip" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('zip')"><span>🗜 ZIP Files</span><span id="triage-zip-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-zip-list" class="triage-list"></div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('zip')">Extract & Import ZIP</button></div>
       <div id="triage-audio" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('audio')"><span>🎙 Audio</span><span id="triage-audio-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-audio-list" class="triage-list"></div><div style="font-size:12px;color:#aaa;margin-top:6px">Audio transcription coming in Phase 2.</div></div>
       <div id="triage-other" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('other')"><span>📎 Other</span><span id="triage-other-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-other-list" class="triage-list"></div></div>
       <div class="divider"></div>
@@ -495,9 +498,9 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
   <div class="scroll"><div class="pad" style="max-width:560px">
     <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
       <div style="font-size:20px;font-weight:700">LifeThread</div>
-      <div style="font-size:12px;color:#6c8ebf;font-weight:600;background:#eef2f9;padding:2px 9px;border-radius:10px">v2.0.0</div>
+      <div style="font-size:12px;color:#6c8ebf;font-weight:600;background:#eef2f9;padding:2px 9px;border-radius:10px">v2.0.1</div>
     </div>
-    <div style="font-size:12px;color:#aaa;margin-bottom:20px">March 28, 2026 · Claude Sonnet 4</div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:20px">March 29, 2026 · Claude Sonnet 4</div>
     <div class="sec">System Stats</div>
     <div style="border:1px solid #eee;border-radius:10px;overflow:hidden;margin-bottom:18px">
       <table class="vtable">
@@ -513,14 +516,21 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
     </div>
     <div class="sec">Changelog</div>
     <div class="vlog" style="margin-bottom:8px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v2.0.0</b><span style="font-size:11px;color:#6c8ebf;background:#eef2f9;padding:2px 7px;border-radius:8px">current</span><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 28, 2026</span></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v2.0.1</b><span style="font-size:11px;color:#6c8ebf;background:#eef2f9;padding:2px 7px;border-radius:8px">current</span><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 29, 2026</span></div>
+      <ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px">
+        <li>📄 Word doc (.docx) auto-extraction via mammoth.js — no copy-paste needed</li>
+        <li>🗜 ZIP auto-unzip via JSZip — drops inside processed automatically</li>
+        <li>🔧 Import pipeline hardened for all file types</li>
+      </ul>
+    </div>
+    <div class="vlog old" style="margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v2.0.0</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 28, 2026</span></div>
       <ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px">
         <li>🔐 Full email + password authentication</li>
         <li>☁️ Supabase backend — all data stored in cloud</li>
         <li>📱 True cross-device sync — same account on all devices</li>
         <li>🔑 API keys stored encrypted per account — enter once, works everywhere</li>
         <li>🔄 Real-time sync dot in nav</li>
-        <li>📂 Document upload fixed — files trigger import automatically</li>
         <li>👁 Show/copy API key fields</li>
         <li>↩ Logout button</li>
       </ul>
@@ -529,7 +539,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
     <div class="vlog old" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.7.0</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 28, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Mirror button, Daily Brief, Search, Pattern auto-flag, Triage import</li></ul></div>
     <div class="vlog old" style="margin-bottom:18px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.0–1.6</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Initial build through full hardening</li></ul></div>
     <div class="sec">Phase 2 Roadmap</div>
-    <div style="background:#fafal8;border:1px solid #eee;border-radius:10px;padding:12px;margin-bottom:16px"><ul style="font-size:12px;color:#666;line-height:2.1;padding-left:14px"><li>Semantic vector search</li><li>Entity tracking — people, places, projects</li><li>Gmail & Calendar integration</li><li>Apple Watch biometrics</li><li>Audio transcription</li><li>ChatGPT Custom GPT connector</li></ul></div>
+    <div style="background:#fafaf8;border:1px solid #eee;border-radius:10px;padding:12px;margin-bottom:16px"><ul style="font-size:12px;color:#666;line-height:2.1;padding-left:14px"><li>Semantic vector search</li><li>Entity tracking — people, places, projects</li><li>Gmail & Calendar integration</li><li>Apple Watch biometrics</li><li>Audio transcription</li><li>ChatGPT Custom GPT connector</li><li>Finance tab — InTelSys bridge</li></ul></div>
   </div></div>
 </div>
 
@@ -601,7 +611,7 @@ window.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();});
 const SB_URL='https://khntsltigjjelvmecvrq.supabase.co';
 const SB_KEY='sb_publishable_yqNAjCBe0Cg-JeD8aeSsAw_2slonEr_';
 
-const VER='2.0.0';
+const VER='2.0.1';
 const API_URL='/.netlify/functions/anthropic';
 const CATS=[
   {e:'📓',l:'Journal',v:'Journal'},{e:'🎯',l:'Goals',v:'Goals'},
@@ -615,13 +625,20 @@ const TPLS={Health:'Sleep quality?\nEnergy level?\nMovement today?\nWhat is your
 const MMAP={'✨ Expansive':'#f0c040','😌 Calm':'#6cbf8e','😐 Neutral':'#b0b0b0','😔 Heavy':'#7090b0','⚡ Energized':'#e08830','😰 Anxious':'#c07080','🙏 Grateful':'#a070c0','😤 Frustrated':'#d06050','🔥 Passionate':'#e05020','😶 Numb':'#909090','🌀 Restless':'#70a0c0'};
 const CIQS=['How are you actually feeling right now — physically, mentally, emotionally?','What was the most significant thing that happened since your last entry?','What are you avoiding? What are you not saying here?','What\'s one thing that\'s true right now that you haven\'t fully admitted to yourself?','What do you want to move toward — and what\'s actually stopping you?'];
 const AFOCUS={'':'Synthesize everything — behavioral threads, emotional arc, patterns, contradictions, and the central through-line.',patterns:'Map behavioral patterns: name each, mechanism, evidence, frequency.',emotional:'Trace the emotional arc. Moods, triggers, cycles.',relationships:'Reconstruct the relational landscape.',work:'Work and identity patterns.',health:'Health and body patterns.',finances:'Financial decisions and patterns.',goals:'Goals vs. actual behavior.',contradictions:'Contradictions between stated values and behavior.',thread:'The single central through-line.'};
-const FILE_TYPES={text:['txt','md','text','csv','rtf','doc','docx','pages'],json:['json'],image:['jpg','jpeg','png','gif','webp','bmp','heic','heif'],audio:['mp3','wav','m4a','ogg','aac','flac','mp4','mov','webm'],zip:['zip']};
+const FILE_TYPES={
+  text:['txt','md','text','csv','rtf'],
+  docx:['doc','docx','pages'],
+  json:['json'],
+  image:['jpg','jpeg','png','gif','webp','bmp','heic','heif'],
+  audio:['mp3','wav','m4a','ogg','aac','flac','mp4','mov','webm'],
+  zip:['zip']
+};
 
 let entries=[],goals=[],patterns=[],chatHist=[],ciAs=[],ciQs=[],ciIdx=0;
 let selCat=null,chatMode='mirror',recording=false,recog=null;
 let userEmail='',apiKey='',nKey='',nDb='',uName='',uVals='',uFoc='',uWant='';
 let activeId=null,editing=false,busy=false;
-let triageFiles={text:[],json:[],image:[],audio:[],other:[]};
+let triageFiles={text:[],docx:[],json:[],image:[],audio:[],zip:[],other:[]};
 
 const $=id=>document.getElementById(id);
 const nowISO=()=>new Date().toISOString();
@@ -647,7 +664,6 @@ async function sbReq(path,method='GET',body=null,token=null){
   return ct.includes('json')?r.json():r.text();
 }
 
-// Simple password hash (SHA-256 via Web Crypto)
 async function hashPass(pass){
   const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pass));
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
@@ -672,7 +688,6 @@ async function doRegister(){
   const btn=$('reg-btn');btn.disabled=true;btn.textContent='Creating account...';
   try{
     const hash=await hashPass(pass);
-    // Check if email exists
     const existing=await sbReq(`/rest/v1/user_credentials?email=eq.${encodeURIComponent(email)}&select=id`);
     if(existing&&existing.length>0){$('auth-err').textContent='Account already exists. Sign in instead.';btn.disabled=false;btn.textContent='Create Account';return;}
     await sbReq('/rest/v1/user_credentials','POST',{email,password_hash:hash,profile:{}});
@@ -692,7 +707,6 @@ async function doLogin(emailOverride,passOverride){
     if(!rows||!rows.length){$('auth-err').textContent='Account not found. Create one first.';btn.disabled=false;btn.textContent='Sign In';return;}
     const user=rows[0];
     if(user.password_hash!==hash){$('auth-err').textContent='Incorrect password.';btn.disabled=false;btn.textContent='Sign In';return;}
-    // Login success
     userEmail=email;
     localStorage.setItem('lt_session',JSON.stringify({email,ts:Date.now()}));
     await loadUserData(user);
@@ -701,13 +715,11 @@ async function doLogin(emailOverride,passOverride){
 }
 
 async function loadUserData(user){
-  // Load credentials from account
   if(user.anthropic_key)apiKey=user.anthropic_key;
   if(user.notion_key)nKey=user.notion_key;
   if(user.notion_db)nDb=user.notion_db;
   const prof=user.profile||{};
   uName=prof.name||''; uVals=prof.values||''; uFoc=prof.focus||''; uWant=prof.want||'';
-  // Load entries from Supabase
   try{
     setSyncDot('syncing');
     const rows=await sbReq(`/rest/v1/entries?user_email=eq.${encodeURIComponent(userEmail)}&order=date.desc&limit=500`);
@@ -723,7 +735,6 @@ async function loadUserData(user){
 function showApp(){
   $('auth-screen').style.display='none';
   $('app').style.display='flex';
-  // Prefill settings
   if(apiKey)$('akey').value=apiKey;
   if(nKey)$('nkey').value=nKey;
   if(nDb)$('ndb').value=nDb;
@@ -751,16 +762,13 @@ function doLogout(){
 
 // ── INIT ──────────────────────────────────────────────────────────────────
 window.addEventListener('load',async()=>{
-  // Check for existing session
   try{
     const sess=JSON.parse(localStorage.getItem('lt_session')||'null');
     if(sess&&sess.email&&(Date.now()-sess.ts)<7*24*60*60*1000){
-      // Auto-login with stored session
       const rows=await sbReq(`/rest/v1/user_credentials?email=eq.${encodeURIComponent(sess.email)}&select=*`);
       if(rows&&rows.length){userEmail=sess.email;await loadUserData(rows[0]);showApp();return;}
     }
   }catch(e){console.warn('Session restore failed');}
-  // Show auth screen
   $('auth-screen').style.display='flex';
 });
 
@@ -893,7 +901,6 @@ const saveEdit=guard(async()=>{
   const e=entries.find(x=>x.id===activeId);if(!e)return;
   const t=$('medit').value.trim();if(!t){toast('Entry cannot be empty');return;}
   e.content=t;e.title=t.slice(0,60).replace(/\n/g,' ');
-  // Update in Supabase
   try{await sbReq(`/rest/v1/entries?id=eq.${e.id}&user_email=eq.${encodeURIComponent(userEmail)}`,'PATCH',{content:t,title:e.title});}catch(err){console.warn(err);}
   renderEntries();renderHome();$('mbody').textContent=t;toggleEdit();toast('✓ Updated');
 });
@@ -1054,7 +1061,6 @@ async function saveApiKey(){
   const k=$('akey').value.trim();
   if(k&&!k.startsWith('sk-ant-')){$('akst').innerHTML='<span class="err">⚠️ Should start with sk-ant-</span>';return;}
   apiKey=k;
-  // Save to Supabase account
   try{await sbReq(`/rest/v1/user_credentials?email=eq.${encodeURIComponent(userEmail)}`,'PATCH',{anthropic_key:k});$('akst').innerHTML='<span class="ok">✓ Saved to your account — works on all devices.</span>';}
   catch(e){$('akst').innerHTML=`<span class="err">⚠️ ${e.message}</span>`;}
   setTimeout(()=>$('akst').innerHTML='',5000);
@@ -1079,20 +1085,27 @@ async function saveProfile(){
 
 // ── TRIAGE / IMPORT ───────────────────────────────────────────────────────
 function handleDrop(e){const files=e.dataTransfer.files;if(files.length)handleFiles(files);}
+
 function handleFiles(files){
-  triageFiles={text:[],json:[],image:[],audio:[],zip:[],other:[]};
+  // Reset triage buckets
+  triageFiles={text:[],docx:[],json:[],image:[],audio:[],zip:[],other:[]};
   for(const f of files){
     const ext=getExt(f.name);
-    if(FILE_TYPES.zip.includes(ext))triageFiles.zip.push(f);
-    else if(FILE_TYPES.json.includes(ext))triageFiles.json.push(f);
-    else if(FILE_TYPES.text.includes(ext))triageFiles.text.push(f);
-    else if(['doc','docx','pages'].includes(ext))triageFiles.text.push(f); // Word docs as text
-    else if(FILE_TYPES.image.includes(ext))triageFiles.image.push(f);
-    else if(FILE_TYPES.audio.includes(ext))triageFiles.audio.push(f);
-    else triageFiles.other.push(f);
+    if(FILE_TYPES.zip.includes(ext))          triageFiles.zip.push(f);
+    else if(FILE_TYPES.json.includes(ext))    triageFiles.json.push(f);
+    else if(FILE_TYPES.docx.includes(ext))    triageFiles.docx.push(f);  // Word docs go to docx bucket
+    else if(FILE_TYPES.text.includes(ext))    triageFiles.text.push(f);
+    else if(FILE_TYPES.image.includes(ext))   triageFiles.image.push(f);
+    else if(FILE_TYPES.audio.includes(ext))   triageFiles.audio.push(f);
+    else                                       triageFiles.other.push(f);
+  }
+  // Merge docx into text for display (they share the text triage group)
+  if(triageFiles.docx.length){
+    triageFiles.text=[...triageFiles.text,...triageFiles.docx];
   }
   renderTriage();
 }
+
 function renderTriage(){
   $('triage-out').style.display='block';
   const icons={text:'📄',json:'🔧',image:'🖼',audio:'🎙',zip:'🗜',other:'📎'};
@@ -1105,21 +1118,61 @@ function renderTriage(){
   const total=Object.values(triageFiles).flat().length;
   toast(`Found ${total} file${total>1?'s':''} — select a group to import`);
 }
+
 function toggleTriage(g){$(`triage-${g}-list`).classList.toggle('open');}
 
 function chunkText(text,max=7000){if(text.length<=max)return[text];const chunks=[];let rem=text;while(rem.length>0){if(rem.length<=max){chunks.push(rem);break;}let cut=max;const p=rem.lastIndexOf('\n\n',cut);if(p>max*0.4)cut=p;else{const n=rem.lastIndexOf('\n',cut);if(n>max*0.4)cut=n;else{const s=rem.lastIndexOf('. ',cut);if(s>max*0.4)cut=s+1;}}const chunk=rem.slice(0,cut).trim();if(chunk.length>30)chunks.push(chunk);rem=rem.slice(cut).trim();}return chunks.filter(c=>c.length>30);}
 function fileToBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});}
 function fileToText(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsText(file,'UTF-8');});}
+function fileToArrayBuffer(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsArrayBuffer(file);});}
+
+// ── Extract text from a .docx file using mammoth.js ──────────────────────
+async function extractDocx(file){
+  const buf=await fileToArrayBuffer(file);
+  const result=await mammoth.extractRawText({arrayBuffer:buf});
+  return result.value||'';
+}
+
+// ── Unzip and collect processable files from a .zip ──────────────────────
+async function extractZip(file){
+  const buf=await fileToArrayBuffer(file);
+  const zip=await JSZip.loadAsync(buf);
+  const extracted=[];
+  const processable=[...FILE_TYPES.text,...FILE_TYPES.docx,...FILE_TYPES.json];
+  for(const [name,entry] of Object.entries(zip.files)){
+    if(entry.dir)continue;
+    const ext=getExt(name);
+    if(!processable.includes(ext))continue;
+    // Skip macOS metadata files
+    if(name.startsWith('__MACOSX')||name.startsWith('.'))continue;
+    try{
+      let text='';
+      if(FILE_TYPES.docx.includes(ext)){
+        const ab=await entry.async('arraybuffer');
+        const result=await mammoth.extractRawText({arrayBuffer:ab});
+        text=result.value||'';
+      } else {
+        text=await entry.async('text');
+      }
+      if(text.trim().length>30){
+        extracted.push({name,ext,text});
+      }
+    }catch(e){console.warn('ZIP entry error:',name,e);}
+  }
+  return extracted;
+}
 
 async function processGroup(type){
   if(!triageFiles[type]?.length)return;
   const dc=$('icat').value,st=$('ist');
   $('iprog').style.display='block';
   const fill=$('ipfill'),label=$('iplabel');
-  let total=0;const files=triageFiles[type];
+  let total=0;
+  const files=triageFiles[type];
   const ISYS=`Parse this text into individual journal/life log entries. Return ONLY a JSON array: [{"date":"YYYY-MM-DD","time_of_day":"Morning|Afternoon|Evening|Night|null","category":"Journal|Goals|Relationships|Health|Finances|Spirituality|Creative Work|Learning & Growth|Family|Dreams & Visions|Mental & Emotional State","content":"full text","title":"5-8 words","date_confidence":"exact|inferred|unknown"}]. Default: ${dc}. Today: ${today()}. JSON only.`;
 
   if(type==='image'){
+    // ── Image processing ─────────────────────────────────────────────────
     for(let i=0;i<files.length;i++){
       fill.style.width=Math.round((i/files.length)*100)+'%';
       label.textContent=`Reading image ${i+1} of ${files.length}...`;
@@ -1131,63 +1184,151 @@ async function processGroup(type){
       }catch(e){console.warn(e);}
       await sleep(500);
     }
+
   } else if(type==='json'){
+    // ── JSON / ChatGPT export processing ─────────────────────────────────
     for(let i=0;i<files.length;i++){
       fill.style.width=Math.round((i/files.length)*100)+'%';
       label.textContent=`Parsing JSON ${i+1} of ${files.length}...`;
       try{
-        const text=await fileToText(files[i]);const data=JSON.parse(text);let extracted='';
+        const text=await fileToText(files[i]);
+        const data=JSON.parse(text);
+        let extracted='';
         if(data.mapping){
-          const msgs=Object.values(data.mapping).filter(m=>m.message?.content?.parts&&m.message.author.role!=='system').sort((a,b)=>(a.message.create_time||0)-(b.message.create_time||0));
-          extracted=msgs.map(m=>{const role=m.message.author.role==='user'?'Me':'GPT';const content=m.message.content.parts.filter(p=>typeof p==='string').join(' ');return content.trim()?`${role}: ${content.trim()}`:'';}).filter(Boolean).join('\n\n');
-        } else extracted=text.slice(0,5000);
+          // ChatGPT conversation export format
+          const msgs=Object.values(data.mapping)
+            .filter(m=>m.message?.content?.parts&&m.message.author.role!=='system')
+            .sort((a,b)=>(a.message.create_time||0)-(b.message.create_time||0));
+          extracted=msgs.map(m=>{
+            const role=m.message.author.role==='user'?'Me':'GPT';
+            const content=m.message.content.parts.filter(p=>typeof p==='string').join(' ');
+            return content.trim()?`${role}: ${content.trim()}`:'';
+          }).filter(Boolean).join('\n\n');
+        } else {
+          extracted=text.slice(0,5000);
+        }
         if(extracted.trim().length>50){
           const chunks=chunkText(extracted,7000);
           for(const chunk of chunks){
-            try{const raw_r=await ai(`Parse this ChatGPT conversation. Extract only meaningful personal content — thoughts, feelings, goals, decisions. Skip generic AI filler. ${ISYS}`,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-json',date_confidence:p.date_confidence});total++;}}}}catch{}
+            try{
+              const raw_r=await ai(`Parse this ChatGPT conversation. Extract only meaningful personal content — thoughts, feelings, goals, decisions. Skip generic AI filler. ${ISYS}`,chunk);
+              const parsed=safeJSON(raw_r);
+              if(Array.isArray(parsed)){
+                for(const p of parsed){
+                  if(p?.content?.trim()){
+                    addE({date:p.date||today(),category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-json',date_confidence:p.date_confidence});
+                    total++;
+                  }
+                }
+              }
+            }catch{}
             await sleep(600);
           }
         }
       }catch(e){console.warn(e);}
     }
+
+  } else if(type==='zip'){
+    // ── ZIP processing — auto-extract and process contents ────────────────
+    for(let i=0;i<files.length;i++){
+      fill.style.width=Math.round((i/files.length)*100)+'%';
+      label.textContent=`Extracting ZIP ${i+1} of ${files.length}...`;
+      try{
+        const extracted=await extractZip(files[i]);
+        if(!extracted.length){
+          st.innerHTML=`<span class="err">⚠️ No readable text files found inside ${esc(files[i].name)}.</span>`;
+          continue;
+        }
+        toast(`Found ${extracted.length} files inside ZIP — processing...`);
+        for(let j=0;j<extracted.length;j++){
+          const {name,ext,text}=extracted[j];
+          fill.style.width=Math.round(((i+j/extracted.length)/files.length)*100)+'%';
+          label.textContent=`Processing: ${name} (${j+1}/${extracted.length})`;
+          // ChatGPT JSON inside zip
+          if(ext==='json'){
+            try{
+              const data=JSON.parse(text);
+              let conv='';
+              if(data.mapping){
+                const msgs=Object.values(data.mapping)
+                  .filter(m=>m.message?.content?.parts&&m.message.author.role!=='system')
+                  .sort((a,b)=>(a.message.create_time||0)-(b.message.create_time||0));
+                conv=msgs.map(m=>{
+                  const role=m.message.author.role==='user'?'Me':'GPT';
+                  const content=m.message.content.parts.filter(p=>typeof p==='string').join(' ');
+                  return content.trim()?`${role}: ${content.trim()}`:'';
+                }).filter(Boolean).join('\n\n');
+              } else {
+                conv=text.slice(0,5000);
+              }
+              if(conv.trim().length>50){
+                const chunks=chunkText(conv,7000);
+                for(const chunk of chunks){
+                  try{
+                    const raw_r=await ai(`Parse this ChatGPT conversation. Extract only meaningful personal content. ${ISYS}`,chunk);
+                    const parsed=safeJSON(raw_r);
+                    if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-zip-json',date_confidence:p.date_confidence});total++;}}}
+                  }catch{}
+                  await sleep(600);
+                }
+              }
+            }catch{}
+          } else {
+            // Plain text or docx (already extracted)
+            const chunks=chunkText(text,7000);
+            for(const chunk of chunks){
+              try{
+                const raw_r=await ai(ISYS,chunk);
+                const parsed=safeJSON(raw_r);
+                if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-zip',date_confidence:p.date_confidence});total++;}}}
+              }catch{}
+              await sleep(600);
+            }
+          }
+        }
+      }catch(e){console.warn('ZIP error:',e);st.innerHTML=`<span class="err">⚠️ Error reading ZIP: ${esc(e.message)}</span>`;}
+    }
+
   } else {
-    // Text files — including Word docs (.docx)
+    // ── Text / Word doc processing ────────────────────────────────────────
     for(let i=0;i<files.length;i++){
       fill.style.width=Math.round((i/files.length)*100)+'%';
       label.textContent=`Processing ${i+1} of ${files.length}: ${files[i].name}`;
       const ext=getExt(files[i].name);
       let text='';
       try{
-        if(['doc','docx','pages'].includes(ext)){
-          // Word docs: use AI vision on file as base64, or read as binary and extract text
-          // Try reading as text first (works for some .doc files)
-          try{
-            text=await fileToText(files[i]);
-            // If it's binary garbage, it'll be mostly non-printable chars
-            const printable=(text.match(/[\x20-\x7E]/g)||[]).length;
-            if(printable/text.length<0.5){
-              // Binary file — tell user to copy-paste
-              st.innerHTML=`<span class="err">⚠️ "${files[i].name}" is a binary Word file. Open it → Select All (Ctrl+A) → Copy → Paste into the text box below.</span>`;
-              continue;
-            }
-          }catch{
-            st.innerHTML=`<span class="err">⚠️ "${files[i].name}" — Open it, copy the text, and paste below.</span>`;
+        if(FILE_TYPES.docx.includes(ext)){
+          // Use mammoth.js to extract .docx text — no copy-paste needed
+          label.textContent=`Extracting Word doc: ${files[i].name}...`;
+          text=await extractDocx(files[i]);
+          if(!text.trim()){
+            st.innerHTML=`<span class="err">⚠️ "${esc(files[i].name)}" appears empty or unreadable.</span>`;
             continue;
           }
         } else {
           text=await fileToText(files[i]);
         }
-        if(!text.trim()){continue;}
+        if(!text.trim())continue;
         const chunks=chunkText(text,7000);
         for(const chunk of chunks){
           try{
             const raw_r=await ai(ISYS,chunk);
             const parsed=safeJSON(raw_r);
-            if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import',date_confidence:p.date_confidence});total++;}}}
+            if(Array.isArray(parsed)){
+              for(const p of parsed){
+                if(p?.content?.trim()){
+                  addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import',date_confidence:p.date_confidence});
+                  total++;
+                }
+              }
+            }
           }catch{}
           await sleep(600);
         }
-      }catch(e){console.warn(e);}
+      }catch(e){
+        console.warn(e);
+        st.innerHTML=`<span class="err">⚠️ Error reading "${esc(files[i].name)}": ${esc(e.message)}</span>`;
+      }
     }
   }
 
