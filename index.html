@@ -8,6 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="LifeThread"/>
 <meta name="theme-color" content="#6c8ebf"/>
 <title>LifeThread</title>
+<!-- CDN: mammoth.js for .docx extraction, JSZip for .zip extraction -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
@@ -32,32 +33,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .auth-btn:hover{background:#5a7aad}
 .auth-btn:disabled{opacity:.5;cursor:not-allowed}
 .auth-err{font-size:13px;color:#e05a5a;text-align:center;margin-top:10px;min-height:20px}
+.auth-ok{font-size:13px;color:#3a8c5a;text-align:center;margin-top:10px}
 
-/* ── MODE SWITCHER (top bar) ── */
-#mode-bar{display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:#fff;border-bottom:2px solid #eee;height:44px;flex-shrink:0}
-.mode-logo{font-size:15px;font-weight:700;letter-spacing:-.5px;color:#1a1a1a}.mode-logo span{color:#6c8ebf}
-.mode-tabs{display:flex;gap:3px;background:#f0f4fb;border-radius:10px;padding:3px}
-.mode-tab{padding:5px 16px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:#888;background:none;transition:all .18s;white-space:nowrap}
-.mode-tab.active{background:#fff;color:#3a5a8c;box-shadow:0 1px 4px rgba(0,0,0,.10)}
-.mode-tab.fin-active{background:#fff;color:#2a7a4a;box-shadow:0 1px 4px rgba(0,0,0,.10)}
-.mode-right{display:flex;gap:5px;align-items:center}
+/* NAV */
+nav{display:flex;align-items:center;padding:0 10px;border-bottom:1px solid #eee;background:#fff;height:48px;gap:1px;flex-shrink:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+nav::-webkit-scrollbar{display:none}
+.logo{font-size:14px;font-weight:700;letter-spacing:-.5px;margin-right:6px;color:#1a1a1a;white-space:nowrap;flex-shrink:0}.logo span{color:#6c8ebf}
+.nb{padding:5px 9px;border:none;background:none;cursor:pointer;font-size:11px;font-weight:500;color:#999;border-radius:6px;white-space:nowrap;flex-shrink:0;transition:all .15s}
+.nb.active{background:#eef2f9;color:#3a5a8c}
+.nr{margin-left:auto;display:flex;gap:4px;flex-shrink:0;align-items:center}
 .ib{padding:4px 8px;border:1px solid #e8e8e4;border-radius:6px;background:#fff;cursor:pointer;font-size:11px;color:#888;white-space:nowrap;flex-shrink:0}
 .status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .dot-ok{background:#3a8c5a}.dot-bad{background:#e05a5a;animation:blink 2s infinite}.dot-sync{background:#f0c040;animation:pulse 1s infinite}.dot-off{background:#aaa}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-
-/* ── LIFE NAV ── */
-#life-nav{display:flex;align-items:center;padding:0 10px;border-bottom:1px solid #eee;background:#fff;height:42px;gap:1px;flex-shrink:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-#life-nav::-webkit-scrollbar{display:none}
-.nb{padding:5px 9px;border:none;background:none;cursor:pointer;font-size:11px;font-weight:500;color:#999;border-radius:6px;white-space:nowrap;flex-shrink:0;transition:all .15s}
-.nb.active{background:#eef2f9;color:#3a5a8c}
-
-/* ── FINANCE NAV ── */
-#fin-nav{display:flex;align-items:center;padding:0 10px;border-bottom:1px solid #d4edda;background:#f6fdf8;height:42px;gap:1px;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
-#fin-nav::-webkit-scrollbar{display:none}
-.fnb{padding:5px 11px;border:none;background:none;cursor:pointer;font-size:11px;font-weight:500;color:#5a9a6a;border-radius:6px;white-space:nowrap;flex-shrink:0;transition:all .15s}
-.fnb.active{background:#d4edda;color:#1a5c2a;font-weight:600}
 
 /* PANELS */
 .panel{display:none;flex:1;overflow:hidden;flex-direction:column;min-height:0}
@@ -146,10 +135,7 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .blabel{font-size:11px;color:#555;width:85px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .btrack{flex:1;height:6px;background:#f0f0ec;border-radius:3px;overflow:hidden}
 .bfill{height:100%;border-radius:3px;background:#6c8ebf;transition:width .5s}
-.bfill.green{background:#3a8c5a}
-.bfill.amber{background:#e08830}
-.bfill.red{background:#e05a5a}
-.bcnt{font-size:11px;color:#aaa;width:28px;text-align:right;flex-shrink:0}
+.bcnt{font-size:11px;color:#aaa;width:18px;text-align:right;flex-shrink:0}
 .mline{display:flex;gap:3px;flex-wrap:wrap}
 .mdot{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
 .sbn{font-size:26px;font-weight:700;color:#3a5a8c;margin-bottom:2px}
@@ -224,66 +210,82 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 .vlog{border-left:3px solid #6c8ebf;padding:10px 12px;background:#fafaf8;border-radius:0 8px 8px 0;margin-bottom:8px}
 .vlog.old{border-color:#ddd}
 
-/* ── FINANCE STYLES ── */
-.fin-section{padding:14px 16px 0}
-.fin-section-title{font-size:11px;font-weight:600;color:#5a9a6a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
-.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 14px}
-.fcard{background:#fff;border:1px solid #d4edda;border-radius:12px;padding:14px}
-.fcard.full{grid-column:1/-1}
-.fcard h3{font-size:11px;font-weight:600;color:#5a9a6a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
-.fnum{font-size:26px;font-weight:700;color:#1a5c2a;letter-spacing:-.5px}
-.fnum.neutral{color:#3a5a8c}
-.fnum.warn{color:#c07030}
-.fnum.neg{color:#c03030}
-.fsub{font-size:11px;color:#888;margin-top:3px}
+/* ── FINANCE TAB ─────────────────────────────────────────────────────────
+   All styles prefixed .fin- to avoid collision with life-side styles       */
 
-/* SFD Progress bar */
-.sfd-bar-wrap{background:#e8f5e9;border-radius:8px;height:14px;overflow:hidden;margin:8px 0 4px}
-.sfd-bar-fill{height:100%;background:linear-gradient(90deg,#3a8c5a,#6cbf8e);border-radius:8px;transition:width .6s}
-.sfd-labels{display:flex;justify-content:space-between;font-size:11px;color:#888}
+/* Railway connection status banner */
+.fin-status{display:flex;align-items:center;gap:8px;padding:8px 14px;background:#f7f9fd;border-bottom:1px solid #eee;font-size:12px;color:#888;flex-shrink:0}
+.fin-status.ok{background:#f0faf4;color:#3a8c5a}
+.fin-status.err{background:#fff5f5;color:#e05a5a}
 
-/* Drift bars */
-.drift-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+/* Metric card grid — 2 columns on mobile, auto on wider */
+.fin-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.fin-card{background:#fff;border:1px solid #eee;border-radius:12px;padding:14px}
+.fin-card.full{grid-column:1/-1}  /* span both columns */
+.fin-card h3{font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.fin-num{font-size:26px;font-weight:700;color:#3a5a8c;margin-bottom:2px}
+.fin-sub{font-size:11px;color:#aaa}
+.fin-pos{color:#3a8c5a}  /* green for positive P&L */
+.fin-neg{color:#e05a5a}  /* red for negative P&L */
+
+/* SFD progress bar — Steady Flow Dividend tracker */
+.sfd-bar{background:#eee;border-radius:6px;height:10px;overflow:hidden;margin:8px 0 4px}
+.sfd-fill{height:100%;background:linear-gradient(90deg,#6c8ebf,#3a8c5a);border-radius:6px;transition:width .6s ease}
+.sfd-labels{display:flex;justify-content:space-between;font-size:11px;color:#aaa}
+
+/* Macro signal pills */
+.macro-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f5f5f5}
+.macro-row:last-child{border:none}
+.macro-label{font-size:13px;color:#333;flex:1}
+.macro-val{font-size:12px;font-weight:600;color:#555;margin-right:6px}
+.sig{font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.4px}
+.sig-neutral{background:#eee;color:#888}
+.sig-caution{background:#fff3cd;color:#a07000}
+.sig-tailwind{background:#d4f5e2;color:#1a6b3a}
+.sig-risk{background:#ffe5e5;color:#c0392b}
+
+/* Rules list */
+.rule-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f5f5f5;font-size:13px}
+.rule-row:last-child{border:none}
+.rule-name{flex:1;color:#333;font-weight:500}
+.rule-gate{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:600}
+.gate-auto{background:#eef2f9;color:#3a5a8c}
+.gate-approval{background:#fff3cd;color:#a07000}
+.rule-off{opacity:.45}
+
+/* Drift bars inside finance */
+.drift-row{display:flex;align-items:center;gap:7px;margin-bottom:5px}
 .drift-label{font-size:11px;color:#555;width:90px;flex-shrink:0}
-.drift-track{flex:1;height:8px;background:#eee;border-radius:4px;overflow:visible;position:relative}
-.drift-center{position:absolute;left:50%;top:0;width:2px;height:8px;background:#ccc;transform:translateX(-50%)}
-.drift-fill{position:absolute;top:0;height:8px;border-radius:4px;transition:all .5s}
-.drift-val{font-size:11px;width:36px;text-align:right;flex-shrink:0;font-weight:600}
+.drift-track{flex:1;height:5px;background:#f0f0ec;border-radius:3px;overflow:visible;position:relative}
+.drift-fill{height:100%;border-radius:3px;position:absolute;top:0}
+.drift-pos{background:#e05a5a}   /* over-allocated */
+.drift-neg{background:#6c8ebf}   /* under-allocated */
+.drift-zero{background:#3a8c5a}  /* on target */
+.drift-val{font-size:11px;width:38px;text-align:right;flex-shrink:0;font-weight:600}
 
-/* Rules */
-.rule-card{background:#fff;border:1px solid #d4edda;border-radius:10px;padding:11px 13px;margin-bottom:8px}
-.rule-top{display:flex;align-items:center;gap:8px;margin-bottom:5px}
-.rule-name{font-size:13px;font-weight:600;flex:1}
-.rule-badge{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:600}
-.rb-auto{background:#d4edda;color:#1a5c2a}
-.rb-approval{background:#fff3cd;color:#856404}
-.rb-inactive{background:#f0f0ec;color:#aaa}
-.rule-trigger{font-size:12px;color:#666;line-height:1.5}
-.rule-size{font-size:11px;color:#3a8c5a;font-weight:600;margin-top:4px}
+/* Manual holdings input table */
+.holdings-table{width:100%;font-size:12px;border-collapse:collapse;margin-bottom:8px}
+.holdings-table th{font-size:10px;color:#aaa;font-weight:600;text-transform:uppercase;padding:4px 6px;text-align:left;border-bottom:1px solid #eee}
+.holdings-table td{padding:5px 6px;border-bottom:1px solid #f5f5f5;vertical-align:middle}
+.holdings-table input{padding:4px 6px;font-size:12px;border:1px solid #e8e8e4;border-radius:5px;background:#fafaf8;width:100%}
+.holdings-table select{padding:3px 5px;font-size:12px;width:100%}
 
-/* Macro signals */
-.macro-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 14px}
-.macro-card{background:#fff;border:1px solid #eee;border-radius:10px;padding:12px}
-.macro-label{font-size:11px;color:#888;margin-bottom:4px}
-.macro-val{font-size:18px;font-weight:700;color:#1a1a1a;margin-bottom:3px}
-.macro-note{font-size:11px;color:#888;line-height:1.4}
-.signal-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
-.sig-neutral{background:#f0c040}
-.sig-caution{background:#e05a5a}
-.sig-tailwind{background:#3a8c5a}
+/* ── MODE SWITCHER (Life | Finance) ─────────────────────────────────────────
+   Top bar that switches between the two major system modes.
+   Life = personal journal/patterns/archive side
+   Finance = InTelSys portfolio/rules/macro side                              */
+#mode-bar{display:flex;align-items:center;background:#fff;border-bottom:2px solid #eee;flex-shrink:0;height:40px;padding:0 12px;gap:4px}
+.mode-btn{flex:1;max-width:140px;padding:7px 12px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:600;color:#aaa;border-radius:8px;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:5px}
+.mode-btn.active{background:#1a1a1a;color:#fff;border-radius:8px}
+.mode-btn:not(.active):hover{background:#f5f5f5;color:#555}
+#mode-bar .mode-divider{width:1px;height:20px;background:#eee;flex-shrink:0}
+/* Hide life-nav or finance-nav based on active mode */
+#life-nav{display:flex}
+#finance-nav{display:none}
+/* Import warning banner — shown during active imports */
+#import-warning{display:none;position:fixed;top:0;left:0;right:0;z-index:9000;background:#e05a5a;color:#fff;padding:10px 16px;font-size:13px;font-weight:600;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+#import-warning.show{display:block}
 
-/* Finance briefing */
-.fin-brief{margin:0 16px 14px;background:linear-gradient(135deg,#f0fdf4,#f6fdf8);border:1px solid #b7e4c7;border-radius:12px;padding:14px}
-.fin-brief h3{font-size:11px;font-weight:600;color:#2a7a4a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
-.fin-brief-content{font-size:13px;color:#1a3a2a;line-height:1.8}
-
-/* Finance loading state */
-.fin-loading{text-align:center;padding:48px 16px;color:#aaa;font-size:13px}
-.fin-loading .spin{font-size:24px;display:block;margin-bottom:10px;animation:spin 1.2s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.fin-error{margin:16px;background:#fff5f5;border:1px solid #f5c0c0;border-radius:10px;padding:14px;font-size:13px;color:#c03030;text-align:center}
-</style>
-</head>
 <body>
 
 <!-- AUTH SCREEN -->
@@ -313,409 +315,552 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 <!-- MAIN APP -->
 <div id="app" style="display:none">
 
-<!-- MODE BAR (always visible) -->
+<!-- ── IMPORT WARNING BANNER ─────────────────────────────────────────────────
+     Shown during any active import. Warns user not to close or refresh tab.  -->
+<div id="import-warning">⚠️ Import in progress — do not close or refresh this tab</div>
+
+<!-- ── MODE SWITCHER ─────────────────────────────────────────────────────────
+     Top-level toggle between Life (LifeThread) and Finance (InTelSys) modes.
+     Switching modes swaps which nav bar is visible.                           -->
 <div id="mode-bar">
-  <div class="mode-logo">Life<span>Thread</span></div>
-  <div class="mode-tabs">
-    <button class="mode-tab active" id="mode-life" onclick="switchMode('life')">🧠 Life</button>
-    <button class="mode-tab" id="mode-fin" onclick="switchMode('finance')">💰 Finance</button>
-  </div>
-  <div class="mode-right">
+  <button class="mode-btn active" id="mode-life" onclick="switchMode('life')">🧠 Life</button>
+  <div class="mode-divider"></div>
+  <button class="mode-btn" id="mode-finance" onclick="switchMode('finance')">💰 Finance</button>
+  <div style="margin-left:auto;display:flex;gap:4px;align-items:center">
     <div id="syncdot" class="status-dot dot-off" title="Sync"></div>
-    <button class="ib" onclick="exportData()">⬇</button>
-    <button class="ib" onclick="showLifePanel('version')">v2.1</button>
-    <button class="ib" onclick="showLifePanel('settings')">⚙</button>
+    <button class="ib" onclick="show('version',null)">v2.1</button>
+    <button class="ib" onclick="show('settings',null)">⚙</button>
     <button class="ib" style="color:#e05a5a" onclick="doLogout()">↩</button>
   </div>
 </div>
 
+<!-- ── LIFE NAV ──────────────────────────────────────────────────────────────
+     Shown when Life mode is active. All LifeThread tabs.                      -->
+<nav id="life-nav">
+  <div class="logo">Life<span>Thread</span></div>
+  <button class="nb active" id="nb-home" onclick="show('home',this)">🏠</button>
+  <button class="nb" onclick="show('log',this)">📓 Log</button>
+  <button class="nb" onclick="show('chat',this)">💬 Chat</button>
+  <button class="nb" onclick="show('search',this)">🔍</button>
+  <button class="nb" onclick="show('patterns',this)">🧩</button>
+  <button class="nb" onclick="show('dash',this)">📊</button>
+  <button class="nb" onclick="show('checkin',this)">☀️</button>
+  <button class="nb" onclick="show('archive',this)">📖</button>
+  <button class="nb" onclick="show('import',this)">📥</button>
+  <div class="nr">
+    <button class="ib" onclick="exportData()">⬇</button>
+  </div>
+</nav>
+
+<!-- ── FINANCE NAV ───────────────────────────────────────────────────────────
+     Shown when Finance mode is active. All InTelSys tabs.                     -->
+<nav id="finance-nav" style="display:none">
+  <div class="logo" style="color:#3a8c5a">Intel<span style="color:#6c8ebf">Sys</span></div>
+  <button class="nb active" id="nb-finance" onclick="showFin('finance',this)">💰 Overview</button>
+  <button class="nb" onclick="showFin('fin-holdings',this)">📈 Holdings</button>
+  <button class="nb" onclick="showFin('fin-rules',this)">⚖️ Rules</button>
+  <button class="nb" onclick="showFin('fin-macro-tab',this)">🌍 Macro</button>
+  <button class="nb" onclick="showFin('fin-briefing',this)">📋 Briefing</button>
+  <div class="nr">
+    <button class="ib" onclick="loadFinance()">↻</button>
+  </div>
+</nav>
+
 <div id="toast"></div>
 
-<!-- ══════════════════════════════════════════
-     LIFE MODE
-══════════════════════════════════════════ -->
-<div id="life-mode" style="display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0">
-  <nav id="life-nav">
-    <button class="nb active" onclick="showLifePanel('home',this)">🏠 Home</button>
-    <button class="nb" onclick="showLifePanel('log',this)">📓 Log</button>
-    <button class="nb" onclick="showLifePanel('chat',this)">💬 Chat</button>
-    <button class="nb" onclick="showLifePanel('search',this)">🔍 Search</button>
-    <button class="nb" onclick="showLifePanel('patterns',this)">🧩 Patterns</button>
-    <button class="nb" onclick="showLifePanel('dash',this)">📊 Dash</button>
-    <button class="nb" onclick="showLifePanel('checkin',this)">☀️ Check-in</button>
-    <button class="nb" onclick="showLifePanel('archive',this)">📖 Archive</button>
-    <button class="nb" onclick="showLifePanel('import',this)">📥 Import</button>
-  </nav>
-
-  <!-- ENTRY MODAL -->
-  <div id="emodal" class="overlay" style="display:none" onclick="if(event.target===this)closeModal()">
-    <div class="modal" onclick="event.stopPropagation()">
-      <div class="mhead"><div class="mtitle" id="mtitle"></div><button class="mclose" onclick="closeModal()">✕</button></div>
-      <div class="mmeta" id="mmeta"></div>
-      <div id="mirror-insight" class="mirror-insight"></div>
-      <div class="mbody" id="mbody"></div>
-      <textarea class="medit" id="medit"></textarea>
-      <div class="mfoot">
-        <button class="btn bp" style="font-size:12px;padding:7px 13px" id="etoggle" onclick="toggleEdit()">✏️ Edit</button>
-        <button class="btn bp" style="font-size:12px;padding:7px 13px;display:none" id="esave" onclick="saveEdit()">💾 Save</button>
-        <button class="btn bg" style="font-size:12px;padding:7px 13px" onclick="copyEntry()">📋 Copy</button>
-        <button class="btn bg" style="font-size:12px;padding:7px 13px" onclick="sendToMirror()">🔮 Mirror</button>
-        <button class="btn bg" style="font-size:12px;padding:7px 13px;color:#e05a5a;border-color:#e05a5a;margin-left:auto" onclick="delEntry()">🗑</button>
-      </div>
+<!-- ENTRY MODAL -->
+<div id="emodal" class="overlay" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mhead"><div class="mtitle" id="mtitle"></div><button class="mclose" onclick="closeModal()">✕</button></div>
+    <div class="mmeta" id="mmeta"></div>
+    <div id="mirror-insight" class="mirror-insight"></div>
+    <div class="mbody" id="mbody"></div>
+    <textarea class="medit" id="medit"></textarea>
+    <div class="mfoot">
+      <button class="btn bp" style="font-size:12px;padding:7px 13px" id="etoggle" onclick="toggleEdit()">✏️ Edit</button>
+      <button class="btn bp" style="font-size:12px;padding:7px 13px;display:none" id="esave" onclick="saveEdit()">💾 Save</button>
+      <button class="btn bg" style="font-size:12px;padding:7px 13px" onclick="copyEntry()">📋 Copy</button>
+      <button class="btn bg" style="font-size:12px;padding:7px 13px" onclick="sendToMirror()">🔮 Mirror</button>
+      <button class="btn bg" style="font-size:12px;padding:7px 13px;color:#e05a5a;border-color:#e05a5a;margin-left:auto" onclick="delEntry()">🗑</button>
     </div>
   </div>
+</div>
 
-  <!-- HOME -->
-  <div id="home-panel" class="panel active">
-    <div class="scroll">
-      <div style="padding:18px 16px 12px;border-bottom:1px solid #f0f0ec">
-        <div style="font-size:20px;font-weight:700;letter-spacing:-.5px" id="hgreet"></div>
-        <div style="font-size:13px;color:#aaa;margin-top:2px" id="hdate"></div>
-      </div>
-      <div id="daily-brief" class="daily-brief" style="display:none">
-        <h3>☀️ Daily Brief <button class="btn bg" style="font-size:10px;padding:3px 8px" onclick="genBrief()">Refresh</button></h3>
-        <div id="brief-content" class="brief-content"></div>
-      </div>
-      <div class="hgrid">
-        <div class="hstat"><div class="n" id="ht">0</div><div class="l">entries</div></div>
-        <div class="hstat"><div class="n" id="hs">0</div><div class="l">streak</div></div>
-        <div class="hstat"><div class="n" id="hp">0</div><div class="l">patterns</div></div>
-      </div>
-      <div class="hlast" onclick="openLastEntry()"><h3>Last Entry ↗</h3><div id="hlast"></div></div>
-      <div class="hquick">
-        <input id="hqin" placeholder="Quick capture..." onkeydown="if(event.key==='Enter')hqSave()"/>
-        <button onclick="hqSave()">+</button>
-      </div>
-      <div class="jrow">
-        <button class="btn bg" onclick="showLifePanel('chat',null);setMode('mirror',null)">🔮 Mirror</button>
-        <button class="btn bg" onclick="showLifePanel('checkin',null)">☀️ Check-in</button>
-        <button class="btn bg" onclick="showLifePanel('archive',null)">📖 Archive</button>
-        <button class="btn bg" onclick="showLifePanel('search',null)">🔍 Search</button>
-      </div>
+<!-- HOME -->
+<div id="home-panel" class="panel active">
+  <div class="scroll">
+    <div style="padding:18px 16px 12px;border-bottom:1px solid #f0f0ec">
+      <div style="font-size:20px;font-weight:700;letter-spacing:-.5px" id="hgreet"></div>
+      <div style="font-size:13px;color:#aaa;margin-top:2px" id="hdate"></div>
+    </div>
+    <div id="daily-brief" class="daily-brief" style="display:none">
+      <h3>☀️ Daily Brief <button class="btn bg" style="font-size:10px;padding:3px 8px" onclick="genBrief()">Refresh</button></h3>
+      <div id="brief-content" class="brief-content"></div>
+    </div>
+    <div class="hgrid">
+      <div class="hstat"><div class="n" id="ht">0</div><div class="l">entries</div></div>
+      <div class="hstat"><div class="n" id="hs">0</div><div class="l">streak</div></div>
+      <div class="hstat"><div class="n" id="hp">0</div><div class="l">patterns</div></div>
+    </div>
+    <div class="hlast" onclick="openLastEntry()"><h3>Last Entry ↗</h3><div id="hlast"></div></div>
+    <div class="hquick">
+      <input id="hqin" placeholder="Quick capture..." onkeydown="if(event.key==='Enter')hqSave()"/>
+      <button onclick="hqSave()">+</button>
+    </div>
+    <div class="jrow">
+      <button class="btn bg" onclick="show('chat',null);setMode('mirror',null)">🔮 Mirror</button>
+      <button class="btn bg" onclick="show('checkin',null)">☀️ Check-in</button>
+      <button class="btn bg" onclick="show('archive',null)">📖 Archive</button>
+      <button class="btn bg" onclick="show('search',null)">🔍 Search</button>
     </div>
   </div>
+</div>
 
-  <!-- LOG -->
-  <div id="log-panel" class="panel">
-    <div class="scroll"><div class="pad">
-      <div class="sec">Category</div>
-      <div class="cgrid" id="cgrid"></div>
-      <div class="tplbox" id="tplbox"></div>
-      <textarea id="etxt" style="min-height:110px;margin-bottom:8px" placeholder="Write freely."></textarea>
-      <div class="eact">
-        <button class="vbtn" id="vbtn" onclick="toggleVoice()">🎤 Voice</button>
-        <select id="msel" style="max-width:155px;font-size:14px">
-          <option value="">Mood</option>
-          <option>✨ Expansive</option><option>😌 Calm</option><option>😐 Neutral</option>
-          <option>😔 Heavy</option><option>⚡ Energized</option><option>😰 Anxious</option>
-          <option>🙏 Grateful</option><option>😤 Frustrated</option><option>🔥 Passionate</option>
-          <option>😶 Numb</option><option>🌀 Restless</option>
-        </select>
-        <button class="btn bp" id="sbtn" onclick="saveEntry()" style="margin-left:auto;padding:9px 20px">Save</button>
+<!-- FINANCE OVERVIEW (existing panel — shown by default in Finance mode) -->
+<div id="finance-panel" class="panel">
+  <!-- Status bar: shows Railway connection state + last refresh time -->
+  <div id="fin-status" class="fin-status">💰 Loading financial data...</div>
+  <div class="scroll"><div class="pad">
+
+    <!-- ── PORTFOLIO OVERVIEW ─────────────────────────────────────── -->
+    <div class="fin-grid">
+      <div class="fin-card">
+        <h3>Portfolio Value</h3>
+        <div class="fin-num" id="fin-total">—</div>
+        <div class="fin-sub" id="fin-source">—</div>
       </div>
+      <div class="fin-card">
+        <h3>Unrealized P&L</h3>
+        <div class="fin-num" id="fin-pnl">—</div>
+        <div class="fin-sub">vs cost basis</div>
+      </div>
+      <div class="fin-card">
+        <h3>Monthly Dividend</h3>
+        <div class="fin-num" id="fin-div">—</div>
+        <div class="fin-sub">passive income</div>
+      </div>
+      <div class="fin-card">
+        <h3>AI Thesis Score</h3>
+        <div class="fin-num" id="fin-thesis">—</div>
+        <div class="fin-sub">portfolio conviction</div>
+      </div>
+    </div>
+
+    <!-- ── SFD PROGRESS BAR ───────────────────────────────────────
+         SFD = Steady Flow Dividend. Target: $800/month.
+         Bar fills green as monthly dividend approaches target.     -->
+    <div class="fin-card full" style="margin-bottom:14px">
+      <h3>SFD Progress — Steady Flow Dividend</h3>
+      <div class="sfd-bar"><div class="sfd-fill" id="sfd-fill" style="width:0%"></div></div>
+      <div class="sfd-labels">
+        <span id="sfd-current">$0 / mo</span>
+        <span id="sfd-pct">0%</span>
+        <span id="sfd-target">Target: $800</span>
+      </div>
+    </div>
+
+    <!-- ── ALLOCATION DRIFT ───────────────────────────────────────
+         Shows how far each asset class is from its target %.
+         Negative (blue) = under-allocated. Positive (red) = over.
+         Neutral (green) = on target.                               -->
+    <div class="fin-card full" style="margin-bottom:14px">
+      <h3>Allocation Drift</h3>
+      <div id="fin-drift">—</div>
+    </div>
+
+    <!-- ── MACRO SIGNALS ─────────────────────────────────────────
+         Fed Funds, VIX, AI Thesis from Railway /api/macro.
+         Signals: neutral / caution / tailwind / risk             -->
+    <div class="fin-card full" style="margin-bottom:14px">
+      <h3>Macro Signals</h3>
+      <div id="fin-macro">—</div>
+    </div>
+
+    <!-- ── ACTIVE RULES SUMMARY ─────────────────────────────────────────────
+         Summary only in Overview. Full rules list is in the Rules tab.        -->
+    <div class="fin-card full" style="margin-bottom:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <h3 style="margin:0">Active Rules</h3>
+        <span id="fin-approval-badge" style="display:none;font-size:11px;background:#fff3cd;color:#a07000;padding:2px 8px;border-radius:10px;font-weight:600"></span>
+      </div>
+      <div id="fin-rules">—</div>
+    </div>
+
+    <!-- ── QUICK LINKS ───────────────────────────────────────────────────── -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="btn bg" style="font-size:12px" onclick="showFin('fin-holdings',null);renderHoldingsTable()">📈 Enter Holdings</button>
+      <button class="btn bg" style="font-size:12px" onclick="showFin('fin-briefing',null)">📋 AI Briefing</button>
+      <button class="btn bg" style="font-size:12px" onclick="loadFinance()">↻ Refresh</button>
+    </div>
+
+  </div></div>
+</div>
+
+<!-- FIN-HOLDINGS SUB-PANEL -->
+<div id="fin-holdings-panel" class="panel">
+  <div id="fin-status-h" class="fin-status">📈 Holdings</div>
+  <div class="scroll"><div class="pad">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="sec" style="margin:0">Portfolio Holdings</div>
+      <span style="font-size:11px;color:#aaa">Manual until Webull API live</span>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="holdings-table">
+        <thead><tr>
+          <th>Ticker</th><th>Shares</th><th>Price</th><th>Cost</th>
+          <th>Class</th><th>Yield%</th><th>Beta</th><th>Thesis</th><th></th>
+        </tr></thead>
+        <tbody id="holdings-tbody"></tbody>
+      </table>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+      <button class="btn bg" style="font-size:12px" onclick="addHoldingRow()">+ Add Row</button>
+      <button class="btn bp" style="font-size:12px" onclick="syncHoldings()">⬆ Sync to InTelSys</button>
+      <span id="fin-sync-st" style="font-size:12px;color:#3a8c5a;align-self:center"></span>
+    </div>
+  </div></div>
+</div>
+
+<!-- FIN-RULES SUB-PANEL -->
+<div id="fin-rules-panel" class="panel">
+  <div class="fin-status">⚖️ Trading Rules</div>
+  <div class="scroll"><div class="pad">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="sec" style="margin:0">Active Rules</div>
+      <span id="fin-approval-badge2" style="display:none;font-size:11px;background:#fff3cd;color:#a07000;padding:2px 8px;border-radius:10px;font-weight:600"></span>
+    </div>
+    <div id="fin-rules-full">
+      <div style="color:#ccc;font-size:13px">Loading rules...</div>
+    </div>
+  </div></div>
+</div>
+
+<!-- FIN-MACRO SUB-PANEL -->
+<div id="fin-macro-tab-panel" class="panel">
+  <div class="fin-status">🌍 Macro Environment</div>
+  <div class="scroll"><div class="pad">
+    <div class="sec" style="margin-bottom:12px">Macro Signals</div>
+    <div id="fin-macro-full"><div style="color:#ccc;font-size:13px">Loading macro data...</div></div>
+    <div class="divider"></div>
+    <div class="sec" style="margin-bottom:12px">Allocation Drift</div>
+    <div id="fin-drift-full"><div style="color:#ccc;font-size:13px">Loading drift data...</div></div>
+  </div></div>
+</div>
+
+<!-- FIN-BRIEFING SUB-PANEL -->
+<div id="fin-briefing-panel" class="panel">
+  <div class="fin-status">📋 AI Financial Briefing</div>
+  <div class="scroll"><div class="pad">
+    <div class="sec" style="margin-bottom:6px">Unified Daily Briefing</div>
+    <p style="font-size:13px;color:#888;line-height:1.6;margin-bottom:14px">Claude reads both your life entries and financial snapshot together.</p>
+    <button class="btn bp" id="briefing-btn" onclick="genFinBriefing()" style="margin-bottom:14px">Generate Briefing</button>
+    <div id="fin-briefing-out" style="display:none">
+      <div class="dbox" id="fin-briefing-content"></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- LOG -->
+<div id="log-panel" class="panel">
+  <div class="scroll"><div class="pad">
+    <div class="sec">Category</div>
+    <div class="cgrid" id="cgrid"></div>
+    <div class="tplbox" id="tplbox"></div>
+    <textarea id="etxt" style="min-height:110px;margin-bottom:8px" placeholder="Write freely."></textarea>
+    <div class="eact">
+      <button class="vbtn" id="vbtn" onclick="toggleVoice()">🎤 Voice</button>
+      <select id="msel" style="max-width:155px;font-size:14px">
+        <option value="">Mood</option>
+        <option>✨ Expansive</option><option>😌 Calm</option><option>😐 Neutral</option>
+        <option>😔 Heavy</option><option>⚡ Energized</option><option>😰 Anxious</option>
+        <option>🙏 Grateful</option><option>😤 Frustrated</option><option>🔥 Passionate</option>
+        <option>😶 Numb</option><option>🌀 Restless</option>
+      </select>
+      <button class="btn bp" id="sbtn" onclick="saveEntry()" style="margin-left:auto;padding:9px 20px">Save</button>
+    </div>
+    <div class="divider"></div>
+    <div class="sec">Recent Entries</div>
+    <div id="elist"></div>
+  </div></div>
+  <div class="qbar">
+    <input class="qin" id="qin" placeholder="⚡ Quick capture" onkeydown="if(event.key==='Enter')quickSave()"/>
+    <button class="qsend" onclick="quickSave()">+</button>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="chat-panel" class="panel">
+  <div class="cmsgs" id="cmsgs"></div>
+  <div class="cmodes">
+    <button class="mc am" onclick="setMode('mirror',this)">🔮 Mirror</button>
+    <button class="mc" onclick="setMode('reflect',this)">🪞 Reflect</button>
+    <button class="mc" onclick="setMode('decide',this)">⚖️ Decide</button>
+    <button class="mc" onclick="setMode('future',this)">🚀 Future</button>
+    <button class="mc" onclick="setMode('review',this)">📋 Review</button>
+    <button class="mc" onclick="setMode('letter',this)">✉️ Letter</button>
+    <button class="mc" onclick="setMode('analyst',this)">📊 Analyst</button>
+    <button class="mc" onclick="setMode('open',this)">💬 Talk</button>
+  </div>
+  <div class="cbot">
+    <textarea class="cin" id="cin" rows="1" placeholder="Say anything."
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"
+      oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,90)+'px'"></textarea>
+    <button class="csend" id="csend" onclick="sendChat()">
+      <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- SEARCH -->
+<div id="search-panel" class="panel">
+  <div class="scroll"><div class="pad">
+    <div class="sec">Search</div>
+    <div class="search-bar">
+      <input class="search-in" id="search-in" placeholder="Search entries..." oninput="doSearch(this.value)"/>
+      <button class="btn bp" style="font-size:12px;padding:8px 14px" onclick="aiSearch()">🔮 AI</button>
+    </div>
+    <div id="search-results"></div>
+    <div id="ai-search-out" style="display:none;margin-top:14px">
+      <div class="sec">AI Analysis</div>
+      <div id="ai-search-content" class="dbox"></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- PATTERNS -->
+<div id="patterns-panel" class="panel">
+  <div class="scroll"><div class="pad">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="sec" style="margin:0">Named Patterns</div>
+      <button class="btn bp" style="font-size:12px;padding:6px 12px" onclick="addPattern()">+ Add</button>
+    </div>
+    <p style="font-size:13px;color:#888;line-height:1.6;margin-bottom:14px">Name the mechanisms you've identified in yourself. The AI references these by name in every interaction.</p>
+    <div id="plist"></div>
+    <div class="divider"></div>
+    <button class="btn bg" style="font-size:12px" id="adbtn" onclick="autoDetect()">🧠 Auto-detect from entries</button>
+    <div id="apout" style="margin-top:12px;font-size:13px;color:#444;line-height:1.8;white-space:pre-wrap"></div>
+  </div></div>
+</div>
+
+<!-- INSIGHTS -->
+<div id="dash-panel" class="panel">
+  <div class="scroll"><div class="pad">
+    <div class="dgrid">
+      <div class="dc"><h3>Entries</h3><div class="sbn" id="dt">0</div><div class="sbl">total</div></div>
+      <div class="dc"><h3>Streak</h3><div class="sbn" id="dstr">0</div><div class="sbl">days</div></div>
+      <div class="dc full"><h3>Category Balance</h3><div id="cbars"></div></div>
+      <div class="dc full"><h3>Mood Timeline</h3><div class="mline" id="mline"></div></div>
+      <div class="dc full">
+        <h3>Goals <button class="btn bg" style="font-size:11px;padding:3px 8px;float:right" onclick="addGoal()">+ Add</button></h3>
+        <div id="glist"></div>
+      </div>
+      <div class="dc full">
+        <h3>Weekly Digest <button class="btn bg" id="dgbtn" style="font-size:11px;padding:3px 8px;float:right" onclick="genDigest()">Generate</button></h3>
+        <div id="dout"><span style="color:#ccc;font-size:13px">Tap Generate to synthesize your week.</span></div>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- CHECKIN -->
+<div id="checkin-panel" class="panel">
+  <div class="scroll"><div class="pad">
+    <div class="sec" style="margin-bottom:12px">Daily Check-in</div>
+    <div class="cicard">
+      <div id="cistart"><p style="font-size:14px;color:#555;line-height:1.7;margin-bottom:14px">Five minutes. Honest answers. Saved as today's entry.</p><button class="btn bp" onclick="startCI()">Begin</button></div>
+      <div id="ciflow" style="display:none">
+        <div class="ciq" id="ciq"></div>
+        <textarea id="cia" style="min-height:80px" placeholder="Your answer..."></textarea>
+        <div class="cinav"><span class="cipr" id="cipr"></span><button class="btn bp" onclick="nextCI()">Next →</button></div>
+      </div>
+      <div id="cidone" style="display:none"><p style="font-size:14px;font-weight:600;margin-bottom:8px" class="ok">✓ Done. Saved.</p><button class="btn bg" onclick="resetCI()">Start over</button></div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ARCHIVE -->
+<div id="archive-panel" class="panel">
+  <div class="scroll"><div class="pad">
+    <div class="sec">Omni Archive</div>
+    <div class="aintro">Your longitudinal mirror. Reads across your full entry history and synthesizes behavioral threads, emotional patterns, contradictions, and the central through-line of your life.</div>
+    <div class="field"><label>Focus</label>
+      <select id="afocus">
+        <option value="">Full synthesis</option>
+        <option value="patterns">Behavioral patterns</option>
+        <option value="emotional">Emotional arc</option>
+        <option value="relationships">Relationships & people</option>
+        <option value="work">Work & identity</option>
+        <option value="health">Health & body</option>
+        <option value="finances">Financial patterns</option>
+        <option value="goals">Goals vs. reality</option>
+        <option value="contradictions">Contradictions</option>
+        <option value="thread">Central through-line</option>
+      </select>
+    </div>
+    <div class="field"><label>Time range</label>
+      <select id="arange"><option value="all">All time</option><option value="90">Last 90 days</option><option value="30">Last 30 days</option><option value="7">Last 7 days</option></select>
+    </div>
+    <button class="btn bp" id="abtn" onclick="runArchive()">Run Synthesis</button>
+    <div class="divider"></div>
+    <div id="aout" class="aout" style="display:none"></div>
+  </div></div>
+</div>
+
+<!-- IMPORT -->
+<div id="import-panel" class="panel">
+  <div class="scroll"><div class="pad">
+    <div class="sec">Import & Triage</div>
+    <p style="font-size:13px;color:#888;margin-bottom:14px;line-height:1.6">Drop any files — text, Word docs (.docx), JSON, ZIP, images. LifeThread reads and imports everything automatically.</p>
+    <div id="dropzone" class="drop-zone"
+      onclick="$('fin').click()"
+      ondragover="event.preventDefault();event.stopPropagation();this.classList.add('drag-over')"
+      ondragleave="event.preventDefault();event.stopPropagation();this.classList.remove('drag-over')"
+      ondrop="event.preventDefault();event.stopPropagation();this.classList.remove('drag-over');handleDrop(event)">
+      <div style="font-size:28px;margin-bottom:8px">📂</div>
+      <div style="font-size:14px;font-weight:600;color:#3a5a8c;margin-bottom:4px">Drop files here or tap to browse</div>
+      <div style="font-size:12px;color:#aaa">Text, Word (.docx), JSON, ZIP, images — auto-processed</div>
+    </div>
+    <input type="file" id="fin" multiple accept="*/*" style="display:none" onchange="handleFiles(event.target.files)"/>
+    <div id="triage-out" style="display:none">
+      <div class="sec" style="margin-bottom:10px">Files Detected</div>
+      <div id="triage-text" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('text')"><span>📄 Text & Documents</span><span id="triage-text-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-text-list" class="triage-list"></div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('text')">Import Text Files</button></div>
+      <div id="triage-json" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('json')"><span>🔧 JSON / ChatGPT Data</span><span id="triage-json-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-json-list" class="triage-list"></div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('json')">Extract Conversations</button></div>
+      <div id="triage-image" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('image')"><span>🖼 Images</span><span id="triage-image-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-image-list" class="triage-list"></div><div style="font-size:12px;color:#888;margin-top:6px">AI reads visible text in each image.</div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('image')">Extract Text from Images</button></div>
+      <div id="triage-zip" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('zip')"><span>🗜 ZIP Files</span><span id="triage-zip-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-zip-list" class="triage-list"></div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('zip')">Extract & Import ZIP</button></div>
+      <div id="triage-audio" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('audio')"><span>🎙 Audio</span><span id="triage-audio-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-audio-list" class="triage-list"></div><div style="font-size:12px;color:#aaa;margin-top:6px">Audio transcription coming in Phase 2.</div></div>
+      <div id="triage-other" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('other')"><span>📎 Other</span><span id="triage-other-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-other-list" class="triage-list"></div></div>
       <div class="divider"></div>
-      <div class="sec">Recent Entries</div>
-      <div id="elist"></div>
-    </div></div>
-    <div class="qbar">
-      <input class="qin" id="qin" placeholder="⚡ Quick capture" onkeydown="if(event.key==='Enter')quickSave()"/>
-      <button class="qsend" onclick="quickSave()">+</button>
     </div>
-  </div>
-
-  <!-- CHAT -->
-  <div id="chat-panel" class="panel">
-    <div class="cmsgs" id="cmsgs"></div>
-    <div class="cmodes">
-      <button class="mc am" onclick="setMode('mirror',this)">🔮 Mirror</button>
-      <button class="mc" onclick="setMode('reflect',this)">🪞 Reflect</button>
-      <button class="mc" onclick="setMode('decide',this)">⚖️ Decide</button>
-      <button class="mc" onclick="setMode('future',this)">🚀 Future</button>
-      <button class="mc" onclick="setMode('review',this)">📋 Review</button>
-      <button class="mc" onclick="setMode('letter',this)">✉️ Letter</button>
-      <button class="mc" onclick="setMode('analyst',this)">📊 Analyst</button>
-      <button class="mc" onclick="setMode('open',this)">💬 Talk</button>
+    <div class="sec">Or Paste Text</div>
+    <div style="position:relative;margin-bottom:10px">
+      <textarea id="itxt" style="min-height:100px;width:100%" placeholder="Paste any text — ChatGPT exports, journals, notes. Any length."></textarea>
+      <div id="charcount" style="position:absolute;bottom:8px;right:10px;font-size:11px;color:#bbb"></div>
     </div>
-    <div class="cbot">
-      <textarea class="cin" id="cin" rows="1" placeholder="Say anything."
-        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"
-        oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,90)+'px'"></textarea>
-      <button class="csend" id="csend" onclick="sendChat()">
-        <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
-      </button>
+    <div class="field"><label>Default category</label>
+      <select id="icat"><option>Journal</option><option>Goals</option><option>Relationships</option><option>Health</option><option>Finances</option><option>Spirituality</option><option>Creative Work</option><option>Learning & Growth</option><option>Family</option><option>Dreams & Visions</option><option>Mental & Emotional State</option></select>
     </div>
-  </div>
+    <button class="btn bp" id="ibtn" onclick="processImport()" style="width:100%;justify-content:center;padding:12px">Import & Auto-categorize</button>
+    <div id="iprog" style="display:none;margin-top:14px"><div class="prog-bar"><div class="prog-fill" id="ipfill"></div></div><div id="iplabel" style="font-size:12px;color:#888;text-align:center;margin-top:4px"></div></div>
+    <div id="ist" style="margin-top:12px;font-size:13px;line-height:1.6"></div>
+  </div></div>
+</div>
 
-  <!-- SEARCH -->
-  <div id="search-panel" class="panel">
-    <div class="scroll"><div class="pad">
-      <div class="sec">Search</div>
-      <div class="search-bar">
-        <input class="search-in" id="search-in" placeholder="Search entries..." oninput="doSearch(this.value)"/>
-        <button class="btn bp" style="font-size:12px;padding:8px 14px" onclick="aiSearch()">🔮 AI</button>
-      </div>
-      <div id="search-results"></div>
-      <div id="ai-search-out" style="display:none;margin-top:14px">
-        <div class="sec">AI Analysis</div>
-        <div id="ai-search-content" class="dbox"></div>
-      </div>
-    </div></div>
-  </div>
+<!-- VERSION -->
+<div id="version-panel" class="panel">
+  <div class="scroll"><div class="pad" style="max-width:560px">
+    <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
+      <div style="font-size:20px;font-weight:700">LifeThread</div>
+      <div style="font-size:12px;color:#6c8ebf;font-weight:600;background:#eef2f9;padding:2px 9px;border-radius:10px">v2.1.0</div>
+    </div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:20px">March 29, 2026 · Claude Sonnet 4</div>
+    <div class="sec">System Stats</div>
+    <div style="border:1px solid #eee;border-radius:10px;overflow:hidden;margin-bottom:18px">
+      <table class="vtable">
+        <tr><td style="color:#888;width:130px">User</td><td id="vuser" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888">Entries</td><td id="ve" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888">Patterns</td><td id="vp" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888">Goals</td><td id="vg" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888">Log spans</td><td id="vsp" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888">Supabase</td><td id="vsb" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888">Anthropic AI</td><td id="vak" style="font-weight:600">—</td></tr>
+        <tr><td style="color:#888">Notion</td><td id="vno" style="font-weight:600">—</td></tr>
+      </table>
+    </div>
+    <div class="sec">Changelog</div>
+    <div class="vlog" style="margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v2.1.0</b><span style="font-size:11px;color:#6c8ebf;background:#eef2f9;padding:2px 7px;border-radius:8px">current</span><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 29, 2026</span></div>
+      <ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px">
+        <li>💰 Finance tab — live InTelSys bridge (portfolio, SFD, drift, rules, macro)</li>
+        <li>📊 Manual holdings input — enter positions until Webull API is live</li>
+        <li>⬆ Holdings sync to Railway /api/portfolio/sync</li>
+        <li>💾 Holdings persist in localStorage across sessions</li>
+      </ul>
+    </div>
+    <div class="vlog old" style="margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v2.0.1</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 29, 2026</span></div>
+      <ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px">
+        <li>📄 Word doc (.docx) auto-extraction via mammoth.js — no copy-paste needed</li>
+        <li>🗜 ZIP auto-unzip via JSZip — drops inside processed automatically</li>
+        <li>🔧 Import pipeline hardened for all file types</li>
+      </ul>
+    </div>
+    <div class="vlog old" style="margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v2.0.0</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 28, 2026</span></div>
+      <ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px">
+        <li>🔐 Full email + password authentication</li>
+        <li>☁️ Supabase backend — all data stored in cloud</li>
+        <li>📱 True cross-device sync — same account on all devices</li>
+        <li>🔑 API keys stored encrypted per account — enter once, works everywhere</li>
+        <li>🔄 Real-time sync dot in nav</li>
+        <li>👁 Show/copy API key fields</li>
+        <li>↩ Logout button</li>
+      </ul>
+    </div>
+    <div class="vlog old" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.8.0</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 28, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Bidirectional Notion sync, sync dot, retry queue</li></ul></div>
+    <div class="vlog old" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.7.0</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 28, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Mirror button, Daily Brief, Search, Pattern auto-flag, Triage import</li></ul></div>
+    <div class="vlog old" style="margin-bottom:18px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v1.0–1.6</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 27, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>Initial build through full hardening</li></ul></div>
+    <div class="sec">Phase 2 Roadmap</div>
+    <div style="background:#fafaf8;border:1px solid #eee;border-radius:10px;padding:12px;margin-bottom:16px"><ul style="font-size:12px;color:#666;line-height:2.1;padding-left:14px"><li>Semantic vector search</li><li>Entity tracking — people, places, projects</li><li>Gmail & Calendar integration</li><li>Apple Watch biometrics</li><li>Audio transcription</li><li>ChatGPT Custom GPT connector</li><li>Finance tab — InTelSys bridge</li></ul></div>
+  </div></div>
+</div>
 
-  <!-- PATTERNS -->
-  <div id="patterns-panel" class="panel">
-    <div class="scroll"><div class="pad">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <div class="sec" style="margin:0">Named Patterns</div>
-        <button class="btn bp" style="font-size:12px;padding:6px 12px" onclick="addPattern()">+ Add</button>
-      </div>
-      <p style="font-size:13px;color:#888;line-height:1.6;margin-bottom:14px">Name the mechanisms you've identified in yourself. The AI references these by name in every interaction.</p>
-      <div id="plist"></div>
-      <div class="divider"></div>
-      <button class="btn bg" style="font-size:12px" id="adbtn" onclick="autoDetect()">🧠 Auto-detect from entries</button>
-      <div id="apout" style="margin-top:12px;font-size:13px;color:#444;line-height:1.8;white-space:pre-wrap"></div>
-    </div></div>
-  </div>
-
-  <!-- INSIGHTS -->
-  <div id="dash-panel" class="panel">
-    <div class="scroll"><div class="pad">
-      <div class="dgrid">
-        <div class="dc"><h3>Entries</h3><div class="sbn" id="dt">0</div><div class="sbl">total</div></div>
-        <div class="dc"><h3>Streak</h3><div class="sbn" id="dstr">0</div><div class="sbl">days</div></div>
-        <div class="dc full"><h3>Category Balance</h3><div id="cbars"></div></div>
-        <div class="dc full"><h3>Mood Timeline</h3><div class="mline" id="mline"></div></div>
-        <div class="dc full">
-          <h3>Goals <button class="btn bg" style="font-size:11px;padding:3px 8px;float:right" onclick="addGoal()">+ Add</button></h3>
-          <div id="glist"></div>
+<!-- SETTINGS -->
+<div id="settings-panel" class="panel">
+  <div class="scroll"><div class="pad" style="max-width:520px">
+    <div class="ss">
+      <h3>Account</h3>
+      <div style="font-size:13px;color:#555;margin-bottom:10px">Signed in as <strong id="s-email">—</strong></div>
+      <button class="btn bg" onclick="doLogout()" style="font-size:12px">Sign Out</button>
+    </div>
+    <div class="ss">
+      <h3>⚡ Anthropic API Key</h3>
+      <p style="font-size:12px;color:#888;line-height:1.6;margin-bottom:10px">Get your key at <a href="https://platform.anthropic.com" target="_blank" style="color:#6c8ebf">platform.anthropic.com</a> → API Keys → Create Key. Stored encrypted in your account.</p>
+      <div class="field"><label>API Key</label>
+        <div class="key-row">
+          <input type="password" id="akey" placeholder="sk-ant-api03-..." autocomplete="off"/>
+          <button class="btn bg" onclick="toggleVisible('akey',this)">👁</button>
+          <button class="btn bg" onclick="copyField('akey')">📋</button>
         </div>
-        <div class="dc full">
-          <h3>Weekly Digest <button class="btn bg" id="dgbtn" style="font-size:11px;padding:3px 8px;float:right" onclick="genDigest()">Generate</button></h3>
-          <div id="dout"><span style="color:#ccc;font-size:13px">Tap Generate to synthesize your week.</span></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn bp" onclick="saveApiKey()">Save Key</button>
+        <button class="btn bg" style="font-size:12px" onclick="testApiKey()">Test</button>
+      </div>
+      <div class="st" id="akst"></div>
+    </div>
+    <div class="ss">
+      <h3>Notion Integration (optional)</h3>
+      <div class="field"><label>Notion API Key</label>
+        <div class="key-row">
+          <input type="password" id="nkey" placeholder="secret_..."/>
+          <button class="btn bg" onclick="toggleVisible('nkey',this)">👁</button>
+          <button class="btn bg" onclick="copyField('nkey')">📋</button>
         </div>
       </div>
-    </div></div>
-  </div>
-
-  <!-- CHECKIN -->
-  <div id="checkin-panel" class="panel">
-    <div class="scroll"><div class="pad">
-      <div class="sec" style="margin-bottom:12px">Daily Check-in</div>
-      <div class="cicard">
-        <div id="cistart"><p style="font-size:14px;color:#555;line-height:1.7;margin-bottom:14px">Five minutes. Honest answers. Saved as today's entry.</p><button class="btn bp" onclick="startCI()">Begin</button></div>
-        <div id="ciflow" style="display:none">
-          <div class="ciq" id="ciq"></div>
-          <textarea id="cia" style="min-height:80px" placeholder="Your answer..."></textarea>
-          <div class="cinav"><span class="cipr" id="cipr"></span><button class="btn bp" onclick="nextCI()">Next →</button></div>
+      <div class="field"><label>Database ID</label>
+        <div class="key-row">
+          <input type="text" id="ndb" placeholder="32-character Database ID"/>
+          <button class="btn bg" onclick="copyField('ndb')">📋</button>
         </div>
-        <div id="cidone" style="display:none"><p style="font-size:14px;font-weight:600;margin-bottom:8px" class="ok">✓ Done. Saved.</p><button class="btn bg" onclick="resetCI()">Start over</button></div>
       </div>
-    </div></div>
-  </div>
-
-  <!-- ARCHIVE -->
-  <div id="archive-panel" class="panel">
-    <div class="scroll"><div class="pad">
-      <div class="sec">Omni Archive</div>
-      <div class="aintro">Your longitudinal mirror. Reads across your full entry history and synthesizes behavioral threads, emotional patterns, contradictions, and the central through-line of your life.</div>
-      <div class="field"><label>Focus</label>
-        <select id="afocus">
-          <option value="">Full synthesis</option>
-          <option value="patterns">Behavioral patterns</option>
-          <option value="emotional">Emotional arc</option>
-          <option value="relationships">Relationships & people</option>
-          <option value="work">Work & identity</option>
-          <option value="health">Health & body</option>
-          <option value="finances">Financial patterns</option>
-          <option value="goals">Goals vs. reality</option>
-          <option value="contradictions">Contradictions</option>
-          <option value="thread">Central through-line</option>
-        </select>
-      </div>
-      <div class="field"><label>Time range</label>
-        <select id="arange"><option value="all">All time</option><option value="90">Last 90 days</option><option value="30">Last 30 days</option><option value="7">Last 7 days</option></select>
-      </div>
-      <button class="btn bp" id="abtn" onclick="runArchive()">Run Synthesis</button>
-      <div class="divider"></div>
-      <div id="aout" class="aout" style="display:none"></div>
-    </div></div>
-  </div>
-
-  <!-- IMPORT -->
-  <div id="import-panel" class="panel">
-    <div class="scroll"><div class="pad">
-      <div class="sec">Import & Triage</div>
-      <p style="font-size:13px;color:#888;margin-bottom:14px;line-height:1.6">Drop any files — text, Word docs (.docx), JSON, ZIP, images. LifeThread reads and imports everything automatically.</p>
-      <div id="dropzone" class="drop-zone"
-        onclick="$('fin').click()"
-        ondragover="event.preventDefault();event.stopPropagation();this.classList.add('drag-over')"
-        ondragleave="event.preventDefault();event.stopPropagation();this.classList.remove('drag-over')"
-        ondrop="event.preventDefault();event.stopPropagation();this.classList.remove('drag-over');handleDrop(event)">
-        <div style="font-size:28px;margin-bottom:8px">📂</div>
-        <div style="font-size:14px;font-weight:600;color:#3a5a8c;margin-bottom:4px">Drop files here or tap to browse</div>
-        <div style="font-size:12px;color:#aaa">Text, Word (.docx), JSON, ZIP, images — auto-processed</div>
-      </div>
-      <input type="file" id="fin" multiple accept="*/*" style="display:none" onchange="handleFiles(event.target.files)"/>
-      <div id="triage-out" style="display:none">
-        <div class="sec" style="margin-bottom:10px">Files Detected</div>
-        <div id="triage-text" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('text')"><span>📄 Text & Documents</span><span id="triage-text-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-text-list" class="triage-list"></div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('text')">Import Text Files</button></div>
-        <div id="triage-json" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('json')"><span>🔧 JSON / ChatGPT Data</span><span id="triage-json-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-json-list" class="triage-list"></div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('json')">Extract Conversations</button></div>
-        <div id="triage-image" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('image')"><span>🖼 Images</span><span id="triage-image-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-image-list" class="triage-list"></div><div style="font-size:12px;color:#888;margin-top:6px">AI reads visible text in each image.</div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('image')">Extract Text from Images</button></div>
-        <div id="triage-zip" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('zip')"><span>🗜 ZIP Files</span><span id="triage-zip-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-zip-list" class="triage-list"></div><button class="btn bp" style="font-size:12px;margin-top:8px" onclick="processGroup('zip')">Extract & Import ZIP</button></div>
-        <div id="triage-audio" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('audio')"><span>🎙 Audio</span><span id="triage-audio-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-audio-list" class="triage-list"></div><div style="font-size:12px;color:#aaa;margin-top:6px">Audio transcription coming in Phase 2.</div></div>
-        <div id="triage-other" class="triage-group" style="display:none"><div class="triage-header" onclick="toggleTriage('other')"><span>📎 Other</span><span id="triage-other-count" class="triage-badge"></span><span class="triage-arrow">▼</span></div><div id="triage-other-list" class="triage-list"></div></div>
-        <div class="divider"></div>
-      </div>
-      <div class="sec">Or Paste Text</div>
-      <div style="position:relative;margin-bottom:10px">
-        <textarea id="itxt" style="min-height:100px;width:100%" placeholder="Paste any text — ChatGPT exports, journals, notes. Any length."></textarea>
-        <div id="charcount" style="position:absolute;bottom:8px;right:10px;font-size:11px;color:#bbb"></div>
-      </div>
-      <div class="field"><label>Default category</label>
-        <select id="icat"><option>Journal</option><option>Goals</option><option>Relationships</option><option>Health</option><option>Finances</option><option>Spirituality</option><option>Creative Work</option><option>Learning & Growth</option><option>Family</option><option>Dreams & Visions</option><option>Mental & Emotional State</option></select>
-      </div>
-      <button class="btn bp" id="ibtn" onclick="processImport()" style="width:100%;justify-content:center;padding:12px">Import & Auto-categorize</button>
-      <div id="iprog" style="display:none;margin-top:14px"><div class="prog-bar"><div class="prog-fill" id="ipfill"></div></div><div id="iplabel" style="font-size:12px;color:#888;text-align:center;margin-top:4px"></div></div>
-      <div id="ist" style="margin-top:12px;font-size:13px;line-height:1.6"></div>
-    </div></div>
-  </div>
-
-  <!-- VERSION -->
-  <div id="version-panel" class="panel">
-    <div class="scroll"><div class="pad" style="max-width:560px">
-      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
-        <div style="font-size:20px;font-weight:700">LifeThread</div>
-        <div style="font-size:12px;color:#6c8ebf;font-weight:600;background:#eef2f9;padding:2px 9px;border-radius:10px">v2.1.0</div>
-      </div>
-      <div style="font-size:12px;color:#aaa;margin-bottom:20px">March 29, 2026 · Claude Sonnet 4</div>
-      <div class="sec">System Stats</div>
-      <div style="border:1px solid #eee;border-radius:10px;overflow:hidden;margin-bottom:18px">
-        <table class="vtable">
-          <tr><td style="color:#888;width:130px">User</td><td id="vuser" style="font-weight:600">—</td></tr>
-          <tr><td style="color:#888">Entries</td><td id="ve" style="font-weight:600">—</td></tr>
-          <tr><td style="color:#888">Patterns</td><td id="vp" style="font-weight:600">—</td></tr>
-          <tr><td style="color:#888">Goals</td><td id="vg" style="font-weight:600">—</td></tr>
-          <tr><td style="color:#888">Log spans</td><td id="vsp" style="font-weight:600">—</td></tr>
-          <tr><td style="color:#888">Supabase</td><td id="vsb" style="font-weight:600">—</td></tr>
-          <tr><td style="color:#888">Anthropic AI</td><td id="vak" style="font-weight:600">—</td></tr>
-          <tr><td style="color:#888">InTelSys</td><td id="vits" style="font-weight:600">—</td></tr>
-        </table>
-      </div>
-      <div class="sec">Changelog</div>
-      <div class="vlog" style="margin-bottom:8px">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v2.1.0</b><span style="font-size:11px;color:#6c8ebf;background:#eef2f9;padding:2px 7px;border-radius:8px">current</span><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 29, 2026</span></div>
-        <ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px">
-          <li>💰 Finance mode — full InTelSys dashboard in LifeThread</li>
-          <li>🔀 Mode switcher — Life | Finance top bar</li>
-          <li>📊 Portfolio overview, drift, SFD progress, rules, macro</li>
-          <li>🤝 InTelSys Railway bridge connected</li>
-        </ul>
-      </div>
-      <div class="vlog old" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v2.0.1</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 29, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>📄 Word doc (.docx) extraction via mammoth.js</li><li>🗜 ZIP auto-unzip via JSZip</li></ul></div>
-      <div class="vlog old" style="margin-bottom:8px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:5px"><b>v2.0.0</b><span style="font-size:11px;color:#aaa;margin-left:auto">Mar 28, 2026</span></div><ul style="font-size:12px;color:#555;line-height:1.9;padding-left:14px"><li>🔐 Email/password auth · ☁️ Supabase backend · 📱 Cross-device sync</li></ul></div>
-      <div class="sec">Phase 2 Roadmap</div>
-      <div style="background:#fafaf8;border:1px solid #eee;border-radius:10px;padding:12px;margin-bottom:16px"><ul style="font-size:12px;color:#666;line-height:2.1;padding-left:14px">
-        <li>⚠️ Do Not Close warning during imports + live progress counter</li>
-        <li>🤝 Unified AI briefing — life entries + financial snapshot in one Claude call</li>
-        <li>📈 Webull API live holdings sync</li>
-        <li>🔍 Semantic vector search</li>
-        <li>📅 Gmail & Calendar integration</li>
-      </ul></div>
-    </div></div>
-  </div>
-
-  <!-- SETTINGS -->
-  <div id="settings-panel" class="panel">
-    <div class="scroll"><div class="pad" style="max-width:520px">
-      <div class="ss"><h3>Account</h3><div style="font-size:13px;color:#555;margin-bottom:10px">Signed in as <strong id="s-email">—</strong></div><button class="btn bg" onclick="doLogout()" style="font-size:12px">Sign Out</button></div>
-      <div class="ss">
-        <h3>⚡ Anthropic API Key</h3>
-        <p style="font-size:12px;color:#888;line-height:1.6;margin-bottom:10px">Get your key at <a href="https://platform.anthropic.com" target="_blank" style="color:#6c8ebf">platform.anthropic.com</a> → API Keys → Create Key.</p>
-        <div class="field"><label>API Key</label><div class="key-row"><input type="password" id="akey" placeholder="sk-ant-api03-..." autocomplete="off"/><button class="btn bg" onclick="toggleVisible('akey',this)">👁</button><button class="btn bg" onclick="copyField('akey')">📋</button></div></div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn bp" onclick="saveApiKey()">Save Key</button><button class="btn bg" style="font-size:12px" onclick="testApiKey()">Test</button></div>
-        <div class="st" id="akst"></div>
-      </div>
-      <div class="ss">
-        <h3>Notion Integration (optional)</h3>
-        <div class="field"><label>Notion API Key</label><div class="key-row"><input type="password" id="nkey" placeholder="secret_..."/><button class="btn bg" onclick="toggleVisible('nkey',this)">👁</button><button class="btn bg" onclick="copyField('nkey')">📋</button></div></div>
-        <div class="field"><label>Database ID</label><div class="key-row"><input type="text" id="ndb" placeholder="32-character Database ID"/><button class="btn bg" onclick="copyField('ndb')">📋</button></div></div>
-        <button class="btn bp" onclick="saveNotion()">Save & Sync</button><div class="st" id="nst"></div>
-      </div>
-      <div class="ss">
-        <h3>Your Profile</h3>
-        <div class="field"><label>Name</label><input type="text" id="uname" placeholder="What should LifeThread call you?"/></div>
-        <div class="field"><label>Core values</label><textarea id="uvals" style="height:60px" placeholder="e.g. I value honesty, growth, presence..."></textarea></div>
-        <div class="field"><label>Current focus</label><textarea id="ufoc" style="height:60px" placeholder="What are you navigating right now?"></textarea></div>
-        <div class="field"><label>What you want from this system</label><textarea id="uwant" style="height:60px" placeholder="e.g. Honest reflection, patterns named without softening..."></textarea></div>
-        <button class="btn bp" onclick="saveProfile()">Save Profile</button><div class="st" id="pst"></div>
-      </div>
-      <div class="ss"><h3>Data</h3><button class="btn bg" onclick="exportData()">⬇ Export JSON</button></div>
-    </div></div>
-  </div>
-</div><!-- end life-mode -->
-
-<!-- ══════════════════════════════════════════
-     FINANCE MODE
-══════════════════════════════════════════ -->
-<div id="finance-mode" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0">
-  <nav id="fin-nav">
-    <button class="fnb active" onclick="showFinPanel('overview',this)">💰 Overview</button>
-    <button class="fnb" onclick="showFinPanel('portfolio',this)">📈 Portfolio</button>
-    <button class="fnb" onclick="showFinPanel('rules',this)">⚖️ Rules</button>
-    <button class="fnb" onclick="showFinPanel('macro',this)">🌍 Macro</button>
-    <button class="fnb" onclick="showFinPanel('finbrief',this)">📋 Briefing</button>
-  </nav>
-
-  <!-- FIN: OVERVIEW -->
-  <div id="overview-panel" class="panel active">
-    <div class="scroll" id="overview-scroll">
-      <div id="overview-content">
-        <div class="fin-loading"><span class="spin">⚙️</span>Loading InTelSys data...</div>
-      </div>
+      <button class="btn bp" onclick="saveNotion()">Save & Sync</button>
+      <div class="st" id="nst"></div>
     </div>
-  </div>
-
-  <!-- FIN: PORTFOLIO -->
-  <div id="portfolio-panel" class="panel">
-    <div class="scroll">
-      <div id="portfolio-content">
-        <div class="fin-loading"><span class="spin">⚙️</span>Loading portfolio...</div>
-      </div>
+    <div class="ss">
+      <h3>Your Profile</h3>
+      <div class="field"><label>Name</label><input type="text" id="uname" placeholder="What should LifeThread call you?"/></div>
+      <div class="field"><label>Core values</label><textarea id="uvals" style="height:60px" placeholder="e.g. I value honesty, growth, presence..."></textarea></div>
+      <div class="field"><label>Current focus</label><textarea id="ufoc" style="height:60px" placeholder="What are you navigating right now?"></textarea></div>
+      <div class="field"><label>What you want from this system</label><textarea id="uwant" style="height:60px" placeholder="e.g. Honest reflection, patterns named without softening..."></textarea></div>
+      <button class="btn bp" onclick="saveProfile()">Save Profile</button>
+      <div class="st" id="pst"></div>
     </div>
-  </div>
-
-  <!-- FIN: RULES -->
-  <div id="rules-panel" class="panel">
-    <div class="scroll"><div class="pad">
-      <div class="fin-section-title">Trading Rules</div>
-      <div id="rules-content"><div class="fin-loading"><span class="spin">⚙️</span>Loading rules...</div></div>
-    </div></div>
-  </div>
-
-  <!-- FIN: MACRO -->
-  <div id="macro-panel" class="panel">
-    <div class="scroll">
-      <div id="macro-content">
-        <div class="fin-loading"><span class="spin">⚙️</span>Loading macro data...</div>
-      </div>
+    <div class="ss">
+      <h3>Data</h3>
+      <button class="btn bg" onclick="exportData()">⬇ Export JSON</button>
     </div>
-  </div>
-
-  <!-- FIN: BRIEFING -->
-  <div id="finbrief-panel" class="panel">
-    <div class="scroll"><div class="pad">
-      <div class="fin-section-title" style="margin-bottom:12px">AI Financial Briefing</div>
-      <p style="font-size:13px;color:#888;line-height:1.6;margin-bottom:14px">Claude reads your live portfolio data and generates an honest financial brief. In Phase 2 this will also incorporate your life entries.</p>
-      <button class="btn" style="background:#2a7a4a;color:#fff;width:100%;justify-content:center;padding:12px;font-size:14px" id="finbrief-btn" onclick="genFinBrief()">📋 Generate Financial Brief</button>
-      <div id="finbrief-prog" style="display:none;margin-top:12px;text-align:center;font-size:13px;color:#5a9a6a">Analyzing portfolio data...</div>
-      <div id="finbrief-out" style="display:none;margin-top:14px" class="fin-brief">
-        <h3>📋 Financial Brief</h3>
-        <div id="finbrief-content" class="fin-brief-content"></div>
-      </div>
-    </div></div>
-  </div>
-</div><!-- end finance-mode -->
-
+  </div></div>
+</div>
 </div><!-- end app -->
 
 <script>
@@ -723,13 +868,12 @@ label{display:block;font-size:11px;font-weight:600;color:#888;text-transform:upp
 window.addEventListener('dragover',e=>{e.preventDefault();e.stopPropagation();});
 window.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();});
 
-// ── CONFIG ────────────────────────────────────────────────────────────────
+// ── SUPABASE CONFIG ───────────────────────────────────────────────────────
 const SB_URL='https://khntsltigjjelvmecvrq.supabase.co';
 const SB_KEY='sb_publishable_yqNAjCBe0Cg-JeD8aeSsAw_2slonEr_';
-const ITS_URL='https://trading-intelligence-system-production-97ba.up.railway.app';
+
 const VER='2.1.0';
 const API_URL='/.netlify/functions/anthropic';
-
 const CATS=[
   {e:'📓',l:'Journal',v:'Journal'},{e:'🎯',l:'Goals',v:'Goals'},
   {e:'👥',l:'People',v:'Relationships'},{e:'💪',l:'Health',v:'Health'},
@@ -742,15 +886,20 @@ const TPLS={Health:'Sleep quality?\nEnergy level?\nMovement today?\nWhat is your
 const MMAP={'✨ Expansive':'#f0c040','😌 Calm':'#6cbf8e','😐 Neutral':'#b0b0b0','😔 Heavy':'#7090b0','⚡ Energized':'#e08830','😰 Anxious':'#c07080','🙏 Grateful':'#a070c0','😤 Frustrated':'#d06050','🔥 Passionate':'#e05020','😶 Numb':'#909090','🌀 Restless':'#70a0c0'};
 const CIQS=['How are you actually feeling right now — physically, mentally, emotionally?','What was the most significant thing that happened since your last entry?','What are you avoiding? What are you not saying here?','What\'s one thing that\'s true right now that you haven\'t fully admitted to yourself?','What do you want to move toward — and what\'s actually stopping you?'];
 const AFOCUS={'':'Synthesize everything — behavioral threads, emotional arc, patterns, contradictions, and the central through-line.',patterns:'Map behavioral patterns: name each, mechanism, evidence, frequency.',emotional:'Trace the emotional arc. Moods, triggers, cycles.',relationships:'Reconstruct the relational landscape.',work:'Work and identity patterns.',health:'Health and body patterns.',finances:'Financial decisions and patterns.',goals:'Goals vs. actual behavior.',contradictions:'Contradictions between stated values and behavior.',thread:'The single central through-line.'};
-const FILE_TYPES={text:['txt','md','text','csv','rtf'],docx:['doc','docx','pages'],json:['json'],image:['jpg','jpeg','png','gif','webp','bmp','heic','heif'],audio:['mp3','wav','m4a','ogg','aac','flac','mp4','mov','webm'],zip:['zip']};
+const FILE_TYPES={
+  text:['txt','md','text','csv','rtf'],
+  docx:['doc','docx','pages'],
+  json:['json'],
+  image:['jpg','jpeg','png','gif','webp','bmp','heic','heif'],
+  audio:['mp3','wav','m4a','ogg','aac','flac','mp4','mov','webm'],
+  zip:['zip']
+};
 
 let entries=[],goals=[],patterns=[],chatHist=[],ciAs=[],ciQs=[],ciIdx=0;
 let selCat=null,chatMode='mirror',recording=false,recog=null;
 let userEmail='',apiKey='',nKey='',nDb='',uName='',uVals='',uFoc='',uWant='';
 let activeId=null,editing=false,busy=false;
 let triageFiles={text:[],docx:[],json:[],image:[],audio:[],zip:[],other:[]};
-let finData=null,finLoaded=false;
-let currentMode='life';
 
 const $=id=>document.getElementById(id);
 const nowISO=()=>new Date().toISOString();
@@ -759,7 +908,6 @@ const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const getExt=n=>(n.split('.').pop()||'').toLowerCase();
 const fmtSize=b=>b<1024?b+'B':b<1048576?Math.round(b/1024)+'KB':(b/1048576).toFixed(1)+'MB';
-const fmtDollar=n=>n===0?'$0.00':'$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 
 let toastT;
 function toast(msg,dur=2800){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),dur);}
@@ -768,7 +916,7 @@ const dow=d=>{try{return new Date(d+'T12:00:00').toLocaleDateString('en-US',{wee
 const tod=()=>{const h=new Date().getHours();if(h<5)return'Late night';if(h<9)return'Early morning';if(h<12)return'Morning';if(h<14)return'Midday';if(h<17)return'Afternoon';if(h<20)return'Evening';return'Night';};
 const tmeta=(d,t,s)=>{try{const dt=new Date(d+'T12:00:00');return{date:d,time_of_day:t||null,day_of_week:dow(d),month:dt.toLocaleDateString('en-US',{month:'long'}),year:dt.getFullYear(),quarter:`Q${Math.ceil((dt.getMonth()+1)/3)} ${dt.getFullYear()}`,source:s||'manual',logged_at:nowISO()};}catch{return{date:d,source:s||'manual',logged_at:nowISO()};}};
 
-// ── SUPABASE ──────────────────────────────────────────────────────────────
+// ── SUPABASE API ──────────────────────────────────────────────────────────
 async function sbReq(path,method='GET',body=null,token=null){
   const headers={'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+(token||SB_KEY)};
   const r=await fetch(SB_URL+path,{method,headers,body:body?JSON.stringify(body):undefined});
@@ -776,312 +924,10 @@ async function sbReq(path,method='GET',body=null,token=null){
   const ct=r.headers.get('content-type')||'';
   return ct.includes('json')?r.json():r.text();
 }
-async function hashPass(pass){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pass));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
 
-// ── INTELYS BRIDGE ────────────────────────────────────────────────────────
-async function itsGet(path){
-  const r=await fetch(ITS_URL+path,{headers:{'Content-Type':'application/json'}});
-  if(!r.ok)throw new Error('InTelSys error '+r.status);
-  return r.json();
-}
-
-async function loadFinData(){
-  try{
-    const [briefing,portfolio,macro]=await Promise.all([
-      itsGet('/api/briefing'),
-      itsGet('/api/portfolio'),
-      itsGet('/api/macro'),
-    ]);
-    finData={briefing,portfolio,macro};
-    finLoaded=true;
-    return finData;
-  }catch(e){
-    finLoaded=false;
-    throw e;
-  }
-}
-
-// ── MODE SWITCHER ─────────────────────────────────────────────────────────
-function switchMode(mode){
-  currentMode=mode;
-  // Toggle mode containers
-  $('life-mode').style.display=mode==='life'?'flex':'none';
-  $('finance-mode').style.display=mode==='finance'?'flex':'none';
-  // Update mode tab styles
-  $('mode-life').className='mode-tab'+(mode==='life'?' active':'');
-  $('mode-fin').className='mode-tab'+(mode==='finance'?' fin-active':'');
-  // Load finance data on first switch
-  if(mode==='finance'&&!finLoaded){
-    renderFinLoading();
-    loadFinData().then(()=>renderAllFinance()).catch(e=>renderFinError(e.message));
-  }
-}
-
-function renderFinLoading(){
-  ['overview-content','portfolio-content','rules-content','macro-content'].forEach(id=>{
-    const el=$(id);if(el)el.innerHTML='<div class="fin-loading"><span class="spin">⚙️</span>Connecting to InTelSys...</div>';
-  });
-}
-function renderFinError(msg){
-  ['overview-content','portfolio-content','rules-content','macro-content'].forEach(id=>{
-    const el=$(id);if(el)el.innerHTML=`<div class="fin-error">⚠️ Could not reach InTelSys.<br><small>${esc(msg)}</small><br><br><button class="btn bg" style="font-size:12px" onclick="retryFin()">Retry</button></div>`;
-  });
-}
-async function retryFin(){
-  renderFinLoading();
-  try{await loadFinData();renderAllFinance();}
-  catch(e){renderFinError(e.message);}
-}
-
-function renderAllFinance(){
-  if(!finData)return;
-  renderFinOverview();
-  renderFinPortfolio();
-  renderFinRules();
-  renderFinMacro();
-  // Update version panel InTelSys status
-  const vits=$('vits');if(vits)vits.innerHTML='<span class="ok">✓ Connected</span>';
-}
-
-// ── FINANCE: OVERVIEW ─────────────────────────────────────────────────────
-function renderFinOverview(){
-  const p=finData.portfolio||{};
-  const b=finData.briefing||{};
-  const sfd=b.sfd||{current:0,target:800,progress:0};
-  const pnlColor=p.pnl>0?'ok':p.pnl<0?'neg':'neutral';
-  const sfdPct=Math.min(sfd.progress||0,100);
-
-  $('overview-content').innerHTML=`
-    <div style="padding:16px 16px 0">
-      <div style="font-size:16px;font-weight:700;color:#1a5c2a;margin-bottom:2px">💰 Financial Overview</div>
-      <div style="font-size:12px;color:#888;margin-bottom:14px">${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>
-    </div>
-
-    <div class="fgrid">
-      <div class="fcard">
-        <h3>Portfolio Value</h3>
-        <div class="fnum">${fmtDollar(p.total||0)}</div>
-        <div class="fsub">${p.source==='empty'?'No holdings loaded yet':p.source==='webull'?'Live via Webull':'Seed data'}</div>
-      </div>
-      <div class="fcard">
-        <h3>Total P&L</h3>
-        <div class="fnum ${pnlColor}">${p.pnl>=0?'+':''}${fmtDollar(p.pnl||0)}</div>
-        <div class="fsub">Unrealized gain/loss</div>
-      </div>
-      <div class="fcard">
-        <h3>Monthly Income</h3>
-        <div class="fnum">${fmtDollar(p.monthly_div||0)}</div>
-        <div class="fsub">Estimated dividends</div>
-      </div>
-      <div class="fcard">
-        <h3>AI Thesis Score</h3>
-        <div class="fnum neutral">${p.thesis||0}<span style="font-size:14px;color:#888">/100</span></div>
-        <div class="fsub">Weighted portfolio alignment</div>
-      </div>
-      <div class="fcard full">
-        <h3>SFD Progress — Steady Flow Dividend</h3>
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
-          <span style="font-size:22px;font-weight:700;color:#1a5c2a">${fmtDollar(sfd.current||0)}<span style="font-size:13px;color:#888;font-weight:400"> / mo</span></span>
-          <span style="font-size:13px;color:#5a9a6a;font-weight:600">${sfdPct.toFixed(1)}% of goal</span>
-        </div>
-        <div class="sfd-bar-wrap"><div class="sfd-bar-fill" style="width:${sfdPct}%"></div></div>
-        <div class="sfd-labels"><span>$0</span><span>Target: ${fmtDollar(sfd.target||800)}/mo</span></div>
-      </div>
-    </div>
-
-    <div class="fin-section">
-      <div class="fin-section-title">Active Rules Summary</div>
-    </div>
-    <div style="padding:0 16px 16px">
-      ${renderRulesSummary(b)}
-    </div>
-  `;
-}
-
-function renderRulesSummary(b){
-  const rules=b.rules||{active:0,pending_approvals:0,approval_items:[]};
-  let html=`<div style="display:flex;gap:10px;margin-bottom:10px">
-    <div class="fcard" style="flex:1;text-align:center"><div style="font-size:22px;font-weight:700;color:#1a5c2a">${rules.active}</div><div style="font-size:11px;color:#888">Active Rules</div></div>
-    <div class="fcard" style="flex:1;text-align:center"><div style="font-size:22px;font-weight:700;color:${rules.pending_approvals>0?'#c07030':'#1a5c2a'}">${rules.pending_approvals}</div><div style="font-size:11px;color:#888">Pending Approval</div></div>
-  </div>`;
-  if(rules.approval_items&&rules.approval_items.length){
-    html+=rules.approval_items.map(r=>`
-      <div class="rule-card" style="border-color:#fff3cd;background:#fffdf0">
-        <div class="rule-top"><span class="rule-name">${esc(r.name)}</span><span class="rule-badge rb-approval">⚠️ Needs Approval</span></div>
-        <div class="rule-trigger">${esc(r.trigger)}</div>
-        <div class="rule-size">$${(r.size||0).toLocaleString()} transaction</div>
-      </div>`).join('');
-  }
-  return html;
-}
-
-// ── FINANCE: PORTFOLIO ────────────────────────────────────────────────────
-function renderFinPortfolio(){
-  const p=finData.portfolio||{};
-  const byClass=p.by_class||{};
-  const drift=p.drift||{};
-  const total=p.total||0;
-
-  const classes=['Equities','Dividend','Crypto','Bonds','Commodities','Cash'];
-  const targets={Equities:35,Dividend:20,Crypto:15,Bonds:15,Commodities:10,Cash:5};
-
-  const driftRows=classes.map(cls=>{
-    const val=drift[cls]||0;
-    const actual=total>0?((byClass[cls]||0)/total*100):0;
-    const target=targets[cls]||0;
-    const pct=Math.min(actual,100);
-    const driftColor=Math.abs(val)>5?'#e05a5a':Math.abs(val)>2?'#e08830':'#3a8c5a';
-    return`<div class="drift-row">
-      <div class="drift-label">${esc(cls)}</div>
-      <div style="flex:1;position:relative">
-        <div style="display:flex;align-items:center;gap:6px">
-          <div class="btrack" style="flex:1"><div class="bfill ${Math.abs(val)>5?'red':Math.abs(val)>2?'amber':'green'}" style="width:${pct}%"></div></div>
-          <span style="font-size:11px;color:#888;width:30px">${actual.toFixed(1)}%</span>
-          <span style="font-size:11px;font-weight:600;width:42px;color:${driftColor}">${val>0?'+':''}${val}%</span>
-        </div>
-        <div style="font-size:10px;color:#bbb;margin-top:1px">Target ${target}%</div>
-      </div>
-    </div>`;
-  }).join('');
-
-  $('portfolio-content').innerHTML=`
-    <div class="fgrid" style="padding-top:14px">
-      <div class="fcard">
-        <h3>Total Value</h3>
-        <div class="fnum">${fmtDollar(total)}</div>
-        <div class="fsub">${p.source==='empty'?'No holdings — sync via Webull':'Data source: '+esc(p.source||'—')}</div>
-      </div>
-      <div class="fcard">
-        <h3>Portfolio Beta</h3>
-        <div class="fnum neutral">${(p.beta||0).toFixed(2)}</div>
-        <div class="fsub">Market sensitivity</div>
-      </div>
-      <div class="fcard full">
-        <h3>Allocation vs Target (Drift)</h3>
-        ${total===0
-          ? '<div style="color:#aaa;font-size:13px;padding:8px 0">No holdings loaded. Use Settings → sync holdings to see drift.</div>'
-          : driftRows
-        }
-      </div>
-      <div class="fcard full">
-        <h3>Holdings by Class</h3>
-        ${total===0
-          ? '<div style="color:#aaa;font-size:13px;padding:8px 0">No holdings loaded yet.</div>'
-          : classes.filter(c=>byClass[c]>0).map(c=>`
-            <div class="brow">
-              <div class="blabel">${esc(c)}</div>
-              <div class="btrack"><div class="bfill" style="width:${total>0?(byClass[c]/total*100):0}%"></div></div>
-              <div class="bcnt" style="width:70px;text-align:right">${fmtDollar(byClass[c]||0)}</div>
-            </div>`).join('')
-        }
-      </div>
-    </div>
-    <div style="padding:0 16px 20px">
-      <div style="background:#f6fdf8;border:1px solid #d4edda;border-radius:10px;padding:12px;font-size:12px;color:#5a9a6a;line-height:1.7">
-        💡 <strong>To load live holdings:</strong> Add <code>WEBULL_APP_KEY</code> and <code>WEBULL_APP_SECRET</code> to Railway environment variables. Holdings will auto-populate.
-      </div>
-    </div>
-  `;
-}
-
-// ── FINANCE: RULES ────────────────────────────────────────────────────────
-function renderFinRules(){
-  const rules=finData.briefing?.rules||{};
-  // Pull full rules from portfolio data or use briefing summary
-  const ruleList=finData.portfolio?.rules||[];
-
-  if(!ruleList.length){
-    // Rebuild from briefing approval_items + known rules
-    $('rules-content').innerHTML=`
-      <div style="background:#f6fdf8;border:1px solid #d4edda;border-radius:10px;padding:12px;font-size:13px;color:#5a9a6a;margin-bottom:14px">
-        ${rules.active||0} active rules · ${rules.pending_approvals||0} pending approval
-      </div>
-      <div style="font-size:13px;color:#888">Full rules list loads from <code>/api/rules</code> — add to Railway if needed.</div>
-    `;
-    // Try loading rules directly
-    itsGet('/api/rules').then(r=>renderRulesFromData(r)).catch(()=>{});
-    return;
-  }
-  renderRulesFromData(ruleList);
-}
-
-function renderRulesFromData(ruleList){
-  if(!$('rules-content'))return;
-  $('rules-content').innerHTML=ruleList.map(r=>`
-    <div class="rule-card" style="${!r.active?'opacity:.55':''}">
-      <div class="rule-top">
-        <span class="rule-name">${esc(r.name)}</span>
-        <span class="rule-badge ${r.active?(r.gate==='approval'?'rb-approval':'rb-auto'):'rb-inactive'}">${r.active?(r.gate==='approval'?'⚠️ Approval':'⚡ Auto'):'Inactive'}</span>
-      </div>
-      <div class="rule-trigger">${esc(r.trigger)}</div>
-      <div class="rule-size">$${(r.size||0).toLocaleString()} · Gate: ${esc(r.gate)}</div>
-    </div>
-  `).join('');
-}
-
-// ── FINANCE: MACRO ────────────────────────────────────────────────────────
-function renderFinMacro(){
-  const macro=finData.macro||[];
-  const sigClass={neutral:'sig-neutral',caution:'sig-caution',tailwind:'sig-tailwind'};
-
-  $('macro-content').innerHTML=`
-    <div style="padding:14px 16px 8px">
-      <div class="fin-section-title">Macro Environment</div>
-      <div style="font-size:12px;color:#888;margin-bottom:10px">Static reference — live data via Perplexity API in Phase 2</div>
-    </div>
-    <div class="macro-grid">
-      ${macro.map(m=>`
-        <div class="macro-card">
-          <div class="macro-label"><span class="signal-dot ${sigClass[m.signal]||'sig-neutral'}"></span>${esc(m.label)}</div>
-          <div class="macro-val">${esc(m.value)}</div>
-          <div class="macro-note">${esc(m.note||'')}</div>
-        </div>
-      `).join('')}
-    </div>
-    <div style="padding:0 16px 16px">
-      <div style="background:#f6fdf8;border:1px solid #d4edda;border-radius:10px;padding:12px;font-size:12px;color:#5a9a6a;line-height:1.7">
-        🟡 Neutral &nbsp;🔴 Caution &nbsp;🟢 Tailwind<br>
-        Phase 2: Perplexity API will pull live macro data daily.
-      </div>
-    </div>
-  `;
-}
-
-// ── FINANCE: AI BRIEFING ──────────────────────────────────────────────────
-async function genFinBrief(){
-  if(!finLoaded){
-    toast('Loading financial data first...');
-    try{await loadFinData();renderAllFinance();}catch(e){toast('⚠️ Could not load InTelSys data');return;}
-  }
-  const btn=$('finbrief-btn');btn.disabled=true;
-  $('finbrief-prog').style.display='block';
-  $('finbrief-out').style.display='none';
-  const p=finData.portfolio||{};
-  const b=finData.briefing||{};
-  const macro=finData.macro||[];
-  const macroStr=macro.map(m=>`${m.label}: ${m.value} (${m.signal}${m.note?' — '+m.note:''})`).join('\n');
-  const sfd=b.sfd||{};
-  try{
-    const r=await ai(
-      `You are InTelSys — a personal financial intelligence system. Generate an honest, precise financial brief. No cheerleading. Cite specific numbers. Flag risks. Note what needs attention.`,
-      `PORTFOLIO:\nTotal: ${fmtDollar(p.total||0)}\nP&L: ${p.pnl>=0?'+':''}${fmtDollar(p.pnl||0)}\nMonthly dividends: ${fmtDollar(p.monthly_div||0)}\nSFD progress: ${fmtDollar(sfd.current||0)} / ${fmtDollar(sfd.target||800)} target (${(sfd.progress||0).toFixed(1)}%)\nAI Thesis score: ${p.thesis||0}/100\nData source: ${p.source||'empty'}\n\nDRIFT:\n${JSON.stringify(p.drift||{})}\n\nACTIVE RULES: ${b.rules?.active||0} active, ${b.rules?.pending_approvals||0} pending approval\n${b.rules?.approval_items?.length?'Needs approval: '+b.rules.approval_items.map(r=>r.name).join(', '):''}\n\nMACRO:\n${macroStr}\n\nGenerate a financial brief: portfolio health, what needs attention, SFD trajectory, one risk to watch. Under 200 words.`
-    );
-    $('finbrief-content').textContent=r;
-    $('finbrief-out').style.display='block';
-  }catch(e){
-    $('finbrief-content').textContent='Error: '+e.message;
-    $('finbrief-out').style.display='block';
-  }
-  $('finbrief-prog').style.display='none';
-  btn.disabled=false;
-}
-
-// ── FINANCE NAV ───────────────────────────────────────────────────────────
-function showFinPanel(p,el){
-  document.querySelectorAll('#finance-mode .panel').forEach(x=>x.classList.remove('active'));
-  document.querySelectorAll('.fnb').forEach(x=>x.classList.remove('active'));
-  const panel=$(p+'-panel');if(panel)panel.classList.add('active');
-  if(el)el.classList.add('active');
+async function hashPass(pass){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pass));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
 // ── AUTH ──────────────────────────────────────────────────────────────────
@@ -1092,8 +938,11 @@ function switchAuthTab(tab,el){
   $('auth-register').style.display=tab==='register'?'block':'none';
   $('auth-err').textContent='';
 }
+
 async function doRegister(){
-  const email=$('reg-email').value.trim().toLowerCase(),pass=$('reg-pass').value,pass2=$('reg-pass2').value;
+  const email=$('reg-email').value.trim().toLowerCase();
+  const pass=$('reg-pass').value;
+  const pass2=$('reg-pass2').value;
   if(!email||!pass){$('auth-err').textContent='Email and password required';return;}
   if(pass.length<8){$('auth-err').textContent='Password must be at least 8 characters';return;}
   if(pass!==pass2){$('auth-err').textContent='Passwords do not match';return;}
@@ -1107,8 +956,10 @@ async function doRegister(){
     setTimeout(()=>doLogin(email,pass),1000);
   }catch(e){$('auth-err').style.color='#e05a5a';$('auth-err').textContent=e.message;btn.disabled=false;btn.textContent='Create Account';}
 }
+
 async function doLogin(emailOverride,passOverride){
-  const email=emailOverride||$('login-email').value.trim().toLowerCase(),pass=passOverride||$('login-pass').value;
+  const email=emailOverride||$('login-email').value.trim().toLowerCase();
+  const pass=passOverride||$('login-pass').value;
   if(!email||!pass){$('auth-err').textContent='Email and password required';return;}
   const btn=$('login-btn');if(!emailOverride){btn.disabled=true;btn.textContent='Signing in...';}
   try{
@@ -1119,15 +970,17 @@ async function doLogin(emailOverride,passOverride){
     if(user.password_hash!==hash){$('auth-err').textContent='Incorrect password.';btn.disabled=false;btn.textContent='Sign In';return;}
     userEmail=email;
     localStorage.setItem('lt_session',JSON.stringify({email,ts:Date.now()}));
-    await loadUserData(user);showApp();
+    await loadUserData(user);
+    showApp();
   }catch(e){$('auth-err').style.color='#e05a5a';$('auth-err').textContent=e.message;if(!emailOverride){btn.disabled=false;btn.textContent='Sign In';}}
 }
+
 async function loadUserData(user){
   if(user.anthropic_key)apiKey=user.anthropic_key;
   if(user.notion_key)nKey=user.notion_key;
   if(user.notion_db)nDb=user.notion_db;
   const prof=user.profile||{};
-  uName=prof.name||'';uVals=prof.values||'';uFoc=prof.focus||'';uWant=prof.want||'';
+  uName=prof.name||''; uVals=prof.values||''; uFoc=prof.focus||''; uWant=prof.want||'';
   try{
     setSyncDot('syncing');
     const rows=await sbReq(`/rest/v1/entries?user_email=eq.${encodeURIComponent(userEmail)}&order=date.desc&limit=500`);
@@ -1139,24 +992,36 @@ async function loadUserData(user){
     setSyncDot('ok');
   }catch(e){console.warn('Load error:',e.message);setSyncDot('error');}
 }
+
 function showApp(){
-  $('auth-screen').style.display='none';$('app').style.display='flex';
-  if(apiKey)$('akey').value=apiKey;if(nKey)$('nkey').value=nKey;if(nDb)$('ndb').value=nDb;
-  if(uName)$('uname').value=uName;if(uVals)$('uvals').value=uVals;if(uFoc)$('ufoc').value=uFoc;if(uWant)$('uwant').value=uWant;
+  $('auth-screen').style.display='none';
+  $('app').style.display='flex';
+  if(apiKey)$('akey').value=apiKey;
+  if(nKey)$('nkey').value=nKey;
+  if(nDb)$('ndb').value=nDb;
+  if(uName)$('uname').value=uName;
+  if(uVals)$('uvals').value=uVals;
+  if(uFoc)$('ufoc').value=uFoc;
+  if(uWant)$('uwant').value=uWant;
   $('s-email').textContent=userEmail;
   renderHome();renderCats();renderEntries();renderPatterns();renderDash();initChat();
-  const itxt=$('itxt');if(itxt)itxt.addEventListener('input',()=>{const l=itxt.value.length;$('charcount').textContent=l>0?l.toLocaleString()+' chars':'';});
+  const itxt=$('itxt');
+  if(itxt)itxt.addEventListener('input',()=>{const l=itxt.value.length;$('charcount').textContent=l>0?l.toLocaleString()+' chars':'';});
   if(apiKey&&entries.length)setTimeout(genBrief,2000);
   setInterval(()=>syncDown(),120000);
 }
+
 function doLogout(){
   localStorage.removeItem('lt_session');
   userEmail='';apiKey='';nKey='';nDb='';uName='';uVals='';uFoc='';uWant='';
-  entries=[];goals=[];patterns=[];chatHist=[];finData=null;finLoaded=false;
-  $('app').style.display='none';$('auth-screen').style.display='flex';
-  $('auth-err').textContent='';$('login-email').value='';$('login-pass').value='';
+  entries=[];goals=[];patterns=[];chatHist=[];
+  $('app').style.display='none';
+  $('auth-screen').style.display='flex';
+  $('auth-err').textContent='';
+  $('login-email').value='';$('login-pass').value='';
 }
 
+// ── INIT ──────────────────────────────────────────────────────────────────
 window.addEventListener('load',async()=>{
   try{
     const sess=JSON.parse(localStorage.getItem('lt_session')||'null');
@@ -1169,17 +1034,36 @@ window.addEventListener('load',async()=>{
 });
 
 // ── SYNC DOT ──────────────────────────────────────────────────────────────
-function setSyncDot(s){const d=$('syncdot');if(!d)return;d.className='status-dot '+(s==='ok'?'dot-ok':s==='syncing'?'dot-sync':s==='error'?'dot-bad':'dot-off');d.title=s==='ok'?'Synced ✓':s==='syncing'?'Syncing...':s==='error'?'Sync error':'Not synced';}
-async function syncDown(){if(!userEmail)return;try{setSyncDot('syncing');const rows=await sbReq(`/rest/v1/entries?user_email=eq.${encodeURIComponent(userEmail)}&order=date.desc&limit=500`);const remote=(rows||[]).map(r=>({...r,temporal:typeof r.temporal==='string'?JSON.parse(r.temporal):r.temporal}));if(remote.length!==entries.length){entries=remote;renderEntries();renderDash();renderHome();toast('✓ Synced from cloud');}setSyncDot('ok');}catch(e){setSyncDot('error');}}
+function setSyncDot(s){
+  const d=$('syncdot');if(!d)return;
+  d.className='status-dot '+(s==='ok'?'dot-ok':s==='syncing'?'dot-sync':s==='error'?'dot-bad':'dot-off');
+  d.title=s==='ok'?'Synced ✓':s==='syncing'?'Syncing...':s==='error'?'Sync error':'Not synced';
+}
 
-// ── LIFE NAV ──────────────────────────────────────────────────────────────
-function showLifePanel(p,el){
-  document.querySelectorAll('#life-mode .panel').forEach(x=>x.classList.remove('active'));
+async function syncDown(){
+  if(!userEmail)return;
+  try{
+    setSyncDot('syncing');
+    const rows=await sbReq(`/rest/v1/entries?user_email=eq.${encodeURIComponent(userEmail)}&order=date.desc&limit=500`);
+    const remote=(rows||[]).map(r=>({...r,temporal:typeof r.temporal==='string'?JSON.parse(r.temporal):r.temporal}));
+    if(remote.length!==entries.length){
+      entries=remote;renderEntries();renderDash();renderHome();toast('✓ Synced from cloud');
+    }
+    setSyncDot('ok');
+  }catch(e){setSyncDot('error');}
+}
+
+// ── NAV ───────────────────────────────────────────────────────────────────
+function show(p,el){
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.nb').forEach(x=>x.classList.remove('active'));
   const panel=$(p+'-panel');if(!panel)return;
   panel.classList.add('active');
   if(el)el.classList.add('active');
-  if(p==='dash')renderDash();if(p==='home')renderHome();if(p==='version')renderVersion();
+  if(p==='dash')renderDash();
+  if(p==='home')renderHome();
+  if(p==='version')renderVersion();
+  if(p==='finance')loadFinance();  // fetch fresh data every time Finance tab is opened
   if(p==='search')setTimeout(()=>$('search-in').focus(),100);
 }
 
@@ -1196,7 +1080,8 @@ function renderHome(){
 }
 async function genBrief(){
   if(!apiKey||!entries.length)return;
-  $('daily-brief').style.display='block';$('brief-content').textContent='Generating your daily brief...';
+  $('daily-brief').style.display='block';
+  $('brief-content').textContent='Generating your daily brief...';
   try{const r=await ai(`You are LifeThread. Generate a morning brief for ${uName||'the user'} — 3-4 sentences. Cover: one pattern currently active, one thing needing attention today, one honest forward observation. No cheerleading.`,`Recent entries:\n${ctx(10)}\n\nGenerate morning brief.`);$('brief-content').textContent=r;}
   catch{$('daily-brief').style.display='none';}
 }
@@ -1212,35 +1097,149 @@ function pickCat(v){selCat=selCat===v?null:v;renderCats();const tb=$('tplbox');i
 function toggleVoice(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){toast('⚠️ Voice not supported here.');return;}if(recording){recog&&recog.stop();return;}try{recog=new SR();recog.continuous=true;recog.interimResults=true;recog.lang='en-US';recog.onstart=()=>{recording=true;const b=$('vbtn');b.classList.add('rec');b.textContent='🔴 Stop';};recog.onresult=e=>{let t='';for(let i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;$('etxt').value=t;};recog.onerror=e=>{toast('Voice error: '+e.error);recog.stop();};recog.onend=()=>{recording=false;const b=$('vbtn');b.classList.remove('rec');b.textContent='🎤 Voice';};recog.start();}catch(e){toast('Voice error: '+e.message);}}
 
 // ── ENTRIES ───────────────────────────────────────────────────────────────
-async function pushEntryToSB(entry){if(!userEmail)return;try{setSyncDot('syncing');await sbReq('/rest/v1/entries','POST',{id:entry.id,user_email:userEmail,date:entry.date,category:entry.category,mood:entry.mood||'',content:entry.content||'',title:entry.title||'',source:entry.source||'manual',date_confidence:entry.date_confidence||'',temporal:JSON.stringify(entry.temporal||{})});setSyncDot('ok');}catch(e){console.warn('Push error:',e.message);setSyncDot('error');}}
-function addE(f){const d=f.date||today();const e={id:Date.now()+(Math.random()*999|0),date:d,category:'Journal',mood:'',...f,title:(f.content||'').slice(0,60).replace(/\n/g,' '),temporal:tmeta(d,f.time_of_day||tod(),f.source||'manual')};entries.unshift(e);setTimeout(()=>pushEntryToSB(e),200);return e;}
-const saveEntry=guard(async()=>{const txt=$('etxt').value.trim();if(!txt)return;const btn=$('sbtn');btn.disabled=true;btn.textContent='Saving...';addE({category:selCat||'Journal',mood:$('msel').value,content:txt});renderEntries();renderHome();$('etxt').value='';$('msel').value='';selCat=null;renderCats();$('tplbox').style.display='none';btn.disabled=false;btn.textContent='Save';toast('✓ Entry saved');});
+async function pushEntryToSB(entry){
+  if(!userEmail)return;
+  try{
+    setSyncDot('syncing');
+    await sbReq('/rest/v1/entries','POST',{
+      id:entry.id,user_email:userEmail,date:entry.date,
+      category:entry.category,mood:entry.mood||'',content:entry.content||'',
+      title:entry.title||'',source:entry.source||'manual',
+      date_confidence:entry.date_confidence||'',
+      temporal:JSON.stringify(entry.temporal||{})
+    });
+    setSyncDot('ok');
+  }catch(e){console.warn('Push error:',e.message);setSyncDot('error');}
+}
+
+function addE(f){
+  const d=f.date||today();
+  const e={id:Date.now()+(Math.random()*999|0),date:d,category:'Journal',mood:'',...f,title:(f.content||'').slice(0,60).replace(/\n/g,' '),temporal:tmeta(d,f.time_of_day||tod(),f.source||'manual')};
+  entries.unshift(e);
+  setTimeout(()=>pushEntryToSB(e),200);
+  return e;
+}
+
+const saveEntry=guard(async()=>{
+  const txt=$('etxt').value.trim();if(!txt)return;
+  const btn=$('sbtn');btn.disabled=true;btn.textContent='Saving...';
+  addE({category:selCat||'Journal',mood:$('msel').value,content:txt});
+  renderEntries();renderHome();
+  $('etxt').value='';$('msel').value='';selCat=null;renderCats();$('tplbox').style.display='none';
+  btn.disabled=false;btn.textContent='Save';toast('✓ Entry saved');
+});
 const quickSave=guard(()=>{const v=$('qin').value.trim();if(!v)return;addE({content:v,source:'quick'});renderEntries();renderHome();$('qin').value='';toast('✓ Captured');});
-function renderEntries(){const el=$('elist');if(!entries.length){el.innerHTML='<div class="empty">No entries yet.<br>Start writing above or use Quick Capture below.</div>';return;}const g={};entries.slice(0,60).forEach(e=>{const k=(e.temporal?.month&&e.temporal?.year)?`${e.temporal.month} ${e.temporal.year}`:((e.date||'').slice(0,7)||'—');if(!g[k])g[k]=[];g[k].push(e);});el.innerHTML=Object.entries(g).map(([mo,arr])=>`<div style="margin-bottom:6px"><div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin:0 0 6px;padding-bottom:4px;border-bottom:1px solid #f0f0ec">${esc(mo)}</div>${arr.map(e=>`<div class="ecard" onclick="openEntry(${e.id})"><div class="etop"><span class="tag tc">${esc(e.category)}</span>${e.mood?`<span class="tag tm">${esc(e.mood)}</span>`:''}<span class="td">${e.temporal?.day_of_week?e.temporal.day_of_week.slice(0,3)+', ':''} ${esc(e.date)}${e.temporal?.time_of_day?' · '+e.temporal.time_of_day:''}</span></div><div class="ebody">${esc((e.content||'').slice(0,200))}${(e.content||'').length>200?'…':''}</div></div>`).join('')}</div>`).join('');}
+
+function renderEntries(){
+  const el=$('elist');
+  if(!entries.length){el.innerHTML='<div class="empty">No entries yet.<br>Start writing above or use Quick Capture below.</div>';return;}
+  const g={};
+  entries.slice(0,60).forEach(e=>{const k=(e.temporal?.month&&e.temporal?.year)?`${e.temporal.month} ${e.temporal.year}`:((e.date||'').slice(0,7)||'—');if(!g[k])g[k]=[];g[k].push(e);});
+  el.innerHTML=Object.entries(g).map(([mo,arr])=>`
+    <div style="margin-bottom:6px">
+      <div style="font-size:11px;font-weight:600;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin:0 0 6px;padding-bottom:4px;border-bottom:1px solid #f0f0ec">${esc(mo)}</div>
+      ${arr.map(e=>`<div class="ecard" onclick="openEntry(${e.id})">
+        <div class="etop"><span class="tag tc">${esc(e.category)}</span>${e.mood?`<span class="tag tm">${esc(e.mood)}</span>`:''}<span class="td">${e.temporal?.day_of_week?e.temporal.day_of_week.slice(0,3)+', ':''} ${esc(e.date)}${e.temporal?.time_of_day?' · '+e.temporal.time_of_day:''}</span></div>
+        <div class="ebody">${esc((e.content||'').slice(0,200))}${(e.content||'').length>200?'…':''}</div>
+      </div>`).join('')}
+    </div>`).join('');
+}
 
 // ── MODAL ─────────────────────────────────────────────────────────────────
-function openEntry(id){const e=entries.find(x=>x.id===id);if(!e)return;activeId=id;editing=false;$('mtitle').textContent=e.title||e.date||'Entry';$('mmeta').innerHTML=`<span class="tag tc">${esc(e.category)}</span>${e.mood?`<span class="tag tm">${esc(e.mood)}</span>`:''}<span class="td">${e.temporal?.day_of_week?e.temporal.day_of_week+', ':''} ${esc(e.date)}${e.temporal?.time_of_day?' · '+e.temporal.time_of_day:''}</span>`;$('mirror-insight').style.display='none';$('mbody').textContent=e.content||'';$('mbody').style.display='block';$('medit').value=e.content||'';$('medit').style.display='none';$('etoggle').textContent='✏️ Edit';$('esave').style.display='none';$('emodal').style.display='flex';document.body.style.overflow='hidden';}
+function openEntry(id){
+  const e=entries.find(x=>x.id===id);if(!e)return;
+  activeId=id;editing=false;
+  $('mtitle').textContent=e.title||e.date||'Entry';
+  $('mmeta').innerHTML=`<span class="tag tc">${esc(e.category)}</span>${e.mood?`<span class="tag tm">${esc(e.mood)}</span>`:''}<span class="td">${e.temporal?.day_of_week?e.temporal.day_of_week+', ':''} ${esc(e.date)}${e.temporal?.time_of_day?' · '+e.temporal.time_of_day:''}</span>`;
+  $('mirror-insight').style.display='none';
+  $('mbody').textContent=e.content||'';$('mbody').style.display='block';
+  $('medit').value=e.content||'';$('medit').style.display='none';
+  $('etoggle').textContent='✏️ Edit';$('esave').style.display='none';
+  $('emodal').style.display='flex';document.body.style.overflow='hidden';
+}
 function closeModal(){$('emodal').style.display='none';document.body.style.overflow='';activeId=null;editing=false;}
 function toggleEdit(){editing=!editing;$('mbody').style.display=editing?'none':'block';$('medit').style.display=editing?'block':'none';$('etoggle').textContent=editing?'✕ Cancel':'✏️ Edit';$('esave').style.display=editing?'inline-flex':'none';if(editing)$('medit').focus();}
-const saveEdit=guard(async()=>{const e=entries.find(x=>x.id===activeId);if(!e)return;const t=$('medit').value.trim();if(!t){toast('Entry cannot be empty');return;}e.content=t;e.title=t.slice(0,60).replace(/\n/g,' ');try{await sbReq(`/rest/v1/entries?id=eq.${e.id}&user_email=eq.${encodeURIComponent(userEmail)}`,'PATCH',{content:t,title:e.title});}catch(err){console.warn(err);}renderEntries();renderHome();$('mbody').textContent=t;toggleEdit();toast('✓ Updated');});
+const saveEdit=guard(async()=>{
+  const e=entries.find(x=>x.id===activeId);if(!e)return;
+  const t=$('medit').value.trim();if(!t){toast('Entry cannot be empty');return;}
+  e.content=t;e.title=t.slice(0,60).replace(/\n/g,' ');
+  try{await sbReq(`/rest/v1/entries?id=eq.${e.id}&user_email=eq.${encodeURIComponent(userEmail)}`,'PATCH',{content:t,title:e.title});}catch(err){console.warn(err);}
+  renderEntries();renderHome();$('mbody').textContent=t;toggleEdit();toast('✓ Updated');
+});
 function copyEntry(){const e=entries.find(x=>x.id===activeId);if(!e)return;const text=`[${e.date}][${e.category}]\n${e.content}`;if(navigator.clipboard?.writeText){navigator.clipboard.writeText(text).then(()=>toast('✓ Copied')).catch(()=>fallbackCopy(text));}else fallbackCopy(text);}
 function fallbackCopy(text){const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;opacity:0;top:0;left:0;width:1px;height:1px';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');toast('✓ Copied');}catch{toast('Long-press to copy manually');}document.body.removeChild(ta);}
-const delEntry=guard(async()=>{if(!confirm('Delete this entry permanently?'))return;try{await sbReq(`/rest/v1/entries?id=eq.${activeId}&user_email=eq.${encodeURIComponent(userEmail)}`,'DELETE');}catch(e){console.warn(e);}entries=entries.filter(x=>x.id!==activeId);renderEntries();renderHome();renderDash();closeModal();toast('Deleted');});
-async function sendToMirror(){const e=entries.find(x=>x.id===activeId);if(!e)return;const btn=document.querySelector('[onclick="sendToMirror()"]');if(btn)btn.disabled=true;const ins=$('mirror-insight');ins.style.display='block';ins.textContent='Reading this entry...';try{const pCtx=patterns.length?`\nNamed patterns: ${patterns.map(p=>p.name+': '+p.desc).join(' | ')}`:'';const r=await ai(`You are LifeThread — a living mirror. Analyze this single entry in context of the user's full life log. Be specific and honest. Note any active patterns by name. 2-4 sentences max. No softening.\n\nUser: ${uName||'unnamed'}. Values: ${uVals}.${pCtx}\n\nFull context:\n${ctx(20)}`,`This entry:\n"${e.content}"\n\nWhat do you see?`);ins.textContent=r;}catch(err){ins.textContent='Error: '+err.message;}if(btn)btn.disabled=false;}
+const delEntry=guard(async()=>{
+  if(!confirm('Delete this entry permanently?'))return;
+  try{await sbReq(`/rest/v1/entries?id=eq.${activeId}&user_email=eq.${encodeURIComponent(userEmail)}`,'DELETE');}catch(e){console.warn(e);}
+  entries=entries.filter(x=>x.id!==activeId);
+  renderEntries();renderHome();renderDash();closeModal();toast('Deleted');
+});
+
+async function sendToMirror(){
+  const e=entries.find(x=>x.id===activeId);if(!e)return;
+  const btn=document.querySelector('[onclick="sendToMirror()"]');if(btn)btn.disabled=true;
+  const ins=$('mirror-insight');ins.style.display='block';ins.textContent='Reading this entry...';
+  try{
+    const pCtx=patterns.length?`\nNamed patterns: ${patterns.map(p=>p.name+': '+p.desc).join(' | ')}`:'';
+    const r=await ai(`You are LifeThread — a living mirror. Analyze this single entry in context of the user's full life log. Be specific and honest. Note any active patterns by name. 2-4 sentences max. No softening.\n\nUser: ${uName||'unnamed'}. Values: ${uVals}.${pCtx}\n\nFull context:\n${ctx(20)}`,`This entry:\n"${e.content}"\n\nWhat do you see?`);
+    ins.textContent=r;
+  }catch(err){ins.textContent='Error: '+err.message;}
+  if(btn)btn.disabled=false;
+}
 
 // ── SEARCH ────────────────────────────────────────────────────────────────
-function doSearch(q){const out=$('search-results');$('ai-search-out').style.display='none';if(!q.trim()){out.innerHTML='';return;}const term=q.toLowerCase();const results=entries.filter(e=>(e.content||'').toLowerCase().includes(term)||(e.category||'').toLowerCase().includes(term));if(!results.length){out.innerHTML=`<div class="empty">No entries found for "${esc(q)}"</div>`;return;}out.innerHTML=results.slice(0,30).map(e=>{const snippet=(e.content||'').slice(0,200);const hi=snippet.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),m=>`<span class="search-highlight">${esc(m)}</span>`);return`<div class="ecard" onclick="openEntry(${e.id})"><div class="etop"><span class="tag tc">${esc(e.category)}</span><span class="td">${esc(e.date)}</span></div><div style="font-size:13px;color:#333;line-height:1.6">${hi}${snippet.length===200?'…':''}</div></div>`;}).join('');}
-async function aiSearch(){const q=$('search-in').value.trim();if(!q){toast('Enter a query first');return;}$('ai-search-out').style.display='block';$('ai-search-content').textContent='Searching...';try{const r=await ai(`You are LifeThread. The user is searching for: "${q}". Find and synthesize all relevant entries. Quote specific ones. Note patterns. Be direct.`,`Query: "${q}"\n\nLife log:\n${ctx(50)}\n\nFind everything relevant.`);$('ai-search-content').textContent=r;}catch(e){$('ai-search-content').textContent='Error: '+e.message;}}
+function doSearch(q){
+  const out=$('search-results');$('ai-search-out').style.display='none';
+  if(!q.trim()){out.innerHTML='';return;}
+  const term=q.toLowerCase();
+  const results=entries.filter(e=>(e.content||'').toLowerCase().includes(term)||(e.category||'').toLowerCase().includes(term));
+  if(!results.length){out.innerHTML=`<div class="empty">No entries found for "${esc(q)}"</div>`;return;}
+  out.innerHTML=results.slice(0,30).map(e=>{
+    const snippet=(e.content||'').slice(0,200);
+    const hi=snippet.replace(new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi'),m=>`<span class="search-highlight">${esc(m)}</span>`);
+    return`<div class="ecard" onclick="openEntry(${e.id})"><div class="etop"><span class="tag tc">${esc(e.category)}</span><span class="td">${esc(e.date)}</span></div><div style="font-size:13px;color:#333;line-height:1.6">${hi}${snippet.length===200?'…':''}</div></div>`;
+  }).join('');
+}
+async function aiSearch(){
+  const q=$('search-in').value.trim();if(!q){toast('Enter a query first');return;}
+  $('ai-search-out').style.display='block';$('ai-search-content').textContent='Searching...';
+  try{const r=await ai(`You are LifeThread. The user is searching for: "${q}". Find and synthesize all relevant entries. Quote specific ones. Note patterns. Be direct.`,`Query: "${q}"\n\nLife log:\n${ctx(50)}\n\nFind everything relevant.`);$('ai-search-content').textContent=r;}
+  catch(e){$('ai-search-content').textContent='Error: '+e.message;}
+}
 
 // ── PATTERNS ──────────────────────────────────────────────────────────────
 function renderPatterns(){const el=$('plist');if(!patterns.length){el.innerHTML='<div class="empty">No patterns named yet.</div>';return;}el.innerHTML=patterns.map((p,i)=>`<div class="pcard"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span style="font-size:14px;font-weight:600">${esc(p.name)}</span><span style="font-size:11px;color:#aaa;background:#f5f5f5;padding:2px 7px;border-radius:10px">×${p.count||0}</span></div><div style="font-size:13px;color:#555;line-height:1.6;margin-bottom:7px">${esc(p.desc)}</div>${p.last?`<div style="font-size:11px;color:#aaa;margin-bottom:7px">Last: ${esc(p.last)}</div>`:''}<div style="display:flex;gap:7px"><button class="btn bg" style="font-size:11px;padding:5px 9px" onclick="markPattern(${i})">Mark active</button><button class="btn bg" style="font-size:11px;padding:5px 9px;color:#e05a5a;border-color:#e05a5a" onclick="removePattern(${i})">Remove</button></div></div>`).join('');}
-async function addPattern(){const n=prompt('Pattern name:');if(!n?.trim())return;const d=prompt('How does it operate in your life?');if(!d?.trim())return;const p={name:n.trim(),desc:d.trim(),count:0,last:null};try{const r=await sbReq('/rest/v1/patterns','POST',{user_email:userEmail,name:p.name,desc:p.desc,count:0});if(r&&r[0])p.sb_id=r[0].id;}catch(e){console.warn(e);}patterns.push(p);renderPatterns();toast('Pattern added');}
-const markPattern=guard(async i=>{patterns[i].count=(patterns[i].count||0)+1;patterns[i].last=today();addE({category:'Mental & Emotional State',content:`Pattern active: ${patterns[i].name}\n${patterns[i].desc}`,source:'manual'});try{if(patterns[i].sb_id)await sbReq(`/rest/v1/patterns?id=eq.${patterns[i].sb_id}`,'PATCH',{count:patterns[i].count,last_seen:patterns[i].last});}catch{}renderPatterns();renderEntries();toast('Pattern logged');});
-async function removePattern(i){if(!confirm('Remove?'))return;try{if(patterns[i].sb_id)await sbReq(`/rest/v1/patterns?id=eq.${patterns[i].sb_id}`,'DELETE');}catch{}patterns.splice(i,1);renderPatterns();}
+
+async function addPattern(){
+  const n=prompt('Pattern name:');if(!n?.trim())return;
+  const d=prompt('How does it operate in your life?');if(!d?.trim())return;
+  const p={name:n.trim(),desc:d.trim(),count:0,last:null};
+  try{const r=await sbReq('/rest/v1/patterns','POST',{user_email:userEmail,name:p.name,desc:p.desc,count:0});if(r&&r[0])p.sb_id=r[0].id;}catch(e){console.warn(e);}
+  patterns.push(p);renderPatterns();toast('Pattern added');
+}
+const markPattern=guard(async i=>{
+  patterns[i].count=(patterns[i].count||0)+1;patterns[i].last=today();
+  addE({category:'Mental & Emotional State',content:`Pattern active: ${patterns[i].name}\n${patterns[i].desc}`,source:'manual'});
+  try{if(patterns[i].sb_id)await sbReq(`/rest/v1/patterns?id=eq.${patterns[i].sb_id}`,'PATCH',{count:patterns[i].count,last_seen:patterns[i].last});}catch{}
+  renderPatterns();renderEntries();toast('Pattern logged');
+});
+async function removePattern(i){
+  if(!confirm('Remove?'))return;
+  try{if(patterns[i].sb_id)await sbReq(`/rest/v1/patterns?id=eq.${patterns[i].sb_id}`,'DELETE');}catch{}
+  patterns.splice(i,1);renderPatterns();
+}
 async function autoDetect(){if(!entries.length){toast('Add some entries first');return;}const btn=$('adbtn');btn.disabled=true;btn.textContent='Analyzing...';$('apout').textContent='';try{const r=await ai('Identify 4-7 recurring behavioral or emotional patterns from this life log.\n\nFor each:\nNAME: [2-5 word name]\nMECHANISM: [one sentence how it operates]\nEVIDENCE: [cite specific entries]\n\nBe precise and honest.',`Log:\n${ctx(50)}\n\nIdentify patterns.`);$('apout').textContent=r;}catch(e){$('apout').textContent='Error: '+e.message;}btn.disabled=false;btn.textContent='🧠 Auto-detect from entries';}
 
 // ── DASHBOARD ─────────────────────────────────────────────────────────────
-function renderDash(){$('dt').textContent=entries.length;$('dstr').textContent=calcStreak();const c={};CATS.forEach(x=>c[x.v]=0);entries.forEach(e=>{if(c[e.category]!==undefined)c[e.category]++;else c['Journal']++;});const mx=Math.max(...Object.values(c),1);$('cbars').innerHTML=CATS.map(x=>`<div class="brow"><div class="blabel">${x.e} ${x.l}</div><div class="btrack"><div class="bfill" style="width:${(c[x.v]/mx)*100}%"></div></div><div class="bcnt">${c[x.v]}</div></div>`).join('');const me=entries.filter(e=>e.mood).slice(0,50).reverse();$('mline').innerHTML=me.length?me.map(e=>`<div class="mdot" style="background:${MMAP[e.mood]||'#ddd'}" title="${esc(e.date+': '+e.mood)}">${(e.mood||'').split(' ')[0]}</div>`).join('')+'<span style="font-size:11px;color:#aaa;margin-left:6px">← recent</span>':'<span style="color:#ccc;font-size:12px">No mood data yet</span>';renderGoals();}
+function renderDash(){
+  $('dt').textContent=entries.length;$('dstr').textContent=calcStreak();
+  const c={};CATS.forEach(x=>c[x.v]=0);entries.forEach(e=>{if(c[e.category]!==undefined)c[e.category]++;else c['Journal']++;});
+  const mx=Math.max(...Object.values(c),1);
+  $('cbars').innerHTML=CATS.map(x=>`<div class="brow"><div class="blabel">${x.e} ${x.l}</div><div class="btrack"><div class="bfill" style="width:${(c[x.v]/mx)*100}%"></div></div><div class="bcnt">${c[x.v]}</div></div>`).join('');
+  const me=entries.filter(e=>e.mood).slice(0,50).reverse();
+  $('mline').innerHTML=me.length?me.map(e=>`<div class="mdot" style="background:${MMAP[e.mood]||'#ddd'}" title="${esc(e.date+': '+e.mood)}">${(e.mood||'').split(' ')[0]}</div>`).join('')+'<span style="font-size:11px;color:#aaa;margin-left:6px">← recent</span>':'<span style="color:#ccc;font-size:12px">No mood data yet</span>';
+  renderGoals();
+}
 function renderGoals(){const el=$('glist');if(!goals.length){el.innerHTML='<div style="color:#ccc;font-size:13px;padding:6px 0">No goals yet.</div>';return;}el.innerHTML=goals.map((g,i)=>`<div class="gi"><div class="gt" title="${esc(g.text)}">${esc(g.text)}</div><div class="gpt"><div class="gpf" style="width:${g.pct||0}%"></div></div><span style="font-size:12px;color:#6c8ebf;font-weight:600;width:32px;flex-shrink:0;text-align:right">${g.pct||0}%</span><input type="range" min="0" max="100" value="${g.pct||0}" style="width:50px;flex-shrink:0" oninput="goals[${i}].pct=+this.value;updateGoal(${i})"/><button onclick="removeGoal(${i})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:18px;line-height:1;flex-shrink:0">×</button></div>`).join('');}
 async function addGoal(){const t=prompt('Enter a goal:');if(!t?.trim())return;const g={text:t.trim(),pct:0};try{const r=await sbReq('/rest/v1/goals','POST',{user_email:userEmail,text:g.text,pct:0});if(r&&r[0])g.sb_id=r[0].id;}catch{}goals.push(g);renderGoals();}
 async function updateGoal(i){renderGoals();try{if(goals[i].sb_id)await sbReq(`/rest/v1/goals?id=eq.${goals[i].sb_id}`,'PATCH',{pct:goals[i].pct});}catch{}}
@@ -1254,10 +1253,37 @@ const nextCI=guard(()=>{const a=$('cia').value.trim();if(!a){toast('Write someth
 function resetCI(){$('cidone').style.display='none';$('cistart').style.display='block';}
 
 // ── ARCHIVE ───────────────────────────────────────────────────────────────
-async function runArchive(){const btn=$('abtn');btn.disabled=true;btn.textContent='Running...';const el=$('aout');el.style.display='block';el.textContent='Reading your history...';const focus=$('afocus').value,range=$('arange').value;let filt=entries;if(range!=='all'){const cut=new Date(Date.now()-parseInt(range)*86400000).toISOString().split('T')[0];filt=entries.filter(e=>e.date>=cut);}if(!filt.length){el.textContent='No entries in this range.';btn.disabled=false;btn.textContent='Run Synthesis';return;}const pctx=patterns.length?`\nNamed patterns: ${patterns.map(p=>p.name+': '+p.desc).join('; ')}`:'';const log=filt.slice(0,80).map(e=>{const t=e.temporal;const tc=t?`[${t.day_of_week||''} ${e.date}${t.time_of_day?' '+t.time_of_day:''}]`:`[${e.date}]`;return`${tc}[${e.category}]${e.mood?' ['+e.mood+']':''}\n${(e.content||'').slice(0,600)}`;}).join('\n\n---\n\n');try{const r=await ai(`You are LifeThread — a forensic narrative archivist.\nUser: ${uName||'unnamed'}. Values: ${uVals}. Focus: ${uFoc}.${pctx}\n\nTASK: ${AFOCUS[focus]||AFOCUS['']}\n\nRULES: Second person. Name patterns precisely. Cite entries. Note recurrence. No softening.`,`Log (${filt.length} entries):\n\n${log}\n\nRun synthesis.`);el.textContent=r;}catch(e){el.textContent='Error — '+e.message;}btn.disabled=false;btn.textContent='Run Synthesis';}
+async function runArchive(){
+  const btn=$('abtn');btn.disabled=true;btn.textContent='Running...';
+  const el=$('aout');el.style.display='block';el.textContent='Reading your history...';
+  const focus=$('afocus').value,range=$('arange').value;
+  let filt=entries;
+  if(range!=='all'){const cut=new Date(Date.now()-parseInt(range)*86400000).toISOString().split('T')[0];filt=entries.filter(e=>e.date>=cut);}
+  if(!filt.length){el.textContent='No entries in this range.';btn.disabled=false;btn.textContent='Run Synthesis';return;}
+  const pctx=patterns.length?`\nNamed patterns: ${patterns.map(p=>p.name+': '+p.desc).join('; ')}`:'';
+  const log=filt.slice(0,80).map(e=>{const t=e.temporal;const tc=t?`[${t.day_of_week||''} ${e.date}${t.time_of_day?' '+t.time_of_day:''}]`:`[${e.date}]`;return`${tc}[${e.category}]${e.mood?' ['+e.mood+']':''}\n${(e.content||'').slice(0,600)}`;}).join('\n\n---\n\n');
+  try{const r=await ai(`You are LifeThread — a forensic narrative archivist.\nUser: ${uName||'unnamed'}. Values: ${uVals}. Focus: ${uFoc}.${pctx}\n\nTASK: ${AFOCUS[focus]||AFOCUS['']}\n\nRULES: Second person. Name patterns precisely. Cite entries. Note recurrence. No softening.`,`Log (${filt.length} entries):\n\n${log}\n\nRun synthesis.`);el.textContent=r;}
+  catch(e){el.textContent='Error — '+e.message;}
+  btn.disabled=false;btn.textContent='Run Synthesis';
+}
 
 // ── AI CORE ───────────────────────────────────────────────────────────────
-async function ai(sys,msg,retries=2){let lastErr;for(let i=0;i<=retries;i++){try{const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:[{role:'user',content:msg}]})});if(r.status===401)throw new Error('API key invalid. Check Settings.');if(r.status===429)throw new Error('Rate limited. Wait 30s.');if(r.status>=500)throw new Error('Service unavailable. Try again.');if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error?.message||`Error ${r.status}`);}const d=await r.json();const text=d.content?.[0]?.text||'';if(!text)throw new Error('Empty response.');return text;}catch(e){lastErr=e;if(e.message.includes('invalid')||e.message.includes('Rate'))throw e;if(i<retries)await sleep(1200*(i+1));}}throw lastErr;}
+async function ai(sys,msg,retries=2){
+  let lastErr;
+  for(let i=0;i<=retries;i++){
+    try{
+      const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:[{role:'user',content:msg}]})});
+      if(r.status===401)throw new Error('API key invalid. Check Settings.');
+      if(r.status===429)throw new Error('Rate limited. Wait 30s.');
+      if(r.status>=500)throw new Error('Service unavailable. Try again.');
+      if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.error?.message||`Error ${r.status}`);}
+      const d=await r.json();const text=d.content?.[0]?.text||'';
+      if(!text)throw new Error('Empty response.');
+      return text;
+    }catch(e){lastErr=e;if(e.message.includes('invalid')||e.message.includes('Rate'))throw e;if(i<retries)await sleep(1200*(i+1));}
+  }
+  throw lastErr;
+}
 function safeJSON(text){let t=text.replace(/^\uFEFF/,'').trim();t=t.replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'').trim();const a=t.indexOf('['),o=t.indexOf('{');let s=-1;if(a!==-1&&(o===-1||a<o))s=a;else if(o!==-1)s=o;if(s>0)t=t.slice(s);const ae=t.lastIndexOf(']'),oe=t.lastIndexOf('}');const e=Math.max(ae,oe);if(e!==-1)t=t.slice(0,e+1);return JSON.parse(t);}
 
 // ── CHAT ──────────────────────────────────────────────────────────────────
@@ -1270,47 +1296,713 @@ async function genLetter(){addTyping();try{const r=await ai(getSys('letter')+`\n
 function addMsg(role,text){const c=$('cmsgs');const d=document.createElement('div');d.className=`msg ${role}`;const safe=esc(text).replace(/\n/g,'<br>');d.innerHTML=role==='sys'?`<div class="bub">${safe}</div>`:`<div class="av">${role==='ai'?'🔮':'👤'}</div><div class="bub">${safe}</div>`;c.appendChild(d);requestAnimationFrame(()=>c.scrollTop=c.scrollHeight);return d;}
 function addTyping(){const c=$('cmsgs');const d=document.createElement('div');d.className='msg ai';d.id='typing';d.innerHTML=`<div class="av">🔮</div><div class="bub"><div class="tdots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
 function removeTyping(){const t=$('typing');if(t)t.remove();}
-async function sendChat(){const inp=$('cin');const msg=inp.value.trim();if(!msg)return;inp.value='';inp.style.height='auto';addMsg('user',msg);chatHist.push({role:'user',content:msg});$('csend').disabled=true;addTyping();const sys=getSys(chatMode)+`\n\nLIFE LOG:\n${ctx(40)}`;try{const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:chatHist.slice(-14)})});removeTyping();if(r.status===401){addMsg('ai','⚙️ API key invalid. Check Settings.');$('csend').disabled=false;return;}if(r.status===429){addMsg('ai','⏱ Rate limited. Wait 30s.');$('csend').disabled=false;return;}if(!r.ok){const d=await r.json().catch(()=>({}));addMsg('ai',`Error: ${d.error?.message||r.status}`);$('csend').disabled=false;return;}const d=await r.json();const rep=d.content?.[0]?.text;if(!rep){addMsg('ai','Empty response.');$('csend').disabled=false;return;}addMsg('ai',rep);chatHist.push({role:'assistant',content:rep});}catch(e){removeTyping();addMsg('ai',navigator.onLine?'Connection error.':'You appear to be offline.');}$('csend').disabled=false;}
+async function sendChat(){
+  const inp=$('cin');const msg=inp.value.trim();if(!msg)return;
+  inp.value='';inp.style.height='auto';
+  addMsg('user',msg);chatHist.push({role:'user',content:msg});
+  $('csend').disabled=true;addTyping();
+  const sys=getSys(chatMode)+`\n\nLIFE LOG:\n${ctx(40)}`;
+  try{
+    const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:chatHist.slice(-14)})});
+    removeTyping();
+    if(r.status===401){addMsg('ai','⚙️ API key invalid. Check Settings.');$('csend').disabled=false;return;}
+    if(r.status===429){addMsg('ai','⏱ Rate limited. Wait 30s.');$('csend').disabled=false;return;}
+    if(!r.ok){const d=await r.json().catch(()=>({}));addMsg('ai',`Error: ${d.error?.message||r.status}`);$('csend').disabled=false;return;}
+    const d=await r.json();const rep=d.content?.[0]?.text;
+    if(!rep){addMsg('ai','Empty response.');$('csend').disabled=false;return;}
+    addMsg('ai',rep);chatHist.push({role:'assistant',content:rep});
+  }catch(e){removeTyping();addMsg('ai',navigator.onLine?'Connection error.':'You appear to be offline.');}
+  $('csend').disabled=false;
+}
 
 // ── SETTINGS ──────────────────────────────────────────────────────────────
 function toggleVisible(id,btn){const el=$(id);if(el.type==='password'){el.type='text';btn.textContent='🙈';}else{el.type='password';btn.textContent='👁';}}
 function copyField(id){const el=$(id);const val=el.value.trim();if(!val){toast('Nothing to copy');return;}if(navigator.clipboard?.writeText){navigator.clipboard.writeText(val).then(()=>toast('✓ Copied')).catch(()=>fallbackCopy(val));}else fallbackCopy(val);}
-async function saveApiKey(){const k=$('akey').value.trim();if(k&&!k.startsWith('sk-ant-')){$('akst').innerHTML='<span class="err">⚠️ Should start with sk-ant-</span>';return;}apiKey=k;try{await sbReq(`/rest/v1/user_credentials?email=eq.${encodeURIComponent(userEmail)}`,'PATCH',{anthropic_key:k});$('akst').innerHTML='<span class="ok">✓ Saved to your account — works on all devices.</span>';}catch(e){$('akst').innerHTML=`<span class="err">⚠️ ${e.message}</span>`;}setTimeout(()=>$('akst').innerHTML='',5000);}
-async function testApiKey(){$('akst').textContent='Testing...';try{await ai('Reply with exactly: OK','ping');$('akst').innerHTML='<span class="ok">✓ Connected!</span>';}catch(e){$('akst').innerHTML=`<span class="err">✗ ${e.message}</span>`;}}
-async function saveNotion(){nKey=$('nkey').value.trim();nDb=$('ndb').value.trim();try{await sbReq(`/rest/v1/user_credentials?email=eq.${encodeURIComponent(userEmail)}`,'PATCH',{notion_key:nKey,notion_db:nDb});$('nst').innerHTML='<span class="ok">✓ Saved to your account.</span>';}catch(e){$('nst').innerHTML=`<span class="err">⚠️ ${e.message}</span>`;}}
-async function saveProfile(){uName=$('uname').value.trim();uVals=$('uvals').value.trim();uFoc=$('ufoc').value.trim();uWant=$('uwant').value.trim();const profile={name:uName,values:uVals,focus:uFoc,want:uWant};try{await sbReq(`/rest/v1/user_credentials?email=eq.${encodeURIComponent(userEmail)}`,'PATCH',{profile});$('pst').innerHTML='<span class="ok">✓ Saved to your account.</span>';renderHome();}catch(e){$('pst').innerHTML=`<span class="err">⚠️ ${e.message}</span>`;}setTimeout(()=>$('pst').innerHTML='',3000);}
+
+async function saveApiKey(){
+  const k=$('akey').value.trim();
+  if(k&&!k.startsWith('sk-ant-')){$('akst').innerHTML='<span class="err">⚠️ Should start with sk-ant-</span>';return;}
+  apiKey=k;
+  try{await sbReq(`/rest/v1/user_credentials?email=eq.${encodeURIComponent(userEmail)}`,'PATCH',{anthropic_key:k});$('akst').innerHTML='<span class="ok">✓ Saved to your account — works on all devices.</span>';}
+  catch(e){$('akst').innerHTML=`<span class="err">⚠️ ${e.message}</span>`;}
+  setTimeout(()=>$('akst').innerHTML='',5000);
+}
+async function testApiKey(){
+  $('akst').textContent='Testing...';
+  try{await ai('Reply with exactly: OK','ping');$('akst').innerHTML='<span class="ok">✓ Connected!</span>';}
+  catch(e){$('akst').innerHTML=`<span class="err">✗ ${e.message}</span>`;}
+}
+async function saveNotion(){
+  nKey=$('nkey').value.trim();nDb=$('ndb').value.trim();
+  try{await sbReq(`/rest/v1/user_credentials?email=eq.${encodeURIComponent(userEmail)}`,'PATCH',{notion_key:nKey,notion_db:nDb});$('nst').innerHTML='<span class="ok">✓ Saved to your account.</span>';}
+  catch(e){$('nst').innerHTML=`<span class="err">⚠️ ${e.message}</span>`;}
+}
+async function saveProfile(){
+  uName=$('uname').value.trim();uVals=$('uvals').value.trim();uFoc=$('ufoc').value.trim();uWant=$('uwant').value.trim();
+  const profile={name:uName,values:uVals,focus:uFoc,want:uWant};
+  try{await sbReq(`/rest/v1/user_credentials?email=eq.${encodeURIComponent(userEmail)}`,'PATCH',{profile});$('pst').innerHTML='<span class="ok">✓ Saved to your account.</span>';renderHome();}
+  catch(e){$('pst').innerHTML=`<span class="err">⚠️ ${e.message}</span>`;}
+  setTimeout(()=>$('pst').innerHTML='',3000);
+}
 
 // ── TRIAGE / IMPORT ───────────────────────────────────────────────────────
 function handleDrop(e){const files=e.dataTransfer.files;if(files.length)handleFiles(files);}
-function handleFiles(files){triageFiles={text:[],docx:[],json:[],image:[],audio:[],zip:[],other:[]};for(const f of files){const ext=getExt(f.name);if(FILE_TYPES.zip.includes(ext))triageFiles.zip.push(f);else if(FILE_TYPES.json.includes(ext))triageFiles.json.push(f);else if(FILE_TYPES.docx.includes(ext))triageFiles.docx.push(f);else if(FILE_TYPES.text.includes(ext))triageFiles.text.push(f);else if(FILE_TYPES.image.includes(ext))triageFiles.image.push(f);else if(FILE_TYPES.audio.includes(ext))triageFiles.audio.push(f);else triageFiles.other.push(f);}if(triageFiles.docx.length){triageFiles.text=[...triageFiles.text,...triageFiles.docx];}renderTriage();}
-function renderTriage(){$('triage-out').style.display='block';const icons={text:'📄',json:'🔧',image:'🖼',audio:'🎙',zip:'🗜',other:'📎'};['text','json','image','audio','zip','other'].forEach(g=>{const el=$(`triage-${g}`),list=$(`triage-${g}-list`),count=$(`triage-${g}-count`);if(!el||!triageFiles[g]?.length){if(el)el.style.display='none';return;}el.style.display='block';count.textContent=triageFiles[g].length;list.innerHTML=triageFiles[g].map(f=>`<div class="tfile"><span>${icons[g]}</span><span class="tfile-name">${esc(f.name)}</span><span class="tfile-size">${fmtSize(f.size)}</span></div>`).join('');});const total=Object.values(triageFiles).flat().length;toast(`Found ${total} file${total>1?'s':''} — select a group to import`);}
+
+function handleFiles(files){
+  // Reset triage buckets
+  triageFiles={text:[],docx:[],json:[],image:[],audio:[],zip:[],other:[]};
+  for(const f of files){
+    const ext=getExt(f.name);
+    if(FILE_TYPES.zip.includes(ext))          triageFiles.zip.push(f);
+    else if(FILE_TYPES.json.includes(ext))    triageFiles.json.push(f);
+    else if(FILE_TYPES.docx.includes(ext))    triageFiles.docx.push(f);  // Word docs go to docx bucket
+    else if(FILE_TYPES.text.includes(ext))    triageFiles.text.push(f);
+    else if(FILE_TYPES.image.includes(ext))   triageFiles.image.push(f);
+    else if(FILE_TYPES.audio.includes(ext))   triageFiles.audio.push(f);
+    else                                       triageFiles.other.push(f);
+  }
+  // Merge docx into text for display (they share the text triage group)
+  if(triageFiles.docx.length){
+    triageFiles.text=[...triageFiles.text,...triageFiles.docx];
+  }
+  renderTriage();
+}
+
+function renderTriage(){
+  $('triage-out').style.display='block';
+  const icons={text:'📄',json:'🔧',image:'🖼',audio:'🎙',zip:'🗜',other:'📎'};
+  ['text','json','image','audio','zip','other'].forEach(g=>{
+    const el=$(`triage-${g}`),list=$(`triage-${g}-list`),count=$(`triage-${g}-count`);
+    if(!el||!triageFiles[g]?.length){if(el)el.style.display='none';return;}
+    el.style.display='block';count.textContent=triageFiles[g].length;
+    list.innerHTML=triageFiles[g].map(f=>`<div class="tfile"><span>${icons[g]}</span><span class="tfile-name">${esc(f.name)}</span><span class="tfile-size">${fmtSize(f.size)}</span></div>`).join('');
+  });
+  const total=Object.values(triageFiles).flat().length;
+  toast(`Found ${total} file${total>1?'s':''} — select a group to import`);
+}
+
 function toggleTriage(g){$(`triage-${g}-list`).classList.toggle('open');}
+
 function chunkText(text,max=7000){if(text.length<=max)return[text];const chunks=[];let rem=text;while(rem.length>0){if(rem.length<=max){chunks.push(rem);break;}let cut=max;const p=rem.lastIndexOf('\n\n',cut);if(p>max*0.4)cut=p;else{const n=rem.lastIndexOf('\n',cut);if(n>max*0.4)cut=n;else{const s=rem.lastIndexOf('. ',cut);if(s>max*0.4)cut=s+1;}}const chunk=rem.slice(0,cut).trim();if(chunk.length>30)chunks.push(chunk);rem=rem.slice(cut).trim();}return chunks.filter(c=>c.length>30);}
 function fileToBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});}
 function fileToText(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsText(file,'UTF-8');});}
 function fileToArrayBuffer(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsArrayBuffer(file);});}
-async function extractDocx(file){const buf=await fileToArrayBuffer(file);const result=await mammoth.extractRawText({arrayBuffer:buf});return result.value||'';}
-async function extractZip(file){const buf=await fileToArrayBuffer(file);const zip=await JSZip.loadAsync(buf);const extracted=[];const processable=[...FILE_TYPES.text,...FILE_TYPES.docx,...FILE_TYPES.json];for(const[name,entry]of Object.entries(zip.files)){if(entry.dir)continue;const ext=getExt(name);if(!processable.includes(ext))continue;if(name.startsWith('__MACOSX')||name.startsWith('.'))continue;try{let text='';if(FILE_TYPES.docx.includes(ext)){const ab=await entry.async('arraybuffer');const result=await mammoth.extractRawText({arrayBuffer:ab});text=result.value||'';}else{text=await entry.async('text');}if(text.trim().length>30)extracted.push({name,ext,text});}catch(e){console.warn('ZIP entry error:',name,e);}}return extracted;}
+
+// ── Extract text from a .docx file using mammoth.js ──────────────────────
+async function extractDocx(file){
+  const buf=await fileToArrayBuffer(file);
+  const result=await mammoth.extractRawText({arrayBuffer:buf});
+  return result.value||'';
+}
+
+// ── Unzip and collect processable files from a .zip ──────────────────────
+async function extractZip(file){
+  const buf=await fileToArrayBuffer(file);
+  const zip=await JSZip.loadAsync(buf);
+  const extracted=[];
+  const processable=[...FILE_TYPES.text,...FILE_TYPES.docx,...FILE_TYPES.json];
+  for(const [name,entry] of Object.entries(zip.files)){
+    if(entry.dir)continue;
+    const ext=getExt(name);
+    if(!processable.includes(ext))continue;
+    // Skip macOS metadata files
+    if(name.startsWith('__MACOSX')||name.startsWith('.'))continue;
+    try{
+      let text='';
+      if(FILE_TYPES.docx.includes(ext)){
+        const ab=await entry.async('arraybuffer');
+        const result=await mammoth.extractRawText({arrayBuffer:ab});
+        text=result.value||'';
+      } else {
+        text=await entry.async('text');
+      }
+      if(text.trim().length>30){
+        extracted.push({name,ext,text});
+      }
+    }catch(e){console.warn('ZIP entry error:',name,e);}
+  }
+  return extracted;
+}
 
 async function processGroup(type){
   if(!triageFiles[type]?.length)return;
   const dc=$('icat').value,st=$('ist');
+  showImportWarning(true); // ⚠️ warn user not to close tab
   $('iprog').style.display='block';
   const fill=$('ipfill'),label=$('iplabel');
-  let total=0;const files=triageFiles[type];
+  let total=0;
+  const files=triageFiles[type];
   const ISYS=`Parse this text into individual journal/life log entries. Return ONLY a JSON array: [{"date":"YYYY-MM-DD","time_of_day":"Morning|Afternoon|Evening|Night|null","category":"Journal|Goals|Relationships|Health|Finances|Spirituality|Creative Work|Learning & Growth|Family|Dreams & Visions|Mental & Emotional State","content":"full text","title":"5-8 words","date_confidence":"exact|inferred|unknown"}]. Default: ${dc}. Today: ${today()}. JSON only.`;
-  if(type==='image'){for(let i=0;i<files.length;i++){fill.style.width=Math.round((i/files.length)*100)+'%';label.textContent=`Reading image ${i+1} of ${files.length}...`;try{const b64=await fileToBase64(files[i]);const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:files[i].type||'image/jpeg',data:b64}},{type:'text',text:'Extract all visible text from this image. Return only the extracted text, nothing else.'}]}]})});const d=await r.json();const text=d.content?.[0]?.text||'';if(text.trim().length>20){addE({category:dc,content:text.trim(),title:files[i].name.slice(0,60),source:'import-image'});total++;}}catch(e){console.warn(e);}await sleep(500);}
-  }else if(type==='json'){for(let i=0;i<files.length;i++){fill.style.width=Math.round((i/files.length)*100)+'%';label.textContent=`Parsing JSON ${i+1} of ${files.length}...`;try{const text=await fileToText(files[i]);const data=JSON.parse(text);let extracted='';if(data.mapping){const msgs=Object.values(data.mapping).filter(m=>m.message?.content?.parts&&m.message.author.role!=='system').sort((a,b)=>(a.message.create_time||0)-(b.message.create_time||0));extracted=msgs.map(m=>{const role=m.message.author.role==='user'?'Me':'GPT';const content=m.message.content.parts.filter(p=>typeof p==='string').join(' ');return content.trim()?`${role}: ${content.trim()}`:''}).filter(Boolean).join('\n\n');}else extracted=text.slice(0,5000);if(extracted.trim().length>50){const chunks=chunkText(extracted,7000);for(const chunk of chunks){try{const raw_r=await ai(`Parse this ChatGPT conversation. Extract only meaningful personal content — thoughts, feelings, goals, decisions. Skip generic AI filler. ${ISYS}`,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-json',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}}}catch(e){console.warn(e);}}
-  }else if(type==='zip'){for(let i=0;i<files.length;i++){fill.style.width=Math.round((i/files.length)*100)+'%';label.textContent=`Extracting ZIP ${i+1} of ${files.length}...`;try{const extracted=await extractZip(files[i]);if(!extracted.length){st.innerHTML=`<span class="err">⚠️ No readable text files found inside ${esc(files[i].name)}.</span>`;continue;}toast(`Found ${extracted.length} files inside ZIP — processing...`);for(let j=0;j<extracted.length;j++){const{name,ext,text}=extracted[j];fill.style.width=Math.round(((i+j/extracted.length)/files.length)*100)+'%';label.textContent=`Processing: ${name} (${j+1}/${extracted.length})`;if(ext==='json'){try{const data=JSON.parse(text);let conv='';if(data.mapping){const msgs=Object.values(data.mapping).filter(m=>m.message?.content?.parts&&m.message.author.role!=='system').sort((a,b)=>(a.message.create_time||0)-(b.message.create_time||0));conv=msgs.map(m=>{const role=m.message.author.role==='user'?'Me':'GPT';const content=m.message.content.parts.filter(p=>typeof p==='string').join(' ');return content.trim()?`${role}: ${content.trim()}`:''}).filter(Boolean).join('\n\n');}else conv=text.slice(0,5000);if(conv.trim().length>50){const chunks=chunkText(conv,7000);for(const chunk of chunks){try{const raw_r=await ai(`Parse this ChatGPT conversation. Extract only meaningful personal content. ${ISYS}`,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-zip-json',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}}}catch{}}else{const chunks=chunkText(text,7000);for(const chunk of chunks){try{const raw_r=await ai(ISYS,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-zip',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}}}}catch(e){console.warn('ZIP error:',e);st.innerHTML=`<span class="err">⚠️ Error reading ZIP: ${esc(e.message)}</span>`;}}}
-  else{for(let i=0;i<files.length;i++){fill.style.width=Math.round((i/files.length)*100)+'%';label.textContent=`Processing ${i+1} of ${files.length}: ${files[i].name}`;const ext=getExt(files[i].name);let text='';try{if(FILE_TYPES.docx.includes(ext)){label.textContent=`Extracting Word doc: ${files[i].name}...`;text=await extractDocx(files[i]);if(!text.trim()){st.innerHTML=`<span class="err">⚠️ "${esc(files[i].name)}" appears empty or unreadable.</span>`;continue;}}else{text=await fileToText(files[i]);}if(!text.trim())continue;const chunks=chunkText(text,7000);for(const chunk of chunks){try{const raw_r=await ai(ISYS,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}}catch(e){console.warn(e);st.innerHTML=`<span class="err">⚠️ Error reading "${esc(files[i].name)}": ${esc(e.message)}</span>`;}}}
-  fill.style.width='100%';$('iprog').style.display='none';entries.sort((a,b)=>b.date.localeCompare(a.date));renderEntries();renderDash();renderHome();
-  st.innerHTML=`<span class="ok">✓ Imported ${total} entries from ${files.length} ${type} file${files.length>1?'s':''}.</span>`;toast(`✓ ${total} entries imported`);
+
+  if(type==='image'){
+    // ── Image processing ─────────────────────────────────────────────────
+    for(let i=0;i<files.length;i++){
+      fill.style.width=Math.round((i/files.length)*100)+'%';
+      label.textContent=`Reading image ${i+1} of ${files.length}...`;
+      try{
+        const b64=await fileToBase64(files[i]);
+        const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:files[i].type||'image/jpeg',data:b64}},{type:'text',text:'Extract all visible text from this image. Return only the extracted text, nothing else.'}]}]})});
+        const d=await r.json();const text=d.content?.[0]?.text||'';
+        if(text.trim().length>20){addE({category:dc,content:text.trim(),title:files[i].name.slice(0,60),source:'import-image'});total++;}
+      }catch(e){console.warn(e);}
+      await sleep(500);
+    }
+
+  } else if(type==='json'){
+    // ── JSON / ChatGPT export processing ─────────────────────────────────
+    for(let i=0;i<files.length;i++){
+      fill.style.width=Math.round((i/files.length)*100)+'%';
+      label.textContent=`Parsing JSON ${i+1} of ${files.length}...`;
+      try{
+        const text=await fileToText(files[i]);
+        const data=JSON.parse(text);
+        let extracted='';
+        if(data.mapping){
+          // ChatGPT conversation export format
+          const msgs=Object.values(data.mapping)
+            .filter(m=>m.message?.content?.parts&&m.message.author.role!=='system')
+            .sort((a,b)=>(a.message.create_time||0)-(b.message.create_time||0));
+          extracted=msgs.map(m=>{
+            const role=m.message.author.role==='user'?'Me':'GPT';
+            const content=m.message.content.parts.filter(p=>typeof p==='string').join(' ');
+            return content.trim()?`${role}: ${content.trim()}`:'';
+          }).filter(Boolean).join('\n\n');
+        } else {
+          extracted=text.slice(0,5000);
+        }
+        if(extracted.trim().length>50){
+          const chunks=chunkText(extracted,7000);
+          for(const chunk of chunks){
+            try{
+              const raw_r=await ai(`Parse this ChatGPT conversation. Extract only meaningful personal content — thoughts, feelings, goals, decisions. Skip generic AI filler. ${ISYS}`,chunk);
+              const parsed=safeJSON(raw_r);
+              if(Array.isArray(parsed)){
+                for(const p of parsed){
+                  if(p?.content?.trim()){
+                    addE({date:p.date||today(),category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-json',date_confidence:p.date_confidence});
+                    total++;
+                  }
+                }
+              }
+            }catch{}
+            await sleep(600);
+          }
+        }
+      }catch(e){console.warn(e);}
+    }
+
+  } else if(type==='zip'){
+    // ── ZIP processing — auto-extract and process contents ────────────────
+    for(let i=0;i<files.length;i++){
+      fill.style.width=Math.round((i/files.length)*100)+'%';
+      label.textContent=`Extracting ZIP ${i+1} of ${files.length}...`;
+      try{
+        const extracted=await extractZip(files[i]);
+        if(!extracted.length){
+          st.innerHTML=`<span class="err">⚠️ No readable text files found inside ${esc(files[i].name)}.</span>`;
+          continue;
+        }
+        toast(`Found ${extracted.length} files inside ZIP — processing...`);
+        for(let j=0;j<extracted.length;j++){
+          const {name,ext,text}=extracted[j];
+          fill.style.width=Math.round(((i+j/extracted.length)/files.length)*100)+'%';
+          label.textContent=`Processing: ${name} (${j+1}/${extracted.length})`;
+          // ChatGPT JSON inside zip
+          if(ext==='json'){
+            try{
+              const data=JSON.parse(text);
+              let conv='';
+              if(data.mapping){
+                const msgs=Object.values(data.mapping)
+                  .filter(m=>m.message?.content?.parts&&m.message.author.role!=='system')
+                  .sort((a,b)=>(a.message.create_time||0)-(b.message.create_time||0));
+                conv=msgs.map(m=>{
+                  const role=m.message.author.role==='user'?'Me':'GPT';
+                  const content=m.message.content.parts.filter(p=>typeof p==='string').join(' ');
+                  return content.trim()?`${role}: ${content.trim()}`:'';
+                }).filter(Boolean).join('\n\n');
+              } else {
+                conv=text.slice(0,5000);
+              }
+              if(conv.trim().length>50){
+                const chunks=chunkText(conv,7000);
+                for(const chunk of chunks){
+                  try{
+                    const raw_r=await ai(`Parse this ChatGPT conversation. Extract only meaningful personal content. ${ISYS}`,chunk);
+                    const parsed=safeJSON(raw_r);
+                    if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-zip-json',date_confidence:p.date_confidence});total++;}}}
+                  }catch{}
+                  await sleep(600);
+                }
+              }
+            }catch{}
+          } else {
+            // Plain text or docx (already extracted)
+            const chunks=chunkText(text,7000);
+            for(const chunk of chunks){
+              try{
+                const raw_r=await ai(ISYS,chunk);
+                const parsed=safeJSON(raw_r);
+                if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-zip',date_confidence:p.date_confidence});total++;}}}
+              }catch{}
+              await sleep(600);
+            }
+          }
+        }
+      }catch(e){console.warn('ZIP error:',e);st.innerHTML=`<span class="err">⚠️ Error reading ZIP: ${esc(e.message)}</span>`;}
+    }
+
+  } else {
+    // ── Text / Word doc processing ────────────────────────────────────────
+    for(let i=0;i<files.length;i++){
+      fill.style.width=Math.round((i/files.length)*100)+'%';
+      label.textContent=`Processing ${i+1} of ${files.length}: ${files[i].name}`;
+      const ext=getExt(files[i].name);
+      let text='';
+      try{
+        if(FILE_TYPES.docx.includes(ext)){
+          // Use mammoth.js to extract .docx text — no copy-paste needed
+          label.textContent=`Extracting Word doc: ${files[i].name}...`;
+          text=await extractDocx(files[i]);
+          if(!text.trim()){
+            st.innerHTML=`<span class="err">⚠️ "${esc(files[i].name)}" appears empty or unreadable.</span>`;
+            continue;
+          }
+        } else {
+          text=await fileToText(files[i]);
+        }
+        if(!text.trim())continue;
+        const chunks=chunkText(text,7000);
+        for(const chunk of chunks){
+          try{
+            const raw_r=await ai(ISYS,chunk);
+            const parsed=safeJSON(raw_r);
+            if(Array.isArray(parsed)){
+              for(const p of parsed){
+                if(p?.content?.trim()){
+                  addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import',date_confidence:p.date_confidence});
+                  total++;
+                }
+              }
+            }
+          }catch{}
+          await sleep(600);
+        }
+      }catch(e){
+        console.warn(e);
+        st.innerHTML=`<span class="err">⚠️ Error reading "${esc(files[i].name)}": ${esc(e.message)}</span>`;
+      }
+    }
+  }
+
+  fill.style.width='100%';$('iprog').style.display='none';
+  showImportWarning(false); // hide warning when done
+  entries.sort((a,b)=>b.date.localeCompare(a.date));
+  renderEntries();renderDash();renderHome();
+  st.innerHTML=`<span class="ok">✓ Imported ${total} entries from ${files.length} ${type} file${files.length>1?'s':''}.</span>`;
+  toast(`✓ ${total} entries imported`);
 }
 
-async function processImport(){const raw=$('itxt').value.trim();if(!raw){toast('Paste some text first');return;}const dc=$('icat').value,st=$('ist'),btn=$('ibtn');btn.disabled=true;$('iprog').style.display='block';const fill=$('ipfill'),label=$('iplabel');const chunks=chunkText(raw,7000);let total=0,ex=0,inf=0,unk=0;const allParsed=[];const ISYS=`Parse into individual journal/life log entries. Return ONLY a JSON array: [{"date":"YYYY-MM-DD","time_of_day":"Morning|Afternoon|Evening|Night|Late night|null","category":"Journal|Goals|Relationships|Health|Finances|Spirituality|Creative Work|Learning & Growth|Family|Dreams & Visions|Mental & Emotional State","content":"full text","title":"5-8 words","date_confidence":"exact|inferred|unknown"}]. Default: ${dc}. Today: ${today()}. JSON only.`;for(let i=0;i<chunks.length;i++){fill.style.width=Math.round((i/chunks.length)*100)+'%';label.textContent=chunks.length>1?`Part ${i+1} of ${chunks.length}...`:'Processing...';try{const raw_r=await ai(ISYS,chunks[i]);try{const p=safeJSON(raw_r);if(Array.isArray(p))allParsed.push(...p);}catch{}}catch(e){if(e.message.includes('Rate')){label.textContent='Rate limited — waiting 20s...';await sleep(20000);i--;continue;}console.warn(e);}if(i<chunks.length-1)await sleep(700);}fill.style.width='100%';label.textContent='Saving...';if(!allParsed.length){st.innerHTML='<span class="err">⚠️ No entries parsed.</span>';$('iprog').style.display='none';btn.disabled=false;return;}const seen=new Set();const deduped=allParsed.filter(p=>{if(!p?.content?.trim())return false;const fp=p.content.trim().slice(0,100);if(seen.has(fp))return false;seen.add(fp);return true;});for(const p of deduped.sort((a,b)=>(a.date||'').localeCompare(b.date||''))){addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import',date_confidence:p.date_confidence||'unknown'});total++;if(p.date_confidence==='exact')ex++;else if(p.date_confidence==='inferred')inf++;else unk++;}entries.sort((a,b)=>b.date.localeCompare(a.date));renderEntries();renderDash();renderHome();$('iprog').style.display='none';$('itxt').value='';$('charcount').textContent='';st.innerHTML=`<span class="ok">✓ ${total} entries — ${ex} exact, ${inf} inferred, ${unk} unknown dates.</span>`;toast(`✓ ${total} entries imported`);btn.disabled=false;}
+async function processImport(){
+  const raw=$('itxt').value.trim();if(!raw){toast('Paste some text first');return;}
+  const dc=$('icat').value,st=$('ist'),btn=$('ibtn');btn.disabled=true;
+  showImportWarning(true); // ⚠️ warn user not to close tab
+  $('iprog').style.display='block';
+  const fill=$('ipfill'),label=$('iplabel');
+  const chunks=chunkText(raw,7000);let total=0,ex=0,inf=0,unk=0;const allParsed=[];
+  const ISYS=`Parse into individual journal/life log entries. Return ONLY a JSON array: [{"date":"YYYY-MM-DD","time_of_day":"Morning|Afternoon|Evening|Night|Late night|null","category":"Journal|Goals|Relationships|Health|Finances|Spirituality|Creative Work|Learning & Growth|Family|Dreams & Visions|Mental & Emotional State","content":"full text","title":"5-8 words","date_confidence":"exact|inferred|unknown"}]. Default: ${dc}. Today: ${today()}. JSON only.`;
+  for(let i=0;i<chunks.length;i++){
+    fill.style.width=Math.round((i/chunks.length)*100)+'%';
+    label.textContent=chunks.length>1?`Part ${i+1} of ${chunks.length}...`:'Processing...';
+    try{const raw_r=await ai(ISYS,chunks[i]);try{const p=safeJSON(raw_r);if(Array.isArray(p))allParsed.push(...p);}catch{}}
+    catch(e){if(e.message.includes('Rate')){label.textContent='Rate limited — waiting 20s...';await sleep(20000);i--;continue;}console.warn(e);}
+    if(i<chunks.length-1)await sleep(700);
+  }
+  fill.style.width='100%';label.textContent='Saving...';
+  if(!allParsed.length){st.innerHTML='<span class="err">⚠️ No entries parsed.</span>';$('iprog').style.display='none';btn.disabled=false;return;}
+  const seen=new Set();
+  const deduped=allParsed.filter(p=>{if(!p?.content?.trim())return false;const fp=p.content.trim().slice(0,100);if(seen.has(fp))return false;seen.add(fp);return true;});
+  for(const p of deduped.sort((a,b)=>(a.date||'').localeCompare(b.date||''))){
+    addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import',date_confidence:p.date_confidence||'unknown'});
+    total++;if(p.date_confidence==='exact')ex++;else if(p.date_confidence==='inferred')inf++;else unk++;
+  }
+  entries.sort((a,b)=>b.date.localeCompare(a.date));renderEntries();renderDash();renderHome();
+  $('iprog').style.display='none';$('itxt').value='';$('charcount').textContent='';
+  showImportWarning(false); // hide warning when done
+  st.innerHTML=`<span class="ok">✓ ${total} entries — ${ex} exact, ${inf} inferred, ${unk} unknown dates.</span>`;
+  toast(`✓ ${total} entries imported`);btn.disabled=false;
+}
+
+// ── FINANCE ───────────────────────────────────────────────────────────────
+// InTelSys Railway backend URL — all finance data comes from here
+const RAILWAY_URL='https://trading-intelligence-system-production-97ba.up.railway.app';
+
+// Local holdings state — persisted in localStorage so they survive refreshes
+// Each holding: {ticker, shares, price, cost, cls, yld, beta, thesis}
+let localHoldings=JSON.parse(localStorage.getItem('lt_holdings')||'[]');
+
+// loadFinance() — called when Finance tab is opened or Refresh button is pressed.
+// Fetches /api/briefing from Railway and renders all finance cards.
+async function loadFinance(){
+  const st=$('fin-status');
+  st.className='fin-status';
+  st.textContent='💰 Loading financial data...';
+
+  try{
+    const r=await fetch(RAILWAY_URL+'/api/briefing');
+    if(!r.ok)throw new Error('Railway returned '+r.status);
+    const d=await r.json();
+
+    // Mark status bar green with timestamp
+    st.className='fin-status ok';
+    st.textContent='✓ InTelSys connected · '+new Date().toLocaleTimeString();
+
+    // Render each section from the briefing payload
+    renderFinPortfolio(d.portfolio);
+    renderFinSFD(d.sfd);
+    renderFinDrift(d.portfolio?.drift);
+    renderFinRules(d.rules);
+
+    // Macro comes from a separate endpoint — fetch in parallel
+    fetchFinMacro();
+
+  }catch(e){
+    st.className='fin-status err';
+    st.textContent='✗ Could not reach InTelSys — '+e.message;
+    // Still render the manual holdings table even if Railway is down
+  }
+
+  // Always render manual holdings table regardless of Railway state
+  renderHoldingsTable();
+}
+
+// renderFinPortfolio() — fills the 4 top stat cards
+function renderFinPortfolio(p){
+  if(!p)return;
+  const fmt=n=>n==null?'—':'$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  $('fin-total').textContent=fmt(p.total);
+  // Color P&L green/red based on sign
+  const pnlEl=$('fin-pnl');
+  pnlEl.textContent=fmt(p.pnl);
+  pnlEl.className='fin-num '+(p.pnl>0?'fin-pos':p.pnl<0?'fin-neg':'');
+  $('fin-div').textContent=fmt(p.monthly_div);
+  $('fin-thesis').textContent=p.thesis!=null?p.thesis+'%':'—';
+  // Source badge: "seed data" vs "webull live" vs "manual"
+  $('fin-source').textContent=p.source==='webull'?'● Live Webull':p.source==='manual'?'● Manual entry':'● Seed data';
+}
+
+// renderFinSFD() — fills the SFD progress bar
+// SFD = Steady Flow Dividend — monthly passive income goal ($800 target)
+function renderFinSFD(s){
+  if(!s)return;
+  const pct=Math.min(s.progress||0,100); // cap at 100% visually
+  $('sfd-fill').style.width=pct+'%';
+  $('sfd-current').textContent='$'+(s.current||0).toFixed(2)+' / mo';
+  $('sfd-pct').textContent=pct.toFixed(1)+'%';
+  $('sfd-target').textContent='Target: $'+(s.target||800);
+}
+
+// renderFinDrift() — renders allocation drift bars per asset class
+// Negative drift = under-allocated (blue bar left of center)
+// Positive drift = over-allocated (red bar right of center)
+function renderFinDrift(drift){
+  const el=$('fin-drift');if(!el)return;
+  if(!drift||!Object.keys(drift).length){el.innerHTML='<span style="color:#ccc;font-size:13px">No allocation data yet.</span>';return;}
+  el.innerHTML=Object.entries(drift).map(([cls,val])=>{
+    const abs=Math.abs(val);
+    const color=val>1?'drift-pos':val<-1?'drift-neg':'drift-zero';
+    const sign=val>0?'+':'';
+    return`<div class="drift-row">
+      <div class="drift-label">${esc(cls)}</div>
+      <div class="drift-track">
+        <div class="drift-fill ${color}" style="width:${Math.min(abs*5,100)}%;${val>=0?'left:50%':'right:50%'}"></div>
+      </div>
+      <div class="drift-val ${val>1?'fin-neg':val<-1?'':'ok'}">${sign}${val}%</div>
+    </div>`;
+  }).join('');
+}
+
+// renderFinRules() — renders active trading rules list
+// gate=auto fires on its own; gate=approval needs manual sign-off
+function renderFinRules(rules){
+  const el=$('fin-rules');if(!el)return;
+  if(!rules){el.innerHTML='<span style="color:#ccc;font-size:13px">No rules data.</span>';return;}
+
+  // Show approval badge if any rules need sign-off
+  const badge=$('fin-approval-badge');
+  if(rules.pending_approvals>0){
+    badge.style.display='inline';
+    badge.textContent=`⚠️ ${rules.pending_approvals} needs approval`;
+  } else {
+    badge.style.display='none';
+  }
+
+  if(!rules.approval_items?.length&&rules.active===0){
+    el.innerHTML='<span style="color:#ccc;font-size:13px">No active rules.</span>';return;
+  }
+  // Show approval items prominently, then active count
+  const rows=(rules.approval_items||[]).map(r=>`
+    <div class="rule-row">
+      <div class="rule-name">${esc(r.name)}</div>
+      <span class="rule-gate gate-approval">approval needed</span>
+      <span style="font-size:12px;color:#aaa;margin-left:4px">$${(r.size||0).toLocaleString()}</span>
+    </div>`).join('');
+  el.innerHTML=rows+`<div style="font-size:12px;color:#aaa;margin-top:6px">${rules.active} rules active total</div>`;
+}
+
+// fetchFinMacro() — fetches /api/macro separately for the macro signals section
+async function fetchFinMacro(){
+  const el=$('fin-macro');if(!el)return;
+  try{
+    const r=await fetch(RAILWAY_URL+'/api/macro');
+    if(!r.ok)throw new Error(r.status);
+    const data=await r.json();
+    // Map signal strings to CSS classes
+    const sigClass={'neutral':'sig-neutral','caution':'sig-caution','tailwind':'sig-tailwind','risk':'sig-risk'};
+    el.innerHTML=data.map(m=>`
+      <div class="macro-row">
+        <div class="macro-label">${esc(m.label)}</div>
+        <div class="macro-val">${esc(m.value)}</div>
+        <span class="sig ${sigClass[m.signal]||'sig-neutral'}">${esc(m.signal)}</span>
+      </div>`).join('');
+  }catch(e){
+    el.innerHTML=`<span style="color:#ccc;font-size:13px">Macro unavailable</span>`;
+  }
+}
+
+// ── MANUAL HOLDINGS TABLE ─────────────────────────────────────────────────
+// Allows entering real positions manually until Webull API is approved.
+// Holdings persist in localStorage so they survive page refreshes.
+
+// renderHoldingsTable() — builds the editable holdings input grid
+function renderHoldingsTable(){
+  const tbody=$('holdings-tbody');if(!tbody)return;
+  if(!localHoldings.length){
+    // Start with one empty row if no holdings yet
+    localHoldings=[{ticker:'',shares:0,price:0,cost:0,cls:'Equities',yld:0,beta:1,thesis:70}];
+  }
+  const classes=['Equities','Dividend','Crypto','Bonds','Commodities','Cash'];
+  tbody.innerHTML=localHoldings.map((h,i)=>`
+    <tr>
+      <td><input value="${esc(h.ticker)}" placeholder="NVDA" oninput="localHoldings[${i}].ticker=this.value" style="width:60px"/></td>
+      <td><input type="number" value="${h.shares}" min="0" oninput="localHoldings[${i}].shares=+this.value" style="width:55px"/></td>
+      <td><input type="number" value="${h.price}" min="0" step="0.01" oninput="localHoldings[${i}].price=+this.value" style="width:65px"/></td>
+      <td><input type="number" value="${h.cost}" min="0" step="0.01" oninput="localHoldings[${i}].cost=+this.value" style="width:65px"/></td>
+      <td><select onchange="localHoldings[${i}].cls=this.value" style="width:90px">${classes.map(c=>`<option${c===h.cls?' selected':''}>${c}</option>`).join('')}</select></td>
+      <td><input type="number" value="${h.yld}" min="0" step="0.1" oninput="localHoldings[${i}].yld=+this.value" style="width:48px"/></td>
+      <td><input type="number" value="${h.beta}" step="0.1" oninput="localHoldings[${i}].beta=+this.value" style="width:48px"/></td>
+      <td><input type="number" value="${h.thesis}" min="0" max="100" oninput="localHoldings[${i}].thesis=+this.value" style="width:48px"/></td>
+      <td><button onclick="removeHoldingRow(${i})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:16px">×</button></td>
+    </tr>`).join('');
+}
+
+// addHoldingRow() — adds a blank row to the holdings table
+function addHoldingRow(){
+  localHoldings.push({ticker:'',shares:0,price:0,cost:0,cls:'Equities',yld:0,beta:1,thesis:70});
+  renderHoldingsTable();
+}
+
+// removeHoldingRow() — removes a holding row by index
+function removeHoldingRow(i){
+  localHoldings.splice(i,1);
+  renderHoldingsTable();
+}
+
+// syncHoldings() — saves holdings to localStorage AND pushes to Railway
+// Railway stores them in-memory (resets on redeploy — Webull API will replace this)
+async function syncHoldings(){
+  const st=$('fin-sync-st');
+  // Filter out empty rows before syncing
+  const valid=localHoldings.filter(h=>h.ticker.trim()&&h.shares>0);
+  if(!valid.length){toast('Add at least one holding first');return;}
+
+  // Save to localStorage so data persists across page loads
+  localStorage.setItem('lt_holdings',JSON.stringify(localHoldings));
+  st.textContent='Syncing...';st.style.color='#888';
+
+  try{
+    const r=await fetch(RAILWAY_URL+'/api/portfolio/sync',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({holdings:valid})
+    });
+    if(!r.ok)throw new Error('Railway error '+r.status);
+    const d=await r.json();
+    st.textContent=`✓ Synced ${d.holdings_count} holdings`;
+    st.style.color='#3a8c5a';
+    // Reload finance data to reflect new holdings
+    setTimeout(loadFinance,800);
+  }catch(e){
+    st.textContent='✗ Sync failed: '+e.message;
+    st.style.color='#e05a5a';
+  }
+  setTimeout(()=>st.textContent='',5000);
+}
+
+// ── MODE SWITCHER ─────────────────────────────────────────────────────────
+// Switches between Life mode (LifeThread) and Finance mode (InTelSys).
+// Life panels and Finance panels are independent — switching just shows/hides navs.
+
+let currentMode='life'; // 'life' | 'finance'
+
+function switchMode(mode){
+  currentMode=mode;
+  // Update mode buttons
+  $('mode-life').classList.toggle('active',mode==='life');
+  $('mode-finance').classList.toggle('active',mode==='finance');
+  // Swap navs
+  $('life-nav').style.display=mode==='life'?'flex':'none';
+  $('finance-nav').style.display=mode==='finance'?'flex':'none';
+  // Show the right default panel
+  if(mode==='life'){
+    // Re-activate last life panel or home
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    $('home-panel').classList.add('active');
+    document.querySelectorAll('#life-nav .nb').forEach(b=>b.classList.remove('active'));
+    $('nb-home').classList.add('active');
+  } else {
+    // Switch to finance overview and load data
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    $('finance-panel').classList.add('active');
+    document.querySelectorAll('#finance-nav .nb').forEach(b=>b.classList.remove('active'));
+    $('nb-finance').classList.add('active');
+    loadFinance();
+  }
+}
+
+// showFin() — like show() but for Finance sub-panels
+function showFin(p,el){
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('#finance-nav .nb').forEach(x=>x.classList.remove('active'));
+  const panel=$(p+'-panel');if(!panel)return;
+  panel.classList.add('active');
+  if(el)el.classList.add('active');
+  // Lazy-load data when switching to sub-panels
+  if(p==='fin-rules')loadFinRulesTab();
+  if(p==='fin-macro-tab')loadFinMacroTab();
+  if(p==='fin-holdings')renderHoldingsTable();
+}
+
+// loadFinRulesTab() — loads full rules list into the Rules sub-panel
+async function loadFinRulesTab(){
+  const el=$('fin-rules-full');if(!el)return;
+  el.innerHTML='<div style="color:#aaa;font-size:13px">Loading...</div>';
+  try{
+    const r=await fetch(RAILWAY_URL+'/api/rules');
+    if(!r.ok)throw new Error(r.status);
+    const rules=await r.json();
+    const badge=$('fin-approval-badge2');
+    const approvals=rules.filter(r=>r.gate==='approval'&&r.active);
+    if(approvals.length){badge.style.display='inline';badge.textContent=`⚠️ ${approvals.length} needs approval`;}
+    else badge.style.display='none';
+    el.innerHTML=rules.map(r=>`
+      <div class="rule-row ${r.active?'':'rule-off'}">
+        <div class="rule-name">${esc(r.name)}</div>
+        <span class="rule-gate ${r.gate==='approval'?'gate-approval':'gate-auto'}">${r.gate}</span>
+        <span style="font-size:12px;color:#aaa;margin-left:4px">$${(r.size||0).toLocaleString()}</span>
+        <span style="font-size:11px;color:${r.active?'#3a8c5a':'#ccc'};margin-left:4px">${r.active?'● on':'○ off'}</span>
+      </div>`).join('');
+  }catch(e){el.innerHTML=`<span style="color:#e05a5a;font-size:13px">Error: ${esc(e.message)}</span>`;}
+}
+
+// loadFinMacroTab() — loads full macro + drift into the Macro sub-panel
+async function loadFinMacroTab(){
+  const mEl=$('fin-macro-full'),dEl=$('fin-drift-full');
+  if(!mEl||!dEl)return;
+  try{
+    const [mr,br]=await Promise.all([
+      fetch(RAILWAY_URL+'/api/macro'),
+      fetch(RAILWAY_URL+'/api/briefing')
+    ]);
+    if(mr.ok){
+      const data=await mr.json();
+      const sigClass={'neutral':'sig-neutral','caution':'sig-caution','tailwind':'sig-tailwind','risk':'sig-risk'};
+      mEl.innerHTML=data.map(m=>`
+        <div class="macro-row">
+          <div class="macro-label"><strong>${esc(m.label)}</strong>${m.note?`<div style="font-size:11px;color:#aaa;margin-top:2px">${esc(m.note)}</div>`:''}</div>
+          <div class="macro-val">${esc(m.value)}</div>
+          <span class="sig ${sigClass[m.signal]||'sig-neutral'}">${esc(m.signal)}</span>
+        </div>`).join('');
+    }
+    if(br.ok){
+      const bd=await br.json();
+      renderFinDriftEl(dEl,bd.portfolio?.drift);
+    }
+  }catch(e){mEl.innerHTML=`<span style="color:#e05a5a;font-size:13px">${esc(e.message)}</span>`;}
+}
+
+// renderFinDriftEl() — renders drift bars into any element (shared by overview + macro tab)
+function renderFinDriftEl(el,drift){
+  if(!el)return;
+  if(!drift||!Object.keys(drift).length){el.innerHTML='<span style="color:#ccc;font-size:13px">No allocation data yet.</span>';return;}
+  el.innerHTML=Object.entries(drift).map(([cls,val])=>{
+    const abs=Math.abs(val);
+    const color=val>1?'drift-pos':val<-1?'drift-neg':'drift-zero';
+    const sign=val>0?'+':'';
+    return`<div class="drift-row">
+      <div class="drift-label">${esc(cls)}</div>
+      <div class="drift-track">
+        <div class="drift-fill ${color}" style="width:${Math.min(abs*5,100)}%;${val>=0?'left:50%':'right:50%'}"></div>
+      </div>
+      <div class="drift-val ${val>1?'fin-neg':val<-1?'':'ok'}">${sign}${val}%</div>
+    </div>`;
+  }).join('');
+}
+
+// ── UNIFIED AI BRIEFING ──────────────────────────────────────────────────────
+// Claude reads BOTH life entries AND financial snapshot together.
+// This is the core of the LifeThread + InTelSys merger.
+async function genFinBriefing(){
+  const btn=$('briefing-btn');
+  const out=$('fin-briefing-out');
+  const content=$('fin-briefing-content');
+  btn.disabled=true;btn.textContent='Generating...';
+  out.style.display='block';content.textContent='Reading life log and financial data...';
+  try{
+    // Fetch financial snapshot from Railway
+    const fr=await fetch(RAILWAY_URL+'/api/briefing');
+    const fin=fr.ok?await fr.json():null;
+    const finSummary=fin?`FINANCIAL SNAPSHOT:
+Portfolio: $${fin.portfolio?.total||0} | P&L: $${fin.portfolio?.pnl||0} | Monthly Div: $${fin.portfolio?.monthly_div||0}
+SFD Progress: ${fin.sfd?.progress||0}% of $${fin.sfd?.target||800}/mo target
+Active Rules: ${fin.rules?.active||0} | Pending Approvals: ${fin.rules?.pending_approvals||0}
+Macro: ${(fin.macro||[]).map(m=>m.label+' '+m.value+' ('+m.signal+')').join(' · ')}
+Data source: ${fin.portfolio?.source||'unknown'}`:'Financial data unavailable.';
+
+    const r=await ai(
+      `You are LifeThread — a unified personal and financial intelligence system.
+You have access to both the user's personal life log AND their financial portfolio snapshot.
+Generate a unified daily briefing that connects both domains.
+Cover: 1) dominant life pattern active right now, 2) financial position summary + one signal worth watching,
+3) one honest connection between their life state and financial behavior.
+Be specific. No cheerleading. Under 200 words.
+User: ${uName||'unnamed'}. Values: ${uVals}.`,
+      `LIFE LOG (recent):\n${ctx(15)}\n\n${finSummary}\n\nGenerate unified briefing.`
+    );
+    content.textContent=r;
+  }catch(e){
+    content.textContent='Error: '+e.message;
+  }
+  btn.disabled=false;btn.textContent='Regenerate';
+}
+
+// ── IMPORT WARNING BANNER ────────────────────────────────────────────────────
+// Show/hide the "Do not close" warning during active imports.
+function showImportWarning(show){
+  const w=$('import-warning');
+  if(w)w.classList.toggle('show',show);
+}
 
 // ── VERSION ───────────────────────────────────────────────────────────────
-function renderVersion(){$('vuser').textContent=userEmail||'—';$('ve').textContent=entries.length||'0';$('vp').textContent=patterns.length||'0';$('vg').textContent=goals.length||'0';const s=[...entries].filter(e=>e.date).sort((a,b)=>a.date.localeCompare(b.date));$('vsp').textContent=s.length>=2?`${s[0].date} → ${s[s.length-1].date}`:s.length===1?s[0].date:'—';$('vsb').innerHTML='<span class="ok">✓ Connected</span>';$('vak').innerHTML=apiKey?'<span class="ok">✓ Active</span>':'<span class="err">✗ Missing</span>';$('vits').innerHTML=finLoaded?'<span class="ok">✓ Connected</span>':'<span style="color:#aaa">Not loaded yet</span>';}
+function renderVersion(){
+  $('vuser').textContent=userEmail||'—';
+  $('ve').textContent=entries.length||'0';$('vp').textContent=patterns.length||'0';$('vg').textContent=goals.length||'0';
+  const s=[...entries].filter(e=>e.date).sort((a,b)=>a.date.localeCompare(b.date));
+  $('vsp').textContent=s.length>=2?`${s[0].date} → ${s[s.length-1].date}`:s.length===1?s[0].date:'—';
+  $('vsb').innerHTML='<span class="ok">✓ Connected</span>';
+  $('vak').innerHTML=apiKey?'<span class="ok">✓ Active</span>':'<span class="err">✗ Missing</span>';
+  $('vno').textContent=nKey&&nDb?'✓ Connected':'Not connected';
+}
 
 // ── EXPORT ────────────────────────────────────────────────────────────────
 function exportData(){try{const d={exported:nowISO(),version:VER,user:userEmail,entries,goals,patterns,profile:{uName,uVals,uFoc,uWant}};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`lifethread-${today()}.json`;document.body.appendChild(a);a.click();document.body.removeChild(a);toast('✓ Backup downloaded');}catch(e){toast('Export failed: '+e.message);}}
