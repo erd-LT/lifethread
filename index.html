@@ -196,6 +196,40 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text3);text-trans
 /* ─── PATTERNS ───────────────────────────────────────────────── */
 .pcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r12);padding:12px 14px;margin-bottom:8px}
 
+/* ─── MARKDOWN OUTPUT ────────────────────────────────────────── */
+.md-out{font-size:13px;line-height:1.8;color:var(--text1);word-break:break-word}
+.md-out h3{font-size:13px;font-weight:600;color:var(--text0);margin:12px 0 4px;padding-bottom:3px;border-bottom:1px solid var(--border)}
+.md-out strong{font-weight:600;color:var(--text0)}
+.md-out em{font-style:italic}
+.md-out p{margin-bottom:8px}
+.md-out ul{padding-left:16px;margin-bottom:8px}
+.md-out li{margin-bottom:4px}
+.md-section{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r8);padding:10px 12px;margin-bottom:10px}
+.md-section-name{font-size:13px;font-weight:600;color:var(--text0);margin-bottom:2px}
+.md-section-mech{font-size:12px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.md-section-body{font-size:13px;color:var(--text1);line-height:1.7}
+
+/* ─── STICKY IMPORT PROGRESS ─────────────────────────────────── */
+#import-progress-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:900px;background:var(--bg2);border-top:1px solid var(--border2);padding:10px 16px;z-index:8000;display:none}
+#import-progress-bar.show{display:block}
+.ipb-row{display:flex;align-items:center;gap:10px;margin-bottom:5px}
+.ipb-label{font-size:12px;color:var(--text1);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ipb-count{font-size:12px;font-weight:600;color:var(--blue);flex-shrink:0;min-width:60px;text-align:right}
+.ipb-track{height:4px;background:var(--bg4);border-radius:3px;overflow:hidden;width:100%}
+.ipb-fill{height:100%;background:var(--blue);border-radius:3px;transition:width .3s;width:0%}
+
+/* ─── COMING SOON MODULE SLOTS ───────────────────────────────── */
+.nb-soon{padding:5px 10px;border:1.5px dashed var(--border2);background:none;cursor:pointer;font-size:11px;font-weight:500;color:var(--text3);border-radius:var(--r6);white-space:nowrap;flex-shrink:0;transition:all .15s;font-family:var(--font);position:relative}
+.nb-soon:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-soft)}
+.soon-tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--bg4);border:1px solid var(--border2);border-radius:var(--r8);padding:7px 11px;font-size:11px;color:var(--text1);white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:200;box-shadow:var(--shadow-sm)}
+.nb-soon:hover .soon-tip{opacity:1}
+
+/* ─── PLAID ──────────────────────────────────────────────────── */
+.plaid-btn{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg3);border:1.5px solid var(--border2);border-radius:var(--r12);cursor:pointer;font-size:13px;font-weight:500;color:var(--text1);width:100%;transition:all .15s;font-family:var(--font);text-align:left}
+.plaid-btn:hover{border-color:var(--blue);background:var(--blue-soft);color:var(--blue)}
+.plaid-badge{font-size:10px;background:var(--green-dim);color:var(--green);padding:2px 7px;border-radius:var(--r20);font-weight:600;margin-left:auto}
+.plaid-connected{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--green-dim);border:1px solid var(--green);border-radius:var(--r8);font-size:13px;color:var(--green);margin-bottom:8px}
+
 /* ─── CHAT ───────────────────────────────────────────────────── */
 .cmsgs{flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
 .msg{display:flex;gap:7px;max-width:100%}
@@ -339,6 +373,15 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text3);text-trans
 
 <div id="import-warning">⚠️ Import in progress — do not close or refresh</div>
 
+<!-- ── STICKY IMPORT PROGRESS BAR ───────────────────────────── -->
+<div id="import-progress-bar">
+  <div class="ipb-row">
+    <span id="ipb-label" class="ipb-label">Processing...</span>
+    <span id="ipb-count" class="ipb-count"></span>
+  </div>
+  <div class="ipb-track"><div class="ipb-fill" id="ipb-fill"></div></div>
+</div>
+
 <!-- ── MODE BAR ─────────────────────────────────────────────── -->
 <div id="mode-bar">
   <button class="mode-logo" onclick="goHome()" title="Home">Life<span>Thread</span></button>
@@ -347,7 +390,7 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text3);text-trans
   <button class="mode-btn fin" id="mode-finance" onclick="switchMode('finance')">💰 Finance</button>
   <div id="mode-right">
     <div id="syncdot" class="status-dot dot-off" title="Sync status"></div>
-    <button class="ib" onclick="show('version',null)">v3.1</button>
+    <button class="ib" onclick="show('version',null)">v3.2</button>
     <button class="ib" onclick="showGlobalSettings()">⚙ Settings</button>
     <button class="ib" style="color:var(--red)" onclick="doLogout()">↩</button>
   </div>
@@ -365,6 +408,9 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text3);text-trans
   <button class="nb" onclick="show('archive',this)">📖 Archive</button>
   <button class="nb" onclick="show('import',this)">📥 Import</button>
   <button class="nb" onclick="show('life-settings',this)">⚙ Settings</button>
+  <button class="nb-soon" onclick="toast('Coming soon')">💪 Health<span class="soon-tip">Health module — coming soon</span></button>
+  <button class="nb-soon" onclick="toast('Coming soon')">👥 Network<span class="soon-tip">People & relationships — coming soon</span></button>
+  <button class="nb-soon" onclick="toast('Coming soon')">💻 Codex<span class="soon-tip">Integrated code environment — coming soon</span></button>
   <div class="nav-right"><button class="ib" onclick="exportData()">⬇</button></div>
 </nav>
 
@@ -376,6 +422,8 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text3);text-trans
   <button class="nb" onclick="showFin('fin-macro-tab',this)">🌍 Macro</button>
   <button class="nb" onclick="showFin('fin-briefing',this)">📋 Briefing</button>
   <button class="nb" onclick="showFin('fin-settings',this)">⚙ Settings</button>
+  <button class="nb-soon" onclick="toast('Coming soon')">🏦 Plaid<span class="soon-tip">Connect bank & brokerage accounts — coming soon</span></button>
+  <button class="nb-soon" onclick="toast('Coming soon')">📉 Alerts<span class="soon-tip">Price & rule alerts — coming soon</span></button>
   <div class="nav-right"><button class="ib" onclick="loadFinance()">↻</button></div>
 </nav>
 
@@ -754,6 +802,33 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text3);text-trans
 <div id="fin-settings-panel" class="panel">
   <div class="scroll"><div class="pad" style="max-width:520px">
 
+    <!-- ── Plaid ──────────────────────────────────────── -->
+    <div class="ss">
+      <h3>🏦 Plaid — Bank & Brokerage Connections</h3>
+      <p style="font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:12px">Plaid connects to 12,000+ financial institutions — checking, savings, credit cards, investment accounts, and brokerages including Webull. One connection replaces manual holdings entry and gives LifeThread live transaction data.</p>
+      <div id="plaid-connected-list" style="margin-bottom:10px"></div>
+      <button class="plaid-btn" onclick="initPlaid()">
+        <span style="font-size:16px">🏦</span>
+        <span>Connect an account</span>
+        <span class="plaid-badge">Plaid Link</span>
+      </button>
+      <div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.6">Requires a Plaid account and client ID. Plaid Link token is generated server-side via your Railway backend. <a href="https://plaid.com/docs/" target="_blank" style="color:var(--blue)">Plaid docs ↗</a></div>
+      <div class="field" style="margin-top:12px"><label>Plaid Client ID</label>
+        <div class="key-row">
+          <input type="text" id="fin-plaid-id" placeholder="Plaid client_id"/>
+          <button class="btn bg" onclick="copyField('fin-plaid-id')">📋</button>
+        </div>
+      </div>
+      <div class="field"><label>Plaid Secret</label>
+        <div class="key-row">
+          <input type="password" id="fin-plaid-secret" placeholder="Plaid secret"/>
+          <button class="btn bg" onclick="toggleVisible('fin-plaid-secret',this)">👁</button>
+        </div>
+      </div>
+      <button class="btn bp" onclick="saveFinSetting('plaid')">Save Plaid Credentials</button>
+      <div class="st" id="fin-plaid-st"></div>
+    </div>
+
     <!-- ── Railway / Backend ──────────────────────────── -->
     <div class="ss">
       <h3>🚂 Railway Backend</h3>
@@ -826,7 +901,7 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text3);text-trans
   <div class="scroll"><div class="pad" style="max-width:560px">
     <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:4px">
       <div style="font-family:var(--font-serif);font-size:20px">LifeThread</div>
-      <div style="font-size:12px;color:var(--blue);font-weight:600;background:var(--blue-soft);padding:2px 9px;border-radius:var(--r20)">v3.1.0</div>
+      <div style="font-size:12px;color:var(--blue);font-weight:600;background:var(--blue-soft);padding:2px 9px;border-radius:var(--r20)">v3.2.0</div>
     </div>
     <div style="font-size:12px;color:var(--text3);margin-bottom:20px">Unified build · DM Sans · Dark-first</div>
     <div class="sec">System Stats</div>
@@ -845,13 +920,21 @@ label{display:block;font-size:11px;font-weight:500;color:var(--text3);text-trans
     </div>
     <div class="sec">Changelog</div>
     <div class="vlog" style="margin-bottom:8px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v3.1.0</b><span style="font-size:11px;color:var(--blue);background:var(--blue-soft);padding:2px 7px;border-radius:var(--r8)">current</span><span style="font-size:11px;color:var(--text3);margin-left:auto">Mar 2026</span></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v3.2.0</b><span style="font-size:11px;color:var(--blue);background:var(--blue-soft);padding:2px 7px;border-radius:var(--r8)">current</span><span style="font-size:11px;color:var(--text3);margin-left:auto">Mar 2026</span></div>
       <ul style="font-size:12px;color:var(--text2);line-height:1.9;padding-left:14px">
-        <li>🏠 Logo = home button — taps return to active module's Overview</li>
-        <li>🏠 → Overview (Life nav), pattern set for all future modules</li>
-        <li>🧠 Unified AI context — finance snapshot available in every chat call</li>
-        <li>💬 Chat system prompt upgraded to unified life + finance mirror</li>
-        <li>💾 Finance snapshot cached on load, no extra API calls during chat</li>
+        <li>🎨 Markdown renderer — **bold**, patterns, NAME/MECHANISM/EVIDENCE cards</li>
+        <li>📌 Sticky import progress bar — visible from any tab during import</li>
+        <li>💾 AI outputs persist to Supabase — archive, digest, auto-detect survive navigation</li>
+        <li>🔮 Archive + patterns outputs restored on panel open</li>
+        <li>🏦 Plaid integration foundation — credentials + connection UI in Finance Settings</li>
+        <li>💻 Coming-soon module slots — Health, Network, Codex, Plaid, Alerts tabs</li>
+      </ul>
+    </div>
+    <div class="vlog old" style="margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b>v3.1.0</b><span style="font-size:11px;color:var(--text3);margin-left:auto">Mar 2026</span></div>
+      <ul style="font-size:12px;color:var(--text2);line-height:1.9;padding-left:14px">
+        <li>🏠 Logo = home button, Overview nav pattern</li>
+        <li>🧠 Unified AI context — finance snapshot in every chat call</li>
       </ul>
     </div>
     <div class="vlog old" style="margin-bottom:8px">
@@ -941,7 +1024,7 @@ window.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();});
 /* ═══════════════════════════════════════════════════
    MODULE 0 — CONSTANTS & GLOBALS
 ═══════════════════════════════════════════════════ */
-const VER='3.1.0';
+const VER='3.2.0';
 const SB_URL='https://khntsltigjjelvmecvrq.supabase.co';
 const SB_KEY='sb_publishable_yqNAjCBe0Cg-JeD8aeSsAw_2slonEr_';
 const API_URL='/.netlify/functions/anthropic';
@@ -974,6 +1057,7 @@ let finSettings={
   railwayUrl: localStorage.getItem('lt_railway_url')||'https://trading-intelligence-system-production-97ba.up.railway.app',
   sfdTarget: parseInt(localStorage.getItem('lt_sfd_target')||'800'),
   webullKey:'',webullSecret:'',
+  plaidId:'',plaidSecret:'',plaidAccounts:[],
   allocTargets:{...DEFAULT_ALLOC_TARGETS}
 };
 
@@ -1177,10 +1261,24 @@ function show(p,el){
   const panel=$(p+'-panel');if(!panel)return;
   panel.classList.add('active');
   if(el)el.classList.add('active-life');
-  if(p==='dash')renderDash();
+  if(p==='dash'){renderDash();restoreAiOut('digest','dout');}
   if(p==='home')renderHome();
   if(p==='version')renderVersion();
+  if(p==='patterns')restoreAiOut('auto_detect','apout');
+  if(p==='archive')restoreAiOut('archive','aout');
   if(p==='search')setTimeout(()=>$('search-in').focus(),100);
+}
+
+// restoreAiOut — loads last persisted output of a type into a DOM element
+async function restoreAiOut(type,elId){
+  const el=$(elId);if(!el)return;
+  // Don't overwrite if already has content
+  if(el.textContent.trim()&&el.textContent!=='Tap Generate to synthesize your week.')return;
+  const saved=await loadAiOutput(type);
+  if(saved){
+    if(type==='archive'){el.style.display='block';}
+    setMdOut(el,saved);
+  }
 }
 
 // Global settings modal (not a tab — overlay approach via panel swap)
@@ -1380,13 +1478,126 @@ async function aiSearch(){
 }
 
 /* ═══════════════════════════════════════════════════
+   MODULE 5B — MARKDOWN RENDERER + AI OUTPUT STORE
+═══════════════════════════════════════════════════ */
+
+// renderMd() — converts basic markdown (bold, headers, NAME/MECHANISM/EVIDENCE labels)
+// to clean HTML. Used for auto-detect, archive, digest, and any freeform AI output.
+function renderMd(text){
+  if(!text)return'';
+  // Split into lines and process
+  const lines=text.split('\n');
+  let html='';let inSection=false;let sectionBuf='';
+
+  // Detect pattern-block format: **NAME: ...**  MECHANISM: ...  EVIDENCE: ...
+  // Group these into cards
+  const patBlock=/^\*\*NAME:\s*(.+?)\*\*$/i;
+  const mechLine=/^MECHANISM:\s*(.+)$/i;
+  const evidLine=/^EVIDENCE:\s*(.+)$/i;
+  const nameOnlyBlock=/^\*\*(.+?)\*\*$/;
+
+  let i=0;
+  while(i<lines.length){
+    const line=lines[i].trim();
+
+    // Pattern card detection
+    const pm=line.match(patBlock)||line.match(/^\*\*NAME:\s*(.+)$/i);
+    if(pm){
+      if(inSection){html+=`<div class="md-section"><div class="md-section-name">${esc(sectionBuf.name||'')}</div>${sectionBuf.mech?`<div class="md-section-mech">Mechanism</div><div class="md-section-body">${esc(sectionBuf.mech)}</div>`:''}${sectionBuf.evid?`<div class="md-section-mech" style="margin-top:6px">Evidence</div><div class="md-section-body">${esc(sectionBuf.evid)}</div>`:''}</div>`;sectionBuf='';}
+      inSection=true;sectionBuf={name:pm[1]||pm[0].replace(/\*\*/g,''),mech:'',evid:''};
+      i++;continue;
+    }
+    const mm=line.match(mechLine);
+    if(mm&&inSection){sectionBuf.mech=mm[1];i++;continue;}
+    const em=line.match(evidLine);
+    if(em&&inSection){sectionBuf.evid=em[1];i++;continue;}
+
+    // Flush open section on blank line or new section
+    if(line===''&&inSection&&(sectionBuf.mech||sectionBuf.evid)){
+      html+=`<div class="md-section"><div class="md-section-name">${esc(sectionBuf.name||'')}</div>${sectionBuf.mech?`<div class="md-section-mech">Mechanism</div><div class="md-section-body">${esc(sectionBuf.mech)}</div>`:''}${sectionBuf.evid?`<div class="md-section-mech" style="margin-top:6px">Evidence</div><div class="md-section-body">${esc(sectionBuf.evid)}</div>`:''}</div>`;
+      inSection=false;sectionBuf='';i++;continue;
+    }
+
+    // Regular markdown
+    let out=line
+      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g,'<em>$1</em>')
+      .replace(/^#{1,3}\s+(.+)$/,'<h3>$1</h3>')
+      .replace(/^[-•]\s+(.+)$/,'<li>$1</li>');
+
+    if(out.startsWith('<li>')){out='<ul>'+out+'</ul>';}
+    else if(out.startsWith('<h3>')){html+=out;i++;continue;}
+    else if(out===''){html+='<div style="height:6px"></div>';i++;continue;}
+    else{out='<p>'+out+'</p>';}
+    html+=out;
+    i++;
+  }
+  // Flush any trailing section
+  if(inSection&&sectionBuf.name){
+    html+=`<div class="md-section"><div class="md-section-name">${esc(sectionBuf.name)}</div>${sectionBuf.mech?`<div class="md-section-mech">Mechanism</div><div class="md-section-body">${esc(sectionBuf.mech)}</div>`:''}${sectionBuf.evid?`<div class="md-section-mech" style="margin-top:6px">Evidence</div><div class="md-section-body">${esc(sectionBuf.evid)}</div>`:''}</div>`;
+  }
+  // Merge adjacent <ul> tags
+  return html.replace(/<\/ul><ul>/g,'');
+}
+
+// setMdOut(el, text) — renders markdown into an element with the md-out class
+function setMdOut(el,text){if(!el)return;el.className=(el.className||'').replace(/md-out/g,'').trim()+' md-out';el.innerHTML=renderMd(text);}
+
+// persistAiOutput() — saves AI-generated text to Supabase so it survives navigation
+async function persistAiOutput(type,content,metadata={}){
+  if(!userEmail||!content)return;
+  try{
+    await sbReq('/rest/v1/ai_outputs','POST',{
+      user_email:userEmail,
+      output_type:type,
+      content,
+      metadata:JSON.stringify(metadata),
+      created_at:nowISO()
+    });
+  }catch(e){console.warn('persistAiOutput:',e.message);}
+}
+
+// loadAiOutput() — retrieves the most recent output of a given type
+async function loadAiOutput(type){
+  if(!userEmail)return null;
+  try{
+    const rows=await sbReq(`/rest/v1/ai_outputs?user_email=eq.${encodeURIComponent(userEmail)}&output_type=eq.${type}&order=created_at.desc&limit=1`);
+    return rows&&rows.length?rows[0].content:null;
+  }catch{return null;}
+}
+
+// updateImportProgress(label, pct, count) — drives the sticky bottom progress bar
+function updateImportProgress(label,pct,count=''){
+  const bar=$('import-progress-bar');
+  if(!bar)return;
+  bar.classList.add('show');
+  $('ipb-label').textContent=label||'Processing...';
+  $('ipb-fill').style.width=Math.round(pct)+'%';
+  $('ipb-count').textContent=count;
+}
+function hideImportProgress(){
+  const bar=$('import-progress-bar');
+  if(bar)bar.classList.remove('show');
+}
+
+/* ═══════════════════════════════════════════════════
    MODULE 7 — PATTERNS
 ═══════════════════════════════════════════════════ */
 function renderPatterns(){const el=$('plist');if(!patterns.length){el.innerHTML='<div class="empty">No patterns named yet.</div>';return;}el.innerHTML=patterns.map((p,i)=>`<div class="pcard"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span style="font-size:14px;font-weight:600;color:var(--text0)">${esc(p.name)}</span><span style="font-size:11px;color:var(--text3);background:var(--bg4);padding:2px 7px;border-radius:var(--r20)">×${p.count||0}</span></div><div style="font-size:13px;color:var(--text1);line-height:1.6;margin-bottom:7px">${esc(p.desc)}</div>${p.last?`<div style="font-size:11px;color:var(--text3);margin-bottom:7px">Last: ${esc(p.last)}</div>`:''}<div style="display:flex;gap:7px"><button class="btn bg" style="font-size:11px;padding:5px 9px" onclick="markPattern(${i})">Mark active</button><button class="btn bg" style="font-size:11px;padding:5px 9px;color:var(--red);border-color:var(--red)" onclick="removePattern(${i})">Remove</button></div></div>`).join('');}
 async function addPattern(){const n=prompt('Pattern name:');if(!n?.trim())return;const d=prompt('How does it operate in your life?');if(!d?.trim())return;const p={name:n.trim(),desc:d.trim(),count:0,last:null};try{const r=await sbReq('/rest/v1/patterns','POST',{user_email:userEmail,name:p.name,desc:p.desc,count:0});if(r&&r[0])p.sb_id=r[0].id;}catch(e){console.warn(e);}patterns.push(p);renderPatterns();toast('Pattern added');}
 const markPattern=guard(async i=>{patterns[i].count=(patterns[i].count||0)+1;patterns[i].last=today();addE({category:'Mental & Emotional State',content:`Pattern active: ${patterns[i].name}\n${patterns[i].desc}`,source:'manual'});try{if(patterns[i].sb_id)await sbReq(`/rest/v1/patterns?id=eq.${patterns[i].sb_id}`,'PATCH',{count:patterns[i].count,last_seen:patterns[i].last});}catch{}renderPatterns();renderEntries();toast('Pattern logged');});
 async function removePattern(i){if(!confirm('Remove?'))return;try{if(patterns[i].sb_id)await sbReq(`/rest/v1/patterns?id=eq.${patterns[i].sb_id}`,'DELETE');}catch{}patterns.splice(i,1);renderPatterns();}
-async function autoDetect(){if(!entries.length){toast('Add some entries first');return;}const btn=$('adbtn');btn.disabled=true;btn.textContent='Analyzing...';$('apout').textContent='';try{const r=await ai('Identify 4-7 recurring behavioral or emotional patterns from this life log.\n\nFor each:\nNAME: [2-5 word name]\nMECHANISM: [one sentence how it operates]\nEVIDENCE: [cite specific entries]\n\nBe precise and honest.',`Log:\n${ctx(50)}\n\nIdentify patterns.`);$('apout').textContent=r;}catch(e){$('apout').textContent='Error: '+e.message;}btn.disabled=false;btn.textContent='🧠 Auto-detect from entries';}
+async function autoDetect(){
+  if(!entries.length){toast('Add some entries first');return;}
+  const btn=$('adbtn');btn.disabled=true;btn.textContent='Analyzing...';
+  $('apout').textContent='';
+  try{
+    const r=await ai('Identify 4-7 recurring behavioral or emotional patterns from this life log.\n\nFor each pattern use this exact format:\n**NAME: [2-5 word name]**\nMECHANISM: [one sentence — how it operates]\nEVIDENCE: [cite 1-2 specific entries]\n\nBe precise and honest. No softening.',`Log:\n${ctx(50)}\n\nIdentify patterns.`);
+    setMdOut($('apout'),r);
+    await persistAiOutput('auto_detect',r,{entry_count:entries.length});
+  }catch(e){$('apout').textContent='Error: '+e.message;}
+  btn.disabled=false;btn.textContent='🧠 Auto-detect from entries';
+}
 
 /* ═══════════════════════════════════════════════════
    MODULE 8 — DASHBOARD & GOALS
@@ -1404,7 +1615,7 @@ function renderGoals(){const el=$('glist');if(!goals.length){el.innerHTML='<div 
 async function addGoal(){const t=prompt('Enter a goal:');if(!t?.trim())return;const g={text:t.trim(),pct:0};try{const r=await sbReq('/rest/v1/goals','POST',{user_email:userEmail,text:g.text,pct:0});if(r&&r[0])g.sb_id=r[0].id;}catch{}goals.push(g);renderGoals();}
 async function updateGoal(i){renderGoals();try{if(goals[i].sb_id)await sbReq(`/rest/v1/goals?id=eq.${goals[i].sb_id}`,'PATCH',{pct:goals[i].pct});}catch{}}
 async function removeGoal(i){try{if(goals[i].sb_id)await sbReq(`/rest/v1/goals?id=eq.${goals[i].sb_id}`,'DELETE');}catch{}goals.splice(i,1);renderGoals();}
-async function genDigest(){const btn=$('dgbtn');btn.disabled=true;btn.textContent='...';$('dout').innerHTML='<span style="color:var(--text3);font-size:13px">Generating...</span>';try{const r=await ai(`You are LifeThread. Write a precise, honest weekly digest for ${uName||'the user'}. Cover dominant themes, emotional patterns, goal progress or avoidance, one behavioral pattern worth naming, one forward-looking honest observation. Under 280 words. No cheerleading.`,`Log:\n${ctx(20)}\n\nGenerate weekly digest.`);$('dout').innerHTML=`<div class="dbox">${esc(r).replace(/\n/g,'<br>')}</div>`;}catch(e){$('dout').innerHTML=`<span class="err">${esc(e.message)}</span>`;}btn.disabled=false;btn.textContent='Regenerate';}
+async function genDigest(){const btn=$('dgbtn');btn.disabled=true;btn.textContent='...';$('dout').innerHTML='<span style="color:var(--text3);font-size:13px">Generating...</span>';try{const r=await ai(`You are LifeThread. Write a precise, honest weekly digest for ${uName||'the user'}. Cover dominant themes, emotional patterns, goal progress or avoidance, one behavioral pattern worth naming, one forward-looking honest observation. Under 280 words. No cheerleading. Use **bold** for key terms.`,`Log:\n${ctx(20)}\n\nGenerate weekly digest.`);const d=document.createElement('div');setMdOut(d,r);$('dout').innerHTML='';$('dout').appendChild(d);await persistAiOutput('digest',r);}catch(e){$('dout').innerHTML=`<span class="err">${esc(e.message)}</span>`;}btn.disabled=false;btn.textContent='Regenerate';}
 
 /* ═══════════════════════════════════════════════════
    MODULE 9 — CHECK-IN
@@ -1426,8 +1637,11 @@ async function runArchive(){
   if(!filt.length){el.textContent='No entries in this range.';btn.disabled=false;btn.textContent='Run Synthesis';return;}
   const pctx=patterns.length?`\nNamed patterns: ${patterns.map(p=>p.name+': '+p.desc).join('; ')}`:'';
   const log=filt.slice(0,80).map(e=>{const t=e.temporal;const tc=t?`[${t.day_of_week||''} ${e.date}${t.time_of_day?' '+t.time_of_day:''}]`:`[${e.date}]`;return`${tc}[${e.category}]${e.mood?' ['+e.mood+']':''}\n${(e.content||'').slice(0,600)}`;}).join('\n\n---\n\n');
-  try{const r=await ai(`You are LifeThread — a forensic narrative archivist.\nUser: ${uName||'unnamed'}. Values: ${uVals}. Focus: ${uFoc}.${pctx}\n\nTASK: ${AFOCUS[focus]||AFOCUS['']}\n\nRULES: Second person. Name patterns precisely. Cite entries. Note recurrence. No softening.`,`Log (${filt.length} entries):\n\n${log}\n\nRun synthesis.`);el.textContent=r;}
-  catch(e){el.textContent='Error — '+e.message;}
+  try{
+    const r=await ai(`You are LifeThread — a forensic narrative archivist.\nUser: ${uName||'unnamed'}. Values: ${uVals}. Focus: ${uFoc}.${pctx}\n\nTASK: ${AFOCUS[focus]||AFOCUS['']}\n\nRULES: Second person. Name patterns precisely. Cite entries. Note recurrence. No softening. Use **bold** for key terms.`,`Log (${filt.length} entries):\n\n${log}\n\nRun synthesis.`);
+    setMdOut(el,r);
+    await persistAiOutput('archive',r,{focus,range,entry_count:filt.length});
+  }catch(e){el.textContent='Error — '+e.message;}
   btn.disabled=false;btn.textContent='Run Synthesis';
 }
 
@@ -1460,39 +1674,80 @@ function showImportWarning(show){const w=$('import-warning');if(w)w.classList.to
 async function processGroup(type){
   if(!triageFiles[type]?.length)return;
   const dc=$('icat').value,st=$('ist');
-  showImportWarning(true);$('iprog').style.display='block';
-  const fill=$('ipfill'),label=$('iplabel');
+  showImportWarning(true);
+  updateImportProgress('Starting import...',0,'0 entries');
   let total=0;
   const files=triageFiles[type];
   const ISYS=`Parse this text into individual journal/life log entries. Return ONLY a JSON array: [{"date":"YYYY-MM-DD","time_of_day":"Morning|Afternoon|Evening|Night|null","category":"Journal|Goals|Relationships|Health|Finances|Spirituality|Creative Work|Learning & Growth|Family|Dreams & Visions|Mental & Emotional State","content":"full text","title":"5-8 words","date_confidence":"exact|inferred|unknown"}]. Default: ${dc}. Today: ${today()}. JSON only.`;
+
+  const upd=(label,pct)=>updateImportProgress(label,pct,`${total} saved`);
+
   if(type==='image'){
-    for(let i=0;i<files.length;i++){fill.style.width=Math.round((i/files.length)*100)+'%';label.textContent=`Reading image ${i+1} of ${files.length}...`;try{const b64=await fileToBase64(files[i]);const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:files[i].type||'image/jpeg',data:b64}},{type:'text',text:'Extract all visible text from this image. Return only the extracted text, nothing else.'}]}]})});const d=await r.json();const text=d.content?.[0]?.text||'';if(text.trim().length>20){addE({category:dc,content:text.trim(),title:files[i].name.slice(0,60),source:'import-image'});total++;}}catch(e){console.warn(e);}await sleep(500);}
+    for(let i=0;i<files.length;i++){
+      upd(`Reading image ${i+1} of ${files.length}: ${files[i].name}`,Math.round((i/files.length)*100));
+      try{const b64=await fileToBase64(files[i]);const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:files[i].type||'image/jpeg',data:b64}},{type:'text',text:'Extract all visible text from this image. Return only the extracted text, nothing else.'}]}]})});const d=await r.json();const text=d.content?.[0]?.text||'';if(text.trim().length>20){addE({category:dc,content:text.trim(),title:files[i].name.slice(0,60),source:'import-image'});total++;upd(`Image ${i+1} done`,Math.round(((i+1)/files.length)*100));}}catch(e){console.warn(e);}await sleep(500);}
   }else if(type==='json'){
-    for(let i=0;i<files.length;i++){fill.style.width=Math.round((i/files.length)*100)+'%';label.textContent=`Parsing JSON ${i+1} of ${files.length}...`;try{const text=await fileToText(files[i]);const data=JSON.parse(text);let extracted='';if(data.mapping){const msgs=Object.values(data.mapping).filter(m=>m.message?.content?.parts&&m.message.author.role!=='system').sort((a,b)=>(a.message.create_time||0)-(b.message.create_time||0));extracted=msgs.map(m=>{const role=m.message.author.role==='user'?'Me':'GPT';const content=m.message.content.parts.filter(p=>typeof p==='string').join(' ');return content.trim()?`${role}: ${content.trim()}`:''}).filter(Boolean).join('\n\n');}else{extracted=text.slice(0,5000);}if(extracted.trim().length>50){const chunks=chunkText(extracted,7000);for(const chunk of chunks){try{const raw_r=await ai(`Parse this ChatGPT conversation. Extract only meaningful personal content. ${ISYS}`,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-json',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}}}catch(e){console.warn(e);}}
+    for(let i=0;i<files.length;i++){
+      upd(`Parsing JSON ${i+1} of ${files.length}...`,Math.round((i/files.length)*100));
+      try{const text=await fileToText(files[i]);const data=JSON.parse(text);let extracted='';if(data.mapping){const msgs=Object.values(data.mapping).filter(m=>m.message?.content?.parts&&m.message.author.role!=='system').sort((a,b)=>(a.message.create_time||0)-(b.message.create_time||0));extracted=msgs.map(m=>{const role=m.message.author.role==='user'?'Me':'GPT';const content=m.message.content.parts.filter(p=>typeof p==='string').join(' ');return content.trim()?`${role}: ${content.trim()}`:''}).filter(Boolean).join('\n\n');}else{extracted=text.slice(0,5000);}if(extracted.trim().length>50){const chunks=chunkText(extracted,7000);for(let c=0;c<chunks.length;c++){upd(`File ${i+1}/${files.length} — chunk ${c+1}/${chunks.length}`,Math.round(((i+(c/chunks.length))/files.length)*100));try{const raw_r=await ai(`Parse this ChatGPT conversation. Extract only meaningful personal content. ${ISYS}`,chunks[c]);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-json',date_confidence:p.date_confidence});total++;upd(`${files[i].name} — chunk ${c+1}/${chunks.length}`,Math.round(((i+(c/chunks.length))/files.length)*100));}}}catch{}await sleep(600);}}}catch(e){console.warn(e);}}
   }else if(type==='zip'){
-    for(let i=0;i<files.length;i++){fill.style.width=Math.round((i/files.length)*100)+'%';label.textContent=`Extracting ZIP ${i+1} of ${files.length}...`;try{const extracted=await extractZip(files[i]);if(!extracted.length){st.innerHTML=`<span class="err">⚠️ No readable files in ${esc(files[i].name)}.</span>`;continue;}for(let j=0;j<extracted.length;j++){const{name,ext,text}=extracted[j];fill.style.width=Math.round(((i+j/extracted.length)/files.length)*100)+'%';label.textContent=`Processing: ${name}`;if(ext==='json'){try{const data=JSON.parse(text);let conv='';if(data.mapping){const msgs=Object.values(data.mapping).filter(m=>m.message?.content?.parts&&m.message.author.role!=='system').sort((a,b)=>(a.message.create_time||0)-(b.message.create_time||0));conv=msgs.map(m=>{const role=m.message.author.role==='user'?'Me':'GPT';const content=m.message.content.parts.filter(p=>typeof p==='string').join(' ');return content.trim()?`${role}: ${content.trim()}`:''}).filter(Boolean).join('\n\n');}else{conv=text.slice(0,5000);}if(conv.trim().length>50){const chunks=chunkText(conv,7000);for(const chunk of chunks){try{const raw_r=await ai(`Parse this ChatGPT conversation. Extract only meaningful personal content. ${ISYS}`,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-zip-json',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}}}catch{}}else{const chunks=chunkText(text,7000);for(const chunk of chunks){try{const raw_r=await ai(ISYS,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-zip',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}}}}catch(e){console.warn('ZIP error:',e);st.innerHTML=`<span class="err">⚠️ Error reading ZIP: ${esc(e.message)}</span>`;}}
+    for(let i=0;i<files.length;i++){
+      upd(`Extracting ZIP: ${files[i].name}`,Math.round((i/files.length)*100));
+      try{const extracted=await extractZip(files[i]);if(!extracted.length){st.innerHTML=`<span class="err">⚠️ No readable files in ${esc(files[i].name)}.</span>`;continue;}for(let j=0;j<extracted.length;j++){const{name,ext,text}=extracted[j];const pct=Math.round(((i+j/extracted.length)/files.length)*100);upd(`Processing: ${name}`,pct);if(ext==='json'){try{const data=JSON.parse(text);let conv='';if(data.mapping){const msgs=Object.values(data.mapping).filter(m=>m.message?.content?.parts&&m.message.author.role!=='system').sort((a,b)=>(a.message.create_time||0)-(b.message.create_time||0));conv=msgs.map(m=>{const role=m.message.author.role==='user'?'Me':'GPT';const content=m.message.content.parts.filter(p=>typeof p==='string').join(' ');return content.trim()?`${role}: ${content.trim()}`:''}).filter(Boolean).join('\n\n');}else{conv=text.slice(0,5000);}if(conv.trim().length>50){const chunks=chunkText(conv,7000);for(const chunk of chunks){try{const raw_r=await ai(`Parse this ChatGPT conversation. Extract only meaningful personal content. ${ISYS}`,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-zip-json',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}}}catch{}}else{const chunks=chunkText(text,7000);for(let c=0;c<chunks.length;c++){upd(`${name} — chunk ${c+1}/${chunks.length}`,pct);try{const raw_r=await ai(ISYS,chunks[c]);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import-zip',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}}}}catch(e){console.warn('ZIP error:',e);st.innerHTML=`<span class="err">⚠️ Error reading ZIP: ${esc(e.message)}</span>`;}}
   }else{
-    for(let i=0;i<files.length;i++){fill.style.width=Math.round((i/files.length)*100)+'%';label.textContent=`Processing ${i+1}/${files.length}: ${files[i].name}`;const ext=getExt(files[i].name);let text='';try{if(FILE_TYPES.docx.includes(ext)){label.textContent=`Extracting: ${files[i].name}...`;text=await extractDocx(files[i]);if(!text.trim()){st.innerHTML=`<span class="err">⚠️ "${esc(files[i].name)}" appears empty.</span>`;continue;}}else{text=await fileToText(files[i]);}if(!text.trim())continue;const chunks=chunkText(text,7000);for(const chunk of chunks){try{const raw_r=await ai(ISYS,chunk);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import',date_confidence:p.date_confidence});total++;}}}}catch{}await sleep(600);}}catch(e){console.warn(e);st.innerHTML=`<span class="err">⚠️ Error: ${esc(e.message)}</span>`;}}
+    for(let i=0;i<files.length;i++){
+      const ext=getExt(files[i].name);let text='';
+      upd(`Extracting: ${files[i].name}`,Math.round((i/files.length)*100));
+      try{
+        if(FILE_TYPES.docx.includes(ext)){text=await extractDocx(files[i]);if(!text.trim()){st.innerHTML=`<span class="err">⚠️ "${esc(files[i].name)}" appears empty.</span>`;continue;}}
+        else{text=await fileToText(files[i]);}
+        if(!text.trim())continue;
+        const chunks=chunkText(text,7000);
+        for(let c=0;c<chunks.length;c++){
+          upd(`${files[i].name} — chunk ${c+1} of ${chunks.length}`,Math.round(((i+(c/chunks.length))/files.length)*100));
+          try{const raw_r=await ai(ISYS,chunks[c]);const parsed=safeJSON(raw_r);if(Array.isArray(parsed)){for(const p of parsed){if(p?.content?.trim()){addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import',date_confidence:p.date_confidence});total++;upd(`${files[i].name} — ${total} entries saved`,Math.round(((i+(c/chunks.length))/files.length)*100));}}}}catch{}
+          await sleep(600);
+        }
+      }catch(e){console.warn(e);st.innerHTML=`<span class="err">⚠️ Error: ${esc(e.message)}</span>`;}
+    }
   }
-  fill.style.width='100%';$('iprog').style.display='none';showImportWarning(false);
-  entries.sort((a,b)=>b.date.localeCompare(a.date));renderEntries();renderDash();renderHome();
-  st.innerHTML=`<span class="ok">✓ Imported ${total} entries from ${files.length} ${type} file${files.length>1?'s':''}.</span>`;toast(`✓ ${total} entries imported`);
+
+  updateImportProgress('✓ Import complete',100,`${total} entries saved`);
+  setTimeout(hideImportProgress,3000);
+  showImportWarning(false);
+  entries.sort((a,b)=>b.date.localeCompare(a.date));
+  renderEntries();renderDash();renderHome();
+  st.innerHTML=`<span class="ok">✓ Imported ${total} entries from ${files.length} ${type} file${files.length>1?'s':''}.</span>`;
+  toast(`✓ ${total} entries imported`);
 }
 async function processImport(){
   const raw=$('itxt').value.trim();if(!raw){toast('Paste some text first');return;}
   const dc=$('icat').value,st=$('ist'),btn=$('ibtn');btn.disabled=true;
-  showImportWarning(true);$('iprog').style.display='block';
-  const fill=$('ipfill'),label=$('iplabel');
+  showImportWarning(true);
+  updateImportProgress('Processing text...',0,'0 entries');
   const chunks=chunkText(raw,7000);let total=0,ex=0,inf=0,unk=0;const allParsed=[];
   const ISYS=`Parse into individual journal/life log entries. Return ONLY a JSON array: [{"date":"YYYY-MM-DD","time_of_day":"Morning|Afternoon|Evening|Night|Late night|null","category":"Journal|Goals|Relationships|Health|Finances|Spirituality|Creative Work|Learning & Growth|Family|Dreams & Visions|Mental & Emotional State","content":"full text","title":"5-8 words","date_confidence":"exact|inferred|unknown"}]. Default: ${dc}. Today: ${today()}. JSON only.`;
-  for(let i=0;i<chunks.length;i++){fill.style.width=Math.round((i/chunks.length)*100)+'%';label.textContent=chunks.length>1?`Part ${i+1} of ${chunks.length}...`:'Processing...';try{const raw_r=await ai(ISYS,chunks[i]);try{const p=safeJSON(raw_r);if(Array.isArray(p))allParsed.push(...p);}catch{}}catch(e){if(e.message.includes('Rate')){label.textContent='Rate limited — waiting 20s...';await sleep(20000);i--;continue;}console.warn(e);}if(i<chunks.length-1)await sleep(700);}
-  fill.style.width='100%';label.textContent='Saving...';
-  if(!allParsed.length){st.innerHTML='<span class="err">⚠️ No entries parsed.</span>';$('iprog').style.display='none';btn.disabled=false;return;}
-  const seen=new Set();const deduped=allParsed.filter(p=>{if(!p?.content?.trim())return false;const fp=p.content.trim().slice(0,100);if(seen.has(fp))return false;seen.add(fp);return true;});
-  for(const p of deduped.sort((a,b)=>(a.date||'').localeCompare(b.date||''))){addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import',date_confidence:p.date_confidence||'unknown'});total++;if(p.date_confidence==='exact')ex++;else if(p.date_confidence==='inferred')inf++;else unk++;}
+  for(let i=0;i<chunks.length;i++){
+    updateImportProgress(chunks.length>1?`Part ${i+1} of ${chunks.length}...`:'Processing...',Math.round((i/chunks.length)*100),`${total} saved`);
+    try{const raw_r=await ai(ISYS,chunks[i]);try{const p=safeJSON(raw_r);if(Array.isArray(p))allParsed.push(...p);}catch{}}
+    catch(e){if(e.message.includes('Rate')){updateImportProgress('Rate limited — waiting 20s...',Math.round((i/chunks.length)*100),`${total} saved`);await sleep(20000);i--;continue;}console.warn(e);}
+    if(i<chunks.length-1)await sleep(700);
+  }
+  updateImportProgress('Saving entries...',95,`${total} saved`);
+  if(!allParsed.length){st.innerHTML='<span class="err">⚠️ No entries parsed.</span>';hideImportProgress();showImportWarning(false);btn.disabled=false;return;}
+  const seen=new Set();
+  const deduped=allParsed.filter(p=>{if(!p?.content?.trim())return false;const fp=p.content.trim().slice(0,100);if(seen.has(fp))return false;seen.add(fp);return true;});
+  for(const p of deduped.sort((a,b)=>(a.date||'').localeCompare(b.date||''))){
+    addE({date:p.date||today(),time_of_day:p.time_of_day||null,category:CATS.find(c=>c.v===p.category)?p.category:dc,content:p.content.trim(),title:p.title||p.content.slice(0,60),source:'import',date_confidence:p.date_confidence||'unknown'});
+    total++;if(p.date_confidence==='exact')ex++;else if(p.date_confidence==='inferred')inf++;else unk++;
+  }
   entries.sort((a,b)=>b.date.localeCompare(a.date));renderEntries();renderDash();renderHome();
-  $('iprog').style.display='none';$('itxt').value='';$('charcount').textContent='';showImportWarning(false);
-  st.innerHTML=`<span class="ok">✓ ${total} entries — ${ex} exact, ${inf} inferred, ${unk} unknown dates.</span>`;toast(`✓ ${total} entries imported`);btn.disabled=false;
+  updateImportProgress('✓ Done',100,`${total} entries saved`);
+  setTimeout(hideImportProgress,3000);
+  $('itxt').value='';$('charcount').textContent='';
+  showImportWarning(false);
+  st.innerHTML=`<span class="ok">✓ ${total} entries — ${ex} exact, ${inf} inferred, ${unk} unknown dates.</span>`;
+  toast(`✓ ${total} entries imported`);btn.disabled=false;
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1608,11 +1863,14 @@ function populateFinSettings(){
   $('fin-sfd-target').value=finSettings.sfdTarget;
   if($('fin-webull-key'))$('fin-webull-key').value=finSettings.webullKey||'';
   if($('fin-webull-secret'))$('fin-webull-secret').value=finSettings.webullSecret||'';
+  if($('fin-plaid-id'))$('fin-plaid-id').value=finSettings.plaidId||'';
+  if($('fin-plaid-secret'))$('fin-plaid-secret').value=finSettings.plaidSecret||'';
   renderAllocTargetsGrid();
+  renderPlaidConnections();
 }
 
 async function saveFinSetting(type){
-  const stMap={railway:'fin-railway-st',sfd:'fin-sfd-st',webull:'fin-webull-st',alloc:'fin-alloc-st'};
+  const stMap={railway:'fin-railway-st',sfd:'fin-sfd-st',webull:'fin-webull-st',alloc:'fin-alloc-st',plaid:'fin-plaid-st'};
   const stEl=$(stMap[type]);
   try{
     if(type==='railway'){
@@ -1634,6 +1892,10 @@ async function saveFinSetting(type){
       for(const cls of ALLOC_CLASSES){const v=parseInt($(`alloc-${cls}`)?.value)||0;targets[cls]=v;sum+=v;}
       if(sum!==100){stEl.innerHTML=`<span class="err">Targets must sum to 100 (currently ${sum})</span>`;return;}
       finSettings.allocTargets=targets;
+    }else if(type==='plaid'){
+      finSettings.plaidId=$('fin-plaid-id').value.trim();
+      finSettings.plaidSecret=$('fin-plaid-secret').value.trim();
+      if(!finSettings.plaidId){stEl.innerHTML='<span class="err">Client ID required</span>';return;}
     }
     // Persist fin settings to Supabase user profile
     await sbReq(`/rest/v1/user_credentials?email=eq.${encodeURIComponent(userEmail)}`,'PATCH',{profile:{name:uName,values:uVals,focus:uFoc,want:uWant,fin_settings:JSON.stringify(finSettings)}});
@@ -1644,6 +1906,26 @@ async function saveFinSetting(type){
 
 function exportFinData(){
   try{const d={exported:nowISO(),holdings:localHoldings,finSettings};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`lifethread-finance-${today()}.json`;document.body.appendChild(a);a.click();document.body.removeChild(a);toast('✓ Finance data exported');}catch(e){toast('Export failed: '+e.message);}
+}
+
+// initPlaid() — launches Plaid Link when credentials + Railway backend are configured.
+// Requires Railway to expose POST /api/plaid/link-token and POST /api/plaid/exchange.
+function initPlaid(){
+  if(!finSettings.plaidId||!finSettings.plaidSecret){
+    toast('⚠️ Save Plaid credentials first');
+    showFin('fin-settings',document.querySelector('#finance-nav .nb:last-of-type'));
+    return;
+  }
+  // Plaid Link requires a server-side link_token — Railway endpoint needed
+  toast('🏦 Plaid Link requires Railway /api/plaid/link-token endpoint — see Finance Settings for setup guide');
+}
+
+// renderPlaidConnections() — shows connected accounts in Finance settings
+function renderPlaidConnections(){
+  const el=$('plaid-connected-list');if(!el)return;
+  const accounts=finSettings.plaidAccounts||[];
+  if(!accounts.length){el.innerHTML='';return;}
+  el.innerHTML=accounts.map(a=>`<div class="plaid-connected"><span>✓ ${esc(a.name)}</span><span style="font-size:11px;color:var(--green);margin-left:4px">${esc(a.type)}</span></div>`).join('');
 }
 
 /* ═══════════════════════════════════════════════════
