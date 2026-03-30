@@ -1157,18 +1157,15 @@ function showApp(){
   $('auth-screen').style.display='none';
   $('app').style.display='flex';
   // Populate Life settings fields
-  if(apiKey)$('akey').value=apiKey;
-  if(nKey)$('nkey').value=nKey;
-  if(nDb)$('ndb').value=nDb;
-  if(uName)$('uname').value=uName;
-  if(uVals)$('uvals').value=uVals;
-  if(uFoc)$('ufoc').value=uFoc;
-  if(uWant)$('uwant').value=uWant;
-  $('s-email').textContent=userEmail;
-  // Populate Finance settings fields
-  $('fin-railway-url').value=finSettings.railwayUrl;
-  $('fin-sfd-target').value=finSettings.sfdTarget;
-  renderAllocTargetsGrid();
+  if(apiKey&&$('akey'))$('akey').value=apiKey;
+  if(nKey&&$('nkey'))$('nkey').value=nKey;
+  if(nDb&&$('ndb'))$('ndb').value=nDb;
+  if(uName&&$('uname'))$('uname').value=uName;
+  if(uVals&&$('uvals'))$('uvals').value=uVals;
+  if(uFoc&&$('ufoc'))$('ufoc').value=uFoc;
+  if(uWant&&$('uwant'))$('uwant').value=uWant;
+  if($('s-email'))$('s-email').textContent=userEmail;
+  // Finance settings populated lazily when Finance Settings panel opens (populateFinSettings)
   renderHome();renderCats();renderEntries();renderPatterns();renderDash();initChat();
   const itxt=$('itxt');
   if(itxt)itxt.addEventListener('input',()=>{const l=itxt.value.length;$('charcount').textContent=l>0?l.toLocaleString()+' chars':'';});
