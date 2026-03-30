@@ -1993,7 +1993,7 @@ async function ai(sys,msg,retries=2){
   }
   throw lastErr;
 }
-function safeJSON(text){let t=text.replace(/^\uFEFF/,'').trim();t=t.replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'').trim();const a=t.indexOf('['),o=t.indexOf('{');let s=-1;if(a!==-1&&(o===-1||a<o))s=a;else if(o!==-1)s=o;if(s>0)t=t.slice(s);const ae=t.lastIndexOf(']'),oe=t.lastIndexOf('}');const e=Math.max(ae,oe);if(e!==-1)t=t.slice(0,e+1);return JSON.parse(t);}
+function safeJSON(text){let t=text.replace(/^\uFEFF/,'').trim();t=t.replace(/^\x60\x60\x60json\s*/i,'').replace(/^\x60\x60\x60\s*/,'').replace(/\x60\x60\x60\s*$/,'').trim();const a=t.indexOf('['),o=t.indexOf('{');let s=-1;if(a!==-1&&(o===-1||a<o))s=a;else if(o!==-1)s=o;if(s>0)t=t.slice(s);const ae=t.lastIndexOf(']'),oe=t.lastIndexOf('}');const e=Math.max(ae,oe);if(e!==-1)t=t.slice(0,e+1);return JSON.parse(t);}
 function exportData(){try{const d={exported:nowISO(),version:VER,user:userEmail,entries,goals,patterns,profile:{uName,uVals,uFoc,uWant}};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`lifethread-${today()}.json`;document.body.appendChild(a);a.click();document.body.removeChild(a);toast('✓ Backup downloaded');}catch(e){toast('Export failed: '+e.message);}}
 </script>
 </body>
